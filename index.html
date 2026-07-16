@@ -626,6 +626,16 @@ button:focus-visible {
   line-height: 1.45;
 }
 
+.feedback .feedback-selected {
+  margin: 7px 0 5px;
+  color: var(--danger);
+  font-weight: 800;
+}
+
+.feedback .feedback-selected[hidden] {
+  display: none;
+}
+
 .feedback .feedback-translation {
   margin-top: 9px;
   padding-top: 9px;
@@ -976,6 +986,7 @@ button:focus-visible {
           <div id="feedback-icon" class="feedback-icon" aria-hidden="true"></div>
           <div>
             <strong id="feedback-title"></strong>
+            <p id="feedback-selected" class="feedback-selected" hidden></p>
             <p id="feedback-reading"></p>
             <p id="feedback-meaning"></p>
             <p id="feedback-translation" class="feedback-translation" hidden></p>
@@ -1199,6 +1210,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     feedback: document.getElementById("feedback"),
     feedbackIcon: document.getElementById("feedback-icon"),
     feedbackTitle: document.getElementById("feedback-title"),
+    feedbackSelected: document.getElementById("feedback-selected"),
     feedbackReading: document.getElementById("feedback-reading"),
     feedbackMeaning: document.getElementById("feedback-meaning"),
     feedbackTranslation: document.getElementById("feedback-translation"),
@@ -1447,6 +1459,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
 
     elements.feedback.hidden = true;
     elements.feedback.className = "feedback";
+    elements.feedbackSelected.hidden = true;
+    elements.feedbackSelected.textContent = "";
     elements.feedbackTranslation.hidden = true;
     elements.feedbackTranslation.textContent = "";
     elements.feedbackSource.hidden = !item.sentenceAttribution;
@@ -1465,6 +1479,10 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     session.attempts += 1;
     const isCorrect = selectedId === session.current.id;
     const isSentenceToKanji = session.mode === "sentence-to-kanji";
+    const selectedItem = findItem(selectedId);
+    const selectedAnswer = session.mode === "kanji-to-reading"
+      ? normalizedReading(selectedItem.reading)
+      : selectedItem.word;
     const buttons = [...elements.answerGrid.querySelectorAll("button")];
     const selectedButton = buttons.find((button) => button.dataset.itemId === selectedId);
     const key = `${session.difficulty}:${session.mode}:${session.current.id}`;
@@ -1485,6 +1503,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       elements.feedback.classList.add("is-wrong");
       elements.feedbackIcon.innerHTML = "<span>!</span>";
       elements.feedbackTitle.textContent = "한 번 더 생각해 보세요";
+      elements.feedbackSelected.hidden = false;
+      elements.feedbackSelected.textContent = `선택한 답  ${selectedAnswer}`;
       elements.feedbackReading.textContent = "힌트  문장에 후리가나를 표시했어요.";
       elements.feedbackMeaning.textContent = "후리가나를 참고해서 다시 선택하세요.";
       elements.feedbackTranslation.hidden = true;
@@ -1512,6 +1532,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       : isSentenceToKanji
         ? "두 번 틀렸어요. 정답과 해석을 확인하세요"
         : "아쉬워요, 정답을 확인하세요";
+    elements.feedbackSelected.hidden = isCorrect;
+    elements.feedbackSelected.textContent = isCorrect ? "" : `선택한 답  ${selectedAnswer}`;
     elements.feedbackReading.textContent = session.mode === "sentence-to-kanji"
       ? `정답  ${session.current.word}（${normalizedReading(session.current.reading)}）`
       : session.mode === "reading-to-kanji"

@@ -1,0 +1,1483 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17324d">
+  <title>한자 읽기 퀴즈</title>
+  <style>
+:root {
+  color-scheme: light;
+  --ink: #17324d;
+  --ink-soft: #516273;
+  --paper: #fffdf8;
+  --paper-deep: #f5efe2;
+  --line: #d9d2c5;
+  --accent: #c9473b;
+  --accent-dark: #a9332b;
+  --success: #24705a;
+  --success-soft: #e6f3ed;
+  --danger: #a63f36;
+  --danger-soft: #fbeae7;
+  --focus: #2e76b5;
+  --shadow: 0 24px 70px rgba(38, 43, 49, 0.13);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 12% 14%, rgba(201, 71, 59, 0.11), transparent 27rem),
+    radial-gradient(circle at 90% 86%, rgba(46, 118, 181, 0.10), transparent 30rem),
+    #eee9df;
+  font-family: "Noto Sans KR", "Noto Sans JP", "Yu Gothic", "Malgun Gothic", system-ui, sans-serif;
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.app-shell {
+  width: min(100% - 32px, 760px);
+  margin: 0 auto;
+  padding: 34px 0 50px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: 0 0 24px 4px;
+}
+
+.brand-mark {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 14px 14px 14px 4px;
+  font-family: "Yu Mincho", "MS Mincho", serif;
+  font-size: 25px;
+  box-shadow: 0 8px 20px rgba(169, 51, 43, 0.22);
+}
+
+.brand h1 {
+  margin: 1px 0 0;
+  font-size: clamp(21px, 4vw, 28px);
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+.eyebrow,
+.session-kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.is-active {
+  display: block;
+  animation: screen-in 260ms ease-out;
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.paper-card {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, transparent 0 38px, rgba(201, 71, 59, 0.08) 38px 39px, transparent 39px),
+    repeating-linear-gradient(0deg, rgba(23, 50, 77, 0.018) 0 1px, transparent 1px 28px),
+    var(--paper);
+  border: 1px solid rgba(117, 102, 80, 0.17);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+}
+
+.paper-card::after {
+  position: absolute;
+  inset: 13px;
+  pointer-events: none;
+  border: 1px solid rgba(117, 102, 80, 0.08);
+  border-radius: 15px;
+  content: "";
+}
+
+.start-card,
+.result-card {
+  padding: clamp(38px, 7vw, 64px);
+  text-align: center;
+}
+
+.start-card h2,
+.result-card h2 {
+  margin: 10px 0 13px;
+  font-size: clamp(28px, 6vw, 42px);
+  line-height: 1.18;
+  letter-spacing: -0.055em;
+}
+
+.lead {
+  max-width: 560px;
+  margin: 0 auto;
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.72;
+  word-break: keep-all;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 30px 0 24px;
+}
+
+.stat {
+  min-width: 0;
+  padding: 17px 8px 15px;
+  background: rgba(245, 239, 226, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.stat-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.stat strong {
+  font-size: clamp(20px, 4.5vw, 29px);
+  letter-spacing: -0.04em;
+}
+
+.mode-picker {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 0;
+  border: 0;
+  text-align: left;
+}
+
+.mode-picker legend {
+  width: 100%;
+  margin-bottom: 9px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.mode-option {
+  position: relative;
+  cursor: pointer;
+}
+
+.mode-option.is-wide {
+  grid-column: 1 / -1;
+}
+
+.mode-option input {
+  position: absolute;
+  top: 17px;
+  left: 14px;
+  margin: 0;
+  accent-color: var(--ink);
+}
+
+.mode-copy {
+  display: block;
+  min-height: 78px;
+  padding: 13px 12px 12px 39px;
+  background: rgba(255, 253, 248, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+}
+
+.mode-option:hover .mode-copy {
+  border-color: var(--ink-soft);
+  transform: translateY(-1px);
+}
+
+.mode-option input:checked + .mode-copy {
+  background: rgba(232, 238, 245, 0.88);
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.mode-option input:focus-visible + .mode-copy {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.mode-option input:disabled + .mode-copy {
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
+.mode-copy strong,
+.mode-copy small {
+  display: block;
+}
+
+.mode-copy strong {
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.mode-copy small {
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.question-count-picker {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto minmax(118px, 150px) 1fr;
+  gap: 10px;
+  align-items: center;
+  margin: -4px 0 18px;
+  padding: 12px 14px;
+  background: rgba(245, 239, 226, 0.58);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.question-count-picker label {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.question-count-picker input {
+  width: 100%;
+  min-height: 40px;
+  padding: 7px 34px 7px 11px;
+  color: var(--ink);
+  background: rgba(255, 253, 248, 0.92);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  font: inherit;
+}
+
+.question-count-picker input:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.question-count-picker small {
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.primary-button {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 56px;
+  padding: 14px 22px;
+  color: #fff;
+  background: var(--ink);
+  border: 0;
+  border-radius: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(23, 50, 77, 0.18);
+  transition: transform 150ms ease, background 150ms ease, box-shadow 150ms ease;
+}
+
+.primary-button:hover {
+  background: #23496a;
+  box-shadow: 0 12px 26px rgba(23, 50, 77, 0.23);
+  transform: translateY(-1px);
+}
+
+.primary-button:active {
+  transform: translateY(1px);
+}
+
+.helper,
+.keyboard-hint {
+  margin: 13px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.history-panel {
+  position: relative;
+  z-index: 1;
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+
+.history-panel h3 {
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
+.history-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history-list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(245, 239, 226, 0.58);
+  border-radius: 10px;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.history-list strong {
+  color: var(--ink);
+}
+
+.quiz-topbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.progress-copy {
+  margin-left: 9px;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.live-score {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.live-score strong {
+  color: var(--ink);
+  font-size: 17px;
+}
+
+.progress-track {
+  height: 7px;
+  margin: 11px 4px 18px;
+  overflow: hidden;
+  background: rgba(23, 50, 77, 0.11);
+  border-radius: 999px;
+}
+
+.progress-bar {
+  width: 0;
+  height: 100%;
+  background: var(--accent);
+  border-radius: inherit;
+  transition: width 260ms ease;
+}
+
+.quiz-card {
+  min-height: 560px;
+  padding: clamp(32px, 6vw, 54px);
+  text-align: center;
+}
+
+.prompt {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.quiz-card h2 {
+  position: relative;
+  z-index: 1;
+  margin: 18px 0 5px;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", "MS Mincho", serif;
+  font-size: clamp(52px, 13vw, 86px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+
+.quiz-card h2.is-reading {
+  font-family: "Noto Sans JP", "Yu Gothic", "Malgun Gothic", sans-serif;
+  font-size: clamp(38px, 10vw, 64px);
+  letter-spacing: 0.05em;
+}
+
+.quiz-card h2.is-sentence {
+  max-width: 620px;
+  margin: 22px auto 11px;
+  font-family: "Noto Sans JP", "Yu Gothic", "Malgun Gothic", sans-serif;
+  font-size: clamp(23px, 5.4vw, 36px);
+  line-height: 1.65;
+  letter-spacing: 0;
+}
+
+.quiz-card h2.is-sentence ruby {
+  ruby-align: center;
+}
+
+.quiz-card h2.is-sentence rt {
+  color: var(--ink-soft);
+  font-family: "Noto Sans JP", "Yu Gothic", "Malgun Gothic", sans-serif;
+  font-size: 0.43em;
+  font-weight: 700;
+}
+
+.day-label {
+  margin: 0 0 27px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.answer-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.answer-button {
+  min-height: 62px;
+  padding: 13px 15px;
+  color: var(--ink);
+  background: rgba(255, 253, 248, 0.84);
+  border: 1px solid #c9c1b4;
+  border-radius: 13px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 140ms ease, border 140ms ease, background 140ms ease;
+}
+
+.answer-button:hover:not(:disabled) {
+  background: #fff;
+  border-color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.answer-button:disabled {
+  cursor: default;
+}
+
+.answer-button.is-correct {
+  color: var(--success);
+  background: var(--success-soft);
+  border-color: var(--success);
+}
+
+.answer-button.is-wrong {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-color: var(--danger);
+}
+
+.answer-number {
+  display: inline-grid;
+  width: 23px;
+  height: 23px;
+  margin-right: 8px;
+  place-items: center;
+  color: var(--ink-soft);
+  background: var(--paper-deep);
+  border-radius: 50%;
+  font-size: 11px;
+  vertical-align: 2px;
+}
+
+.feedback {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 13px;
+  align-items: start;
+  margin-top: 20px;
+  padding: 17px 18px;
+  border-radius: 14px;
+  text-align: left;
+}
+
+.feedback[hidden] {
+  display: none;
+}
+
+.feedback.is-correct {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.feedback.is-wrong {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.feedback-icon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  color: #fff;
+  background: currentColor;
+  border-radius: 50%;
+  font-weight: 900;
+}
+
+.feedback-icon span {
+  color: #fff;
+}
+
+.feedback strong {
+  display: block;
+  margin: 1px 0 4px;
+  color: currentColor;
+}
+
+.feedback p {
+  margin: 2px 0;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.feedback .feedback-translation {
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(23, 50, 77, 0.16);
+  font-weight: 700;
+}
+
+.feedback .retry-note {
+  margin-top: 7px;
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+#next-button {
+  margin-top: 14px;
+}
+
+.keyboard-hint {
+  text-align: center;
+}
+
+.result-seal {
+  display: grid;
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 18px;
+  place-items: center;
+  color: var(--accent);
+  border: 3px double var(--accent);
+  border-radius: 50%;
+  font-family: "Yu Mincho", "MS Mincho", serif;
+  font-size: 29px;
+  font-weight: 700;
+  transform: rotate(-5deg);
+}
+
+.result-score {
+  display: grid;
+  width: min(260px, 100%);
+  margin: 28px auto 16px;
+  padding: 18px;
+  background: rgba(245, 239, 226, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.result-score span {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.result-score strong {
+  font-size: 42px;
+  letter-spacing: -0.05em;
+}
+
+.result-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin: 0 0 25px;
+  overflow: hidden;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+}
+
+.result-details div {
+  padding: 13px 8px;
+  background: var(--paper);
+}
+
+.result-details dt {
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.result-details dd {
+  margin: 3px 0 0;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.app-error {
+  padding: 14px;
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-radius: 12px;
+  text-align: center;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    width: min(100% - 20px, 760px);
+    padding-top: 18px;
+  }
+
+  .brand {
+    margin-bottom: 16px;
+  }
+
+  .start-card,
+  .result-card,
+  .quiz-card {
+    padding: 31px 22px;
+    border-radius: 20px;
+  }
+
+  .paper-card {
+    background:
+      repeating-linear-gradient(0deg, rgba(23, 50, 77, 0.018) 0 1px, transparent 1px 28px),
+      var(--paper);
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mode-picker {
+    grid-template-columns: 1fr;
+  }
+
+  .mode-option.is-wide {
+    grid-column: auto;
+  }
+
+  .question-count-picker {
+    grid-template-columns: 1fr auto;
+  }
+
+  .question-count-picker small {
+    grid-column: 1 / -1;
+  }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+  }
+
+  .stat-label {
+    margin: 0;
+  }
+
+  .answer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quiz-card {
+    min-height: 0;
+  }
+
+  .history-list li {
+    grid-template-columns: 1fr auto;
+  }
+
+  .history-date {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="brand" aria-label="앱 제목">
+      <div class="brand-mark" aria-hidden="true">読</div>
+      <div>
+        <p class="eyebrow">JLPT N5 · N4 · N2</p>
+        <h1>한자 읽기 퀴즈</h1>
+      </div>
+    </header>
+
+    <section id="start-screen" class="screen is-active" aria-labelledby="start-title">
+      <div class="paper-card start-card">
+        <p id="session-kicker" class="session-kicker">다음 학습</p>
+        <h2 id="start-title"><span id="next-session-number">1</span>회차를 시작할까요?</h2>
+        <p class="lead">난이도와 학습 방향을 선택하세요. 어느 모드에서든 틀린 단어는 몇 문제 뒤에 다시 나옵니다.</p>
+
+        <div class="stats-grid" aria-label="학습 기록">
+          <div class="stat">
+            <span class="stat-label">최근 정답률</span>
+            <strong id="last-accuracy">—</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-label">누적 정답률</span>
+            <strong id="total-accuracy">—</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-label">완료 회차</span>
+            <strong id="completed-sessions">0회</strong>
+          </div>
+        </div>
+
+        <fieldset class="mode-picker difficulty-picker">
+          <legend>난이도 선택</legend>
+          <label class="mode-option" for="difficulty-basic">
+            <input id="difficulty-basic" name="quiz-difficulty" type="radio" value="n5n4" checked>
+            <span class="mode-copy">
+              <strong>N5 · N4</strong>
+              <small>기초 한자 단어 360개</small>
+            </span>
+          </label>
+          <label class="mode-option" for="difficulty-n2">
+            <input id="difficulty-n2" name="quiz-difficulty" type="radio" value="n2">
+            <span class="mode-copy">
+              <strong>N2</strong>
+              <small>제공 PDF 선별 한자 단어 100개</small>
+            </span>
+          </label>
+        </fieldset>
+
+        <fieldset class="mode-picker">
+          <legend>학습 모드 선택</legend>
+          <label class="mode-option" for="mode-kanji-reading">
+            <input id="mode-kanji-reading" name="quiz-mode" type="radio" value="kanji-to-reading" checked>
+            <span class="mode-copy">
+              <strong>한자 → 읽기</strong>
+              <small>한자를 보고 읽는 법 고르기</small>
+            </span>
+          </label>
+          <label class="mode-option" for="mode-reading-kanji">
+            <input id="mode-reading-kanji" name="quiz-mode" type="radio" value="reading-to-kanji">
+            <span class="mode-copy">
+              <strong>읽기 → 한자</strong>
+              <small>읽는 법을 보고 알맞은 단어 고르기</small>
+            </span>
+          </label>
+          <label class="mode-option is-wide" for="mode-sentence-kanji">
+            <input id="mode-sentence-kanji" name="quiz-mode" type="radio" value="sentence-to-kanji">
+            <span class="mode-copy">
+              <strong>문장 빈칸 → 한자</strong>
+              <small>N2 예문의 빈칸에 알맞은 한자 단어 고르기</small>
+            </span>
+          </label>
+        </fieldset>
+
+        <div id="question-count-panel" class="question-count-picker" hidden>
+          <label for="sentence-question-count">문장 문제 수</label>
+          <input id="sentence-question-count" type="number" min="10" max="100" step="1" value="20" inputmode="numeric">
+          <small>10~100개 사이에서 선택 · N2 PDF 어휘 예문에서 출제</small>
+        </div>
+
+        <button id="start-button" class="primary-button" type="button">학습 시작</button>
+        <p class="helper">기본 모드는 전체 단어 · 문장 모드는 10~100문제 · 오답 자동 재출제</p>
+
+        <div id="history-panel" class="history-panel" hidden>
+          <h3>최근 기록</h3>
+          <ol id="history-list" class="history-list"></ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz-screen" class="screen" aria-labelledby="quiz-word">
+      <div class="quiz-topbar">
+        <div>
+          <span id="quiz-session-label" class="eyebrow">1회차</span>
+          <span id="quiz-progress-text" class="progress-copy">1 / —</span>
+        </div>
+        <div class="live-score" aria-label="현재 정답률">
+          정답률 <strong id="live-accuracy">—</strong>
+        </div>
+      </div>
+      <div class="progress-track" aria-hidden="true">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+      <div class="paper-card quiz-card">
+        <p id="quiz-prompt" class="prompt">이 단어를 어떻게 읽을까요?</p>
+        <h2 id="quiz-word" lang="ja">日本語</h2>
+        <p id="day-label" class="day-label">7일차</p>
+
+        <div id="answer-grid" class="answer-grid" aria-label="읽기 선택지"></div>
+
+        <div id="feedback" class="feedback" aria-live="polite" hidden>
+          <div id="feedback-icon" class="feedback-icon" aria-hidden="true"></div>
+          <div>
+            <strong id="feedback-title"></strong>
+            <p id="feedback-reading"></p>
+            <p id="feedback-meaning"></p>
+            <p id="feedback-translation" class="feedback-translation" hidden></p>
+            <p id="retry-note" class="retry-note" hidden>이 단어는 잠시 뒤 다시 나옵니다.</p>
+          </div>
+        </div>
+
+        <button id="next-button" class="primary-button" type="button" hidden>다음 단어</button>
+      </div>
+      <p class="keyboard-hint">숫자키 1–4 또는 숫자패드로 선택 · Enter로 다음</p>
+    </section>
+
+    <section id="result-screen" class="screen" aria-labelledby="result-title">
+      <div class="paper-card result-card">
+        <div class="result-seal" aria-hidden="true">完</div>
+        <p class="session-kicker">회차 완료</p>
+        <h2 id="result-title"><span id="result-session-number">1</span>회차 학습을 마쳤어요</h2>
+        <p id="result-message" class="lead"></p>
+
+        <div class="result-score" aria-label="이번 회차 정답률">
+          <span>이번 정답률</span>
+          <strong id="result-accuracy">0%</strong>
+        </div>
+        <dl class="result-details">
+          <div><dt>정답</dt><dd id="result-correct">0</dd></div>
+          <div><dt>오답</dt><dd id="result-wrong">0</dd></div>
+          <div><dt>완료 단어</dt><dd id="result-mastered">0</dd></div>
+        </dl>
+
+        <button id="return-button" class="primary-button" type="button">기록 화면으로</button>
+      </div>
+    </section>
+
+    <p id="app-error" class="app-error" role="alert" hidden></p>
+  </main>
+
+  <script>
+globalThis.VOCAB_DATA = [{"id":"d7-1","day":7,"no":1,"word":"中","reading":"なか、 ちゅう","meaning":"안, 중 가운데"},{"id":"d7-2","day":7,"no":2,"word":"夏","reading":"なつ","meaning":"여름"},{"id":"d7-3","day":7,"no":3,"word":"夏休み","reading":"なつやすみ","meaning":"여름 방학"},{"id":"d7-4","day":7,"no":4,"word":"何","reading":"なん、 なに","meaning":"몇, 무엇"},{"id":"d7-5","day":7,"no":5,"word":"名前","reading":"なまえ","meaning":"이름"},{"id":"d7-6","day":7,"no":6,"word":"肉","reading":"にく","meaning":"고기"},{"id":"d7-7","day":7,"no":7,"word":"西","reading":"にし","meaning":"서쪽"},{"id":"d7-8","day":7,"no":8,"word":"荷物","reading":"にもつ","meaning":"짐"},{"id":"d7-9","day":7,"no":9,"word":"庭","reading":"にわ","meaning":"정원, 마당"},{"id":"d7-10","day":7,"no":10,"word":"飲み物","reading":"のみもの","meaning":"음료수"},{"id":"d7-11","day":7,"no":11,"word":"歯","reading":"は","meaning":"이, 치아"},{"id":"d7-12","day":7,"no":12,"word":"葉書","reading":"はがき","meaning":"엽서"},{"id":"d7-13","day":7,"no":13,"word":"箱","reading":"はこ","meaning":"상자"},{"id":"d7-14","day":7,"no":14,"word":"橋","reading":"はし","meaning":"다리"},{"id":"d7-15","day":7,"no":15,"word":"箸","reading":"はし","meaning":"젓가락"},{"id":"d7-16","day":7,"no":16,"word":"花","reading":"はな","meaning":"꽃"},{"id":"d7-17","day":7,"no":17,"word":"鼻","reading":"はな","meaning":"코"},{"id":"d7-18","day":7,"no":18,"word":"話","reading":"はなし","meaning":"이야기"},{"id":"d7-19","day":7,"no":19,"word":"春","reading":"はる","meaning":"봄"},{"id":"d7-20","day":7,"no":20,"word":"番号","reading":"ばんごう","meaning":"번호"},{"id":"d8-1","day":8,"no":1,"word":"東","reading":"ひがし","meaning":"동쪽"},{"id":"d8-2","day":8,"no":2,"word":"飛行機","reading":"ひこうき","meaning":"비행기"},{"id":"d8-3","day":8,"no":3,"word":"左","reading":"ひだり","meaning":"왼쪽"},{"id":"d8-4","day":8,"no":4,"word":"人","reading":"ひと","meaning":"사람"},{"id":"d8-5","day":8,"no":5,"word":"一月","reading":"ひとつき","meaning":"한달"},{"id":"d8-6","day":8,"no":6,"word":"病気","reading":"びょうき","meaning":"병"},{"id":"d8-7","day":8,"no":7,"word":"昼","reading":"ひる","meaning":"낮"},{"id":"d8-8","day":8,"no":8,"word":"昼ご飯","reading":"ひるごはん","meaning":"점심밥"},{"id":"d8-9","day":8,"no":9,"word":"封筒","reading":"ふうとう","meaning":"봉투"},{"id":"d8-10","day":8,"no":10,"word":"服","reading":"ふく","meaning":"옷"},{"id":"d8-11","day":8,"no":11,"word":"豚肉","reading":"ぶたにく","meaning":"돼지 고기"},{"id":"d8-12","day":8,"no":12,"word":"冬","reading":"ふゆ","meaning":"겨울"},{"id":"d8-13","day":8,"no":13,"word":"風呂","reading":"ふろ","meaning":"목욕"},{"id":"d8-14","day":8,"no":14,"word":"部屋","reading":"へや","meaning":"방"},{"id":"d8-15","day":8,"no":15,"word":"辺","reading":"へん","meaning":"근처 주변"},{"id":"d8-16","day":8,"no":16,"word":"勉強","reading":"べんきょう","meaning":"공부"},{"id":"d8-17","day":8,"no":17,"word":"帽子","reading":"ぼうし","meaning":"모자"},{"id":"d8-18","day":8,"no":18,"word":"他","reading":"ほか","meaning":"다른"},{"id":"d8-19","day":8,"no":19,"word":"本","reading":"ほん","meaning":"책"},{"id":"d8-20","day":8,"no":20,"word":"本棚","reading":"ほんだな","meaning":"책장"},{"id":"d9-1","day":9,"no":1,"word":"毎朝","reading":"まいあさ","meaning":"매일 아침"},{"id":"d9-2","day":9,"no":2,"word":"毎月","reading":"まいげつ","meaning":"매월"},{"id":"d9-3","day":9,"no":3,"word":"毎年","reading":"まいとし まいねん","meaning":"매년"},{"id":"d9-4","day":9,"no":4,"word":"毎晩","reading":"まいばん","meaning":"매일밤 밤마다"},{"id":"d9-5","day":9,"no":5,"word":"前","reading":"まえ","meaning":"앞"},{"id":"d9-6","day":9,"no":6,"word":"町","reading":"まち","meaning":"마을"},{"id":"d9-7","day":9,"no":7,"word":"窓","reading":"まど","meaning":"창문"},{"id":"d9-8","day":9,"no":8,"word":"万年筆","reading":"まんねんひつ","meaning":"만년필"},{"id":"d9-9","day":9,"no":9,"word":"右","reading":"みぎ","meaning":"오른쪽"},{"id":"d9-10","day":9,"no":10,"word":"水","reading":"みず","meaning":"물"},{"id":"d9-11","day":9,"no":11,"word":"店","reading":"みせ","meaning":"가게, 상점"},{"id":"d9-12","day":9,"no":12,"word":"道","reading":"みち","meaning":"길"},{"id":"d9-13","day":9,"no":13,"word":"皆さん","reading":"みなさん","meaning":"여러분"},{"id":"d9-14","day":9,"no":14,"word":"南","reading":"みなみ","meaning":"남쪽"},{"id":"d9-15","day":9,"no":15,"word":"耳","reading":"みみ","meaning":"귀"},{"id":"d9-16","day":9,"no":16,"word":"皆","reading":"みんな","meaning":"모두"},{"id":"d9-17","day":9,"no":17,"word":"目","reading":"め","meaning":"눈"},{"id":"d9-18","day":9,"no":18,"word":"眼鏡","reading":"めがね","meaning":"안경"},{"id":"d9-19","day":9,"no":19,"word":"物","reading":"もの","meaning":"물건"},{"id":"d9-20","day":9,"no":20,"word":"問題","reading":"もんだい","meaning":"문제"},{"id":"d10-1","day":10,"no":1,"word":"野菜","reading":"やさい","meaning":"야채 채소"},{"id":"d10-2","day":10,"no":2,"word":"休み","reading":"やすみ","meaning":"휴일 방학"},{"id":"d10-3","day":10,"no":3,"word":"山","reading":"やま","meaning":"산"},{"id":"d10-4","day":10,"no":4,"word":"夕方","reading":"ゆうがた","meaning":"저녁"},{"id":"d10-5","day":10,"no":5,"word":"郵便局","reading":"ゆうびんきょく","meaning":"우체국"},{"id":"d10-6","day":10,"no":6,"word":"ゆうべ","reading":"ゆうべ","meaning":"어젯밤"},{"id":"d10-7","day":10,"no":7,"word":"雪","reading":"ゆき","meaning":"눈"},{"id":"d10-8","day":10,"no":8,"word":"横","reading":"よこ","meaning":"옆"},{"id":"d10-9","day":10,"no":9,"word":"夜","reading":"よる","meaning":"밤"},{"id":"d10-10","day":10,"no":10,"word":"来月","reading":"らいげつ","meaning":"다음달"},{"id":"d10-11","day":10,"no":11,"word":"来週","reading":"らいしゅう","meaning":"다음주"},{"id":"d10-12","day":10,"no":12,"word":"来年","reading":"らいねん","meaning":"내년"},{"id":"d10-13","day":10,"no":13,"word":"留学生","reading":"りゅうがくせい","meaning":"유학생"},{"id":"d10-14","day":10,"no":14,"word":"両親","reading":"りょうしん","meaning":"부모 양친"},{"id":"d10-15","day":10,"no":15,"word":"料理","reading":"りょうり","meaning":"요리"},{"id":"d10-16","day":10,"no":16,"word":"旅行","reading":"りょこう","meaning":"여행"},{"id":"d10-17","day":10,"no":17,"word":"零（0）","reading":"れい","meaning":"숫자 0, 영"},{"id":"d10-18","day":10,"no":18,"word":"冷蔵庫","reading":"れいぞうこ","meaning":"냉장고"},{"id":"d10-19","day":10,"no":19,"word":"練習","reading":"れんしゅう","meaning":"연습"},{"id":"d10-20","day":10,"no":20,"word":"私","reading":"わたし","meaning":"나, 저"},{"id":"d11-1","day":11,"no":1,"word":"青い","reading":"あおい","meaning":"파랗다"},{"id":"d11-2","day":11,"no":2,"word":"赤い","reading":"あかい","meaning":"빨갛다"},{"id":"d11-3","day":11,"no":3,"word":"明るい","reading":"あかるい","meaning":"밝다"},{"id":"d11-4","day":11,"no":4,"word":"暖かい","reading":"あたたかい","meaning":"따뜻하다"},{"id":"d11-5","day":11,"no":5,"word":"新しい","reading":"あたらしい","meaning":"새롭다"},{"id":"d11-6","day":11,"no":6,"word":"暑い","reading":"あつい","meaning":"덥다"},{"id":"d11-7","day":11,"no":7,"word":"危ない","reading":"あぶない","meaning":"위험하다"},{"id":"d11-8","day":11,"no":8,"word":"甘い","reading":"あまい","meaning":"달다"},{"id":"d11-9","day":11,"no":9,"word":"忙しい","reading":"いそがしい","meaning":"바쁘다"},{"id":"d11-10","day":11,"no":10,"word":"痛い","reading":"いたい","meaning":"아프다"},{"id":"d11-11","day":11,"no":11,"word":"美味しい","reading":"おいしい","meaning":"맛있다"},{"id":"d11-12","day":11,"no":12,"word":"大きい","reading":"おおきい","meaning":"크다"},{"id":"d11-13","day":11,"no":13,"word":"遅い","reading":"おそい","meaning":"늦다"},{"id":"d11-14","day":11,"no":14,"word":"重い","reading":"おもい","meaning":"무겁다"},{"id":"d11-15","day":11,"no":15,"word":"面白い","reading":"おもしろい","meaning":"재미있다"},{"id":"d11-16","day":11,"no":16,"word":"軽い","reading":"かるい","meaning":"가볍다"},{"id":"d11-17","day":11,"no":17,"word":"可愛い","reading":"かわいい","meaning":"귀엽다"},{"id":"d11-18","day":11,"no":18,"word":"汚い","reading":"きたない","meaning":"더럽다"},{"id":"d11-19","day":11,"no":19,"word":"暗い","reading":"くらい","meaning":"어둡다"},{"id":"d11-20","day":11,"no":20,"word":"黒い","reading":"くろい","meaning":"검다, 까맣다"},{"id":"d12-1","day":12,"no":1,"word":"寒い","reading":"さむい","meaning":"춥다"},{"id":"d12-2","day":12,"no":2,"word":"白い","reading":"しろい","meaning":"하얗다"},{"id":"d12-3","day":12,"no":3,"word":"涼しい","reading":"すずしい","meaning":"선선하다, 시원하다"},{"id":"d12-4","day":12,"no":4,"word":"狭い","reading":"せまい","meaning":"좁다"},{"id":"d12-5","day":12,"no":5,"word":"高い","reading":"たかい","meaning":"높다, 비싸다, 키가 크다"},{"id":"d12-6","day":12,"no":6,"word":"楽しい","reading":"たのしい","meaning":"즐겁다"},{"id":"d12-7","day":12,"no":7,"word":"小さい","reading":"ちいさい","meaning":"작다"},{"id":"d12-8","day":12,"no":8,"word":"近い","reading":"ちかい","meaning":"가깝다"},{"id":"d12-9","day":12,"no":9,"word":"つまらない","reading":"つまらない","meaning":"재미없다, 시시하다"},{"id":"d12-10","day":12,"no":10,"word":"冷たい","reading":"つめたい","meaning":"차갑다"},{"id":"d12-11","day":12,"no":11,"word":"強い","reading":"つよい","meaning":"강하다"},{"id":"d12-12","day":12,"no":12,"word":"遠い","reading":"とおい","meaning":"멀다"},{"id":"d12-13","day":12,"no":13,"word":"長い","reading":"ながい","meaning":"길다"},{"id":"d12-14","day":12,"no":14,"word":"広い","reading":"ひろい","meaning":"넓다"},{"id":"d12-15","day":12,"no":15,"word":"太い","reading":"ふとい","meaning":"굵다"},{"id":"d12-16","day":12,"no":16,"word":"欲しい","reading":"ほしい","meaning":"원하다, 갖고 싶다"},{"id":"d12-17","day":12,"no":17,"word":"細い","reading":"ほそい","meaning":"가늘다, 좁다"},{"id":"d12-18","day":12,"no":18,"word":"まずい","reading":"まずい","meaning":"맛없다"},{"id":"d12-19","day":12,"no":19,"word":"丸い","reading":"まるい","meaning":"둥글다"},{"id":"d12-20","day":12,"no":20,"word":"短い","reading":"みじかい","meaning":"짧다"},{"id":"d13-1","day":13,"no":1,"word":"難しい","reading":"むずかしい","meaning":"어렵다"},{"id":"d13-2","day":13,"no":2,"word":"安い","reading":"やすい","meaning":"싸다"},{"id":"d13-3","day":13,"no":3,"word":"若い","reading":"わかい","meaning":"젊다"},{"id":"d13-4","day":13,"no":4,"word":"悪い","reading":"わるい","meaning":"나쁘다"},{"id":"d13-5","day":13,"no":5,"word":"嫌いだ","reading":"きらいだ","meaning":"싫어하다"},{"id":"d13-6","day":13,"no":6,"word":"綺麗だ","reading":"きれいだ","meaning":"예쁘다, 깨끗하다"},{"id":"d13-7","day":13,"no":7,"word":"静かだ","reading":"しずかだ","meaning":"조용하다"},{"id":"d13-8","day":13,"no":8,"word":"上手だ","reading":"じょうずだ","meaning":"잘하다, 능숙하다"},{"id":"d13-9","day":13,"no":9,"word":"丈夫だ","reading":"じょうぶだ","meaning":"튼튼하다, 건강하다"},{"id":"d13-10","day":13,"no":10,"word":"好きだ","reading":"すきだ","meaning":"좋아하다"},{"id":"d13-11","day":13,"no":11,"word":"大丈夫だ","reading":"だいじょうぶだ","meaning":"괜찮다, 문제없다"},{"id":"d13-12","day":13,"no":12,"word":"大好きだ","reading":"だいすきだ","meaning":"매우 좋아하다"},{"id":"d13-13","day":13,"no":13,"word":"大切だ","reading":"たいせつだ","meaning":"소중하다, 중요하다"},{"id":"d13-14","day":13,"no":14,"word":"大変だ","reading":"たいへんだ","meaning":"힘들다, 큰일이다"},{"id":"d13-15","day":13,"no":15,"word":"賑やかだ","reading":"にぎやかだ","meaning":"번화하다, 활기차다"},{"id":"d13-16","day":13,"no":16,"word":"暇だ","reading":"ひまだ","meaning":"한가하다"},{"id":"d13-17","day":13,"no":17,"word":"下手だ","reading":"へただ","meaning":"서툴다, 잘하지 못하다"},{"id":"d13-18","day":13,"no":18,"word":"便利だ","reading":"べんりだ","meaning":"편리하다"},{"id":"d13-19","day":13,"no":19,"word":"有名だ","reading":"ゆうめいだ","meaning":"유명하다"},{"id":"d13-20","day":13,"no":20,"word":"立派だ","reading":"りっぱだ","meaning":"훌륭하다"},{"id":"d14-1","day":14,"no":1,"word":"会う","reading":"あう","meaning":"만나다"},{"id":"d14-2","day":14,"no":2,"word":"開く／開く","reading":"あく／ひらく","meaning":"열리다／열다, 펼치다"},{"id":"d14-3","day":14,"no":3,"word":"開ける","reading":"あける","meaning":"열다"},{"id":"d14-4","day":14,"no":4,"word":"遊ぶ","reading":"あそぶ","meaning":"놀다"},{"id":"d14-5","day":14,"no":5,"word":"洗う","reading":"あらう","meaning":"씻다"},{"id":"d14-6","day":14,"no":6,"word":"有る","reading":"ある","meaning":"있다(무생물)"},{"id":"d14-7","day":14,"no":7,"word":"歩く","reading":"あるく","meaning":"걷다"},{"id":"d14-8","day":14,"no":8,"word":"言う","reading":"いう","meaning":"말하다"},{"id":"d14-9","day":14,"no":9,"word":"行く","reading":"いく","meaning":"가다"},{"id":"d14-10","day":14,"no":10,"word":"居る","reading":"いる","meaning":"있다(생물)"},{"id":"d14-11","day":14,"no":11,"word":"入れる","reading":"いれる","meaning":"넣다"},{"id":"d14-12","day":14,"no":12,"word":"歌う","reading":"うたう","meaning":"노래하다"},{"id":"d14-13","day":14,"no":13,"word":"生まれる","reading":"うまれる","meaning":"태어나다"},{"id":"d14-14","day":14,"no":14,"word":"売る","reading":"うる","meaning":"팔다"},{"id":"d14-15","day":14,"no":15,"word":"起きる","reading":"おきる","meaning":"일어나다"},{"id":"d14-16","day":14,"no":16,"word":"置く","reading":"おく","meaning":"놓다 두다"},{"id":"d14-17","day":14,"no":17,"word":"教える","reading":"おしえる","meaning":"가르치다, 알려 주다"},{"id":"d14-18","day":14,"no":18,"word":"覚える","reading":"おぼえる","meaning":"외우다, 기억하다"},{"id":"d14-19","day":14,"no":19,"word":"泳ぐ","reading":"およぐ","meaning":"헤엄치다, 수영하다"},{"id":"d14-20","day":14,"no":20,"word":"終わる","reading":"おわる","meaning":"끝나다"},{"id":"d15-1","day":15,"no":1,"word":"買う","reading":"かう","meaning":"사다"},{"id":"d15-2","day":15,"no":2,"word":"帰る","reading":"かえる","meaning":"돌아가다"},{"id":"d15-3","day":15,"no":3,"word":"書く","reading":"かく","meaning":"쓰다"},{"id":"d15-4","day":15,"no":4,"word":"かける","reading":"かける","meaning":"걸다(전화를 걸다)"},{"id":"d15-5","day":15,"no":5,"word":"貸す","reading":"かす","meaning":"빌려주다"},{"id":"d15-6","day":15,"no":6,"word":"かぶる","reading":"かぶる","meaning":"쓰다(모자 등을)"},{"id":"d15-7","day":15,"no":7,"word":"借りる","reading":"かりる","meaning":"빌리다"},{"id":"d15-8","day":15,"no":8,"word":"聞く","reading":"きく","meaning":"듣다"},{"id":"d15-9","day":15,"no":9,"word":"着る","reading":"きる","meaning":"입다"},{"id":"d15-10","day":15,"no":10,"word":"来る","reading":"くる","meaning":"오다"},{"id":"d15-11","day":15,"no":11,"word":"答える","reading":"こたえる","meaning":"대답하다"},{"id":"d15-12","day":15,"no":12,"word":"困る","reading":"こまる","meaning":"곤란하다"},{"id":"d15-13","day":15,"no":13,"word":"咲く","reading":"さく","meaning":"피다"},{"id":"d15-14","day":15,"no":14,"word":"死ぬ","reading":"しぬ","meaning":"죽다"},{"id":"d15-15","day":15,"no":15,"word":"閉める","reading":"しめる","meaning":"닫다"},{"id":"d15-16","day":15,"no":16,"word":"知る","reading":"しる","meaning":"알다"},{"id":"d15-17","day":15,"no":17,"word":"吸う","reading":"すう","meaning":"피우다"},{"id":"d15-18","day":15,"no":18,"word":"住む","reading":"すむ","meaning":"살다"},{"id":"d15-19","day":15,"no":19,"word":"する","reading":"する","meaning":"하다"},{"id":"d15-20","day":15,"no":20,"word":"座る","reading":"すわる","meaning":"앉다"},{"id":"d16-1","day":16,"no":1,"word":"立つ","reading":"たつ","meaning":"서다"},{"id":"d16-2","day":16,"no":2,"word":"頼む","reading":"たのむ","meaning":"부탁하다"},{"id":"d16-3","day":16,"no":3,"word":"食べる","reading":"たべる","meaning":"먹다"},{"id":"d16-4","day":16,"no":4,"word":"違う","reading":"ちがう","meaning":"다르다"},{"id":"d16-5","day":16,"no":5,"word":"使う","reading":"つかう","meaning":"사용하다"},{"id":"d16-6","day":16,"no":6,"word":"疲れる","reading":"つかれる","meaning":"피곤하다, 지치다"},{"id":"d16-7","day":16,"no":7,"word":"着く","reading":"つく","meaning":"도착하다"},{"id":"d16-8","day":16,"no":8,"word":"作る","reading":"つくる","meaning":"만들다"},{"id":"d16-9","day":16,"no":9,"word":"勤める","reading":"つとめる","meaning":"근무하다"},{"id":"d16-10","day":16,"no":10,"word":"出掛ける","reading":"でかける","meaning":"외출하다, 나가다"},{"id":"d16-11","day":16,"no":11,"word":"出来る","reading":"できる","meaning":"할 수 있다"},{"id":"d16-12","day":16,"no":12,"word":"出る","reading":"でる","meaning":"나오다"},{"id":"d16-13","day":16,"no":13,"word":"飛ぶ","reading":"とぶ","meaning":"날다"},{"id":"d16-14","day":16,"no":14,"word":"止まる","reading":"とまる","meaning":"멈추다, 서다"},{"id":"d16-15","day":16,"no":15,"word":"取る","reading":"とる","meaning":"잡다 취하다"},{"id":"d16-16","day":16,"no":16,"word":"撮る","reading":"とる","meaning":"사진을 찍다"},{"id":"d16-17","day":16,"no":17,"word":"習う","reading":"ならう","meaning":"배우다"},{"id":"d16-18","day":16,"no":18,"word":"並ぶ","reading":"ならぶ","meaning":"줄을 서다"},{"id":"d16-19","day":16,"no":19,"word":"並べる","reading":"ならべる","meaning":"늘어놓다, 줄 세우다"},{"id":"d16-20","day":16,"no":20,"word":"寝る","reading":"ねる","meaning":"자다"},{"id":"d17-1","day":17,"no":1,"word":"登る","reading":"のぼる","meaning":"오르다"},{"id":"d17-2","day":17,"no":2,"word":"飲む","reading":"のむ","meaning":"마시다"},{"id":"d17-3","day":17,"no":3,"word":"乗る","reading":"のる","meaning":"타다"},{"id":"d17-4","day":17,"no":4,"word":"入る","reading":"はいる","meaning":"들어가다"},{"id":"d17-5","day":17,"no":5,"word":"始まる","reading":"はじまる","meaning":"시작되다"},{"id":"d17-6","day":17,"no":6,"word":"走る","reading":"はしる","meaning":"달리다"},{"id":"d17-7","day":17,"no":7,"word":"働く","reading":"はたらく","meaning":"일하다"},{"id":"d17-8","day":17,"no":8,"word":"話す","reading":"はなす","meaning":"이야기하다, 말하다"},{"id":"d17-9","day":17,"no":9,"word":"晴れる","reading":"はれる","meaning":"날씨가 개다, 맑아지다"},{"id":"d17-10","day":17,"no":10,"word":"引く","reading":"ひく","meaning":"당기다, 끌다"},{"id":"d17-11","day":17,"no":11,"word":"弾く","reading":"ひく","meaning":"연주하다"},{"id":"d17-12","day":17,"no":12,"word":"吹く","reading":"ふく","meaning":"불다"},{"id":"d17-13","day":17,"no":13,"word":"降る","reading":"ふる","meaning":"내리다(비·눈이)"},{"id":"d17-14","day":17,"no":14,"word":"待つ","reading":"まつ","meaning":"기다리다"},{"id":"d17-15","day":17,"no":15,"word":"見せる","reading":"みせる","meaning":"보여 주다"},{"id":"d17-16","day":17,"no":16,"word":"見る","reading":"みる","meaning":"보다"},{"id":"d17-17","day":17,"no":17,"word":"呼ぶ","reading":"よぶ","meaning":"부르다"},{"id":"d17-18","day":17,"no":18,"word":"読む","reading":"よむ","meaning":"읽다"},{"id":"d17-19","day":17,"no":19,"word":"分かる","reading":"わかる","meaning":"알다"},{"id":"d17-20","day":17,"no":20,"word":"忘れる","reading":"わすれる","meaning":"잊다"},{"id":"d18-1","day":18,"no":1,"word":"あまり","reading":"あまり","meaning":"그다지 별로"},{"id":"d18-2","day":18,"no":2,"word":"いくつ","reading":"いくつ","meaning":"몇 개"},{"id":"d18-3","day":18,"no":3,"word":"いくら","reading":"いくら","meaning":"얼마"},{"id":"d18-4","day":18,"no":4,"word":"（もう）一度","reading":"もう いちど","meaning":"한 번 더"},{"id":"d18-5","day":18,"no":5,"word":"一番","reading":"いちばん","meaning":"가장 제일"},{"id":"d18-6","day":18,"no":6,"word":"いつ","reading":"いつ","meaning":"언제"},{"id":"d18-7","day":18,"no":7,"word":"一緒に","reading":"いっしょに","meaning":"함께"},{"id":"d18-8","day":18,"no":8,"word":"いつも","reading":"いつも","meaning":"늘 항상"},{"id":"d18-9","day":18,"no":9,"word":"今","reading":"いま","meaning":"지금"},{"id":"d18-10","day":18,"no":10,"word":"いろいろ","reading":"いろいろ","meaning":"여러 가지"},{"id":"d18-11","day":18,"no":11,"word":"すぐ","reading":"すぐ","meaning":"바로 즉시"},{"id":"d18-12","day":18,"no":12,"word":"少し","reading":"すこし","meaning":"조금"},{"id":"d18-13","day":18,"no":13,"word":"全部","reading":"ぜんぶ","meaning":"전부"},{"id":"d18-14","day":18,"no":14,"word":"それから","reading":"それから","meaning":"그리고 나서"},{"id":"d18-15","day":18,"no":15,"word":"たいてい","reading":"たいてい","meaning":"대개 대체로"},{"id":"d18-16","day":18,"no":16,"word":"大変","reading":"たいへん","meaning":"매우 대단히"},{"id":"d18-17","day":18,"no":17,"word":"たくさん","reading":"たくさん","meaning":"많이"},{"id":"d18-18","day":18,"no":18,"word":"だいぶ","reading":"だいぶ","meaning":"꽤 상당히"},{"id":"d18-19","day":18,"no":19,"word":"たぶん","reading":"たぶん","meaning":"아마"},{"id":"d18-20","day":18,"no":20,"word":"段々","reading":"だんだん","meaning":"점점"},{"id":"d19-1","day":19,"no":1,"word":"ちょっと","reading":"ちょっと","meaning":"잠시 잠깐"},{"id":"d19-2","day":19,"no":2,"word":"次","reading":"つぎ","meaning":"다음"},{"id":"d19-3","day":19,"no":3,"word":"でも","reading":"でも","meaning":"하지만"},{"id":"d19-4","day":19,"no":4,"word":"どう","reading":"どう","meaning":"어떻게"},{"id":"d19-5","day":19,"no":5,"word":"どうして","reading":"どうして","meaning":"왜 어째서"},{"id":"d19-6","day":19,"no":6,"word":"どうぞ","reading":"どうぞ","meaning":"부디 모쪼록"},{"id":"d19-7","day":19,"no":7,"word":"どうも","reading":"どうも","meaning":"매우 대단히"},{"id":"d19-8","day":19,"no":8,"word":"時々","reading":"ときどき","meaning":"가끔 때때로"},{"id":"d19-9","day":19,"no":9,"word":"とても","reading":"とても","meaning":"매우"},{"id":"d19-10","day":19,"no":10,"word":"初めて","reading":"はじめて","meaning":"처음으로"},{"id":"d19-11","day":19,"no":11,"word":"本当に","reading":"ほんとうに","meaning":"정말로"},{"id":"d19-12","day":19,"no":12,"word":"また","reading":"また","meaning":"또"},{"id":"d19-13","day":19,"no":13,"word":"まだ","reading":"まだ","meaning":"아직"},{"id":"d19-14","day":19,"no":14,"word":"まっすぐ","reading":"まっすぐ","meaning":"곧장 똑바로"},{"id":"d19-15","day":19,"no":15,"word":"もう","reading":"もう","meaning":"이제 이미"},{"id":"d19-16","day":19,"no":16,"word":"勿論","reading":"もちろん","meaning":"물론"},{"id":"d19-17","day":19,"no":17,"word":"もっと","reading":"もっと","meaning":"더욱 한층"},{"id":"d19-18","day":19,"no":18,"word":"ゆっくり","reading":"ゆっくり","meaning":"천천히"},{"id":"d19-19","day":19,"no":19,"word":"よく","reading":"よく","meaning":"잘 자주"},{"id":"d19-20","day":19,"no":20,"word":"なぜ","reading":"なぜ","meaning":"왜"},{"id":"d20-1","day":20,"no":1,"word":"挨拶","reading":"あいさつ","meaning":"인사"},{"id":"d20-2","day":20,"no":2,"word":"間","reading":"あいだ","meaning":"사이 동안"},{"id":"d20-3","day":20,"no":3,"word":"青","reading":"あお","meaning":"파랑 청색"},{"id":"d20-4","day":20,"no":4,"word":"赤","reading":"あか","meaning":"빨강 적색"},{"id":"d20-5","day":20,"no":5,"word":"赤ん坊","reading":"あかんぼう","meaning":"갓난아기"},{"id":"d20-6","day":20,"no":6,"word":"味","reading":"あじ","meaning":"맛"},{"id":"d20-7","day":20,"no":7,"word":"暑さ","reading":"あつさ","meaning":"더위"},{"id":"d20-8","day":20,"no":8,"word":"案内","reading":"あんない","meaning":"안내"},{"id":"d20-9","day":20,"no":9,"word":"以下","reading":"いか","meaning":"이하"},{"id":"d20-10","day":20,"no":10,"word":"以外","reading":"いがい","meaning":"이외"},{"id":"d20-11","day":20,"no":11,"word":"医学","reading":"いがく","meaning":"의학"},{"id":"d20-12","day":20,"no":12,"word":"意見","reading":"いけん","meaning":"의견"},{"id":"d20-13","day":20,"no":13,"word":"石","reading":"いし","meaning":"돌"},{"id":"d20-14","day":20,"no":14,"word":"以上","reading":"いじょう","meaning":"이상"},{"id":"d20-15","day":20,"no":15,"word":"以前","reading":"いぜん","meaning":"이전"},{"id":"d20-16","day":20,"no":16,"word":"以内","reading":"いない","meaning":"이내"},{"id":"d20-17","day":20,"no":17,"word":"田舎","reading":"いなか","meaning":"시골"},{"id":"d20-18","day":20,"no":18,"word":"受付","reading":"うけつけ","meaning":"접수, 접수처"},{"id":"d20-19","day":20,"no":19,"word":"嘘","reading":"うそ","meaning":"거짓말"},{"id":"d20-20","day":20,"no":20,"word":"売り場","reading":"うりば","meaning":"매장"},{"id":"d21-1","day":21,"no":1,"word":"運転","reading":"うんてん","meaning":"운전"},{"id":"d21-2","day":21,"no":2,"word":"運動","reading":"うんどう","meaning":"운동"},{"id":"d21-3","day":21,"no":3,"word":"枝","reading":"えだ","meaning":"가지"},{"id":"d21-4","day":21,"no":4,"word":"お祝い","reading":"おいわい","meaning":"축하"},{"id":"d21-5","day":21,"no":5,"word":"おかげ","reading":"おかげ","meaning":"덕분 덕택"},{"id":"d21-6","day":21,"no":6,"word":"お金持ち","reading":"おかねもち","meaning":"부자"},{"id":"d21-7","day":21,"no":7,"word":"屋上","reading":"おくじょう","meaning":"옥상"},{"id":"d21-8","day":21,"no":8,"word":"贈り物","reading":"おくりもの","meaning":"선물"},{"id":"d21-9","day":21,"no":9,"word":"押入れ","reading":"おしいれ","meaning":"벽장"},{"id":"d21-10","day":21,"no":10,"word":"お宅","reading":"おたく","meaning":"댁"},{"id":"d21-11","day":21,"no":11,"word":"夫","reading":"おっと","meaning":"남편"},{"id":"d21-12","day":21,"no":12,"word":"おつり","reading":"おつり","meaning":"거스름 돈"},{"id":"d21-13","day":21,"no":13,"word":"音","reading":"おと","meaning":"소리"},{"id":"d21-14","day":21,"no":14,"word":"踊り","reading":"おどり","meaning":"춤, 무용"},{"id":"d21-15","day":21,"no":15,"word":"お願い","reading":"おねがい","meaning":"부탁, 소원"},{"id":"d21-16","day":21,"no":16,"word":"お祭り","reading":"おまつり","meaning":"축제"},{"id":"d21-17","day":21,"no":17,"word":"お見舞い","reading":"おみまい","meaning":"병문안"},{"id":"d21-18","day":21,"no":18,"word":"お土産","reading":"おみやげ","meaning":"기념품 토산품"},{"id":"d21-19","day":21,"no":19,"word":"おもちゃ","reading":"おもちゃ","meaning":"장난감"},{"id":"d21-20","day":21,"no":20,"word":"お礼","reading":"おれい","meaning":"답례 사례"},{"id":"d22-1","day":22,"no":1,"word":"会議","reading":"かいぎ","meaning":"회의"},{"id":"d22-2","day":22,"no":2,"word":"会場","reading":"かいじょう","meaning":"행사장, 회의장"},{"id":"d22-3","day":22,"no":3,"word":"会話","reading":"かいわ","meaning":"회화 대화"},{"id":"d22-4","day":22,"no":4,"word":"科学","reading":"かがく","meaning":"과학"},{"id":"d22-5","day":22,"no":5,"word":"鏡","reading":"かがみ","meaning":"거울"},{"id":"d22-6","day":22,"no":6,"word":"火事","reading":"かじ","meaning":"화재"},{"id":"d22-7","day":22,"no":7,"word":"形","reading":"かたち","meaning":"모양 형태"},{"id":"d22-8","day":22,"no":8,"word":"家庭","reading":"かてい","meaning":"가정"},{"id":"d22-9","day":22,"no":9,"word":"家内","reading":"かない","meaning":"아내"},{"id":"d22-10","day":22,"no":10,"word":"壁","reading":"かべ","meaning":"벽"},{"id":"d22-11","day":22,"no":11,"word":"関係","reading":"かんけい","meaning":"관계"},{"id":"d22-12","day":22,"no":12,"word":"看護師","reading":"かんごし","meaning":"간호사"},{"id":"d22-13","day":22,"no":13,"word":"機械","reading":"きかい","meaning":"기계"},{"id":"d22-14","day":22,"no":14,"word":"機会","reading":"きかい","meaning":"기회"},{"id":"d22-15","day":22,"no":15,"word":"技術","reading":"ぎじゅつ","meaning":"기술"},{"id":"d22-16","day":22,"no":16,"word":"季節","reading":"きせつ","meaning":"계절"},{"id":"d22-17","day":22,"no":17,"word":"規則","reading":"きそく","meaning":"규칙"},{"id":"d22-18","day":22,"no":18,"word":"気分","reading":"きぶん","meaning":"기분"},{"id":"d22-19","day":22,"no":19,"word":"急行","reading":"きゅうこう","meaning":"급행"},{"id":"d22-20","day":22,"no":20,"word":"教育","reading":"きょういく","meaning":"교육"},{"id":"d23-1","day":23,"no":1,"word":"競争","reading":"きょうそう","meaning":"경쟁"},{"id":"d23-2","day":23,"no":2,"word":"興味","reading":"きょうみ","meaning":"흥미"},{"id":"d23-3","day":23,"no":3,"word":"空気","reading":"くうき","meaning":"공기"},{"id":"d23-4","day":23,"no":4,"word":"空港","reading":"くうこう","meaning":"공항"},{"id":"d23-5","day":23,"no":5,"word":"計画","reading":"けいかく","meaning":"계획"},{"id":"d23-6","day":23,"no":6,"word":"経験","reading":"けいけん","meaning":"경험"},{"id":"d23-7","day":23,"no":7,"word":"経済","reading":"けいざい","meaning":"경제"},{"id":"d23-8","day":23,"no":8,"word":"警察","reading":"けいさつ","meaning":"경찰"},{"id":"d23-9","day":23,"no":9,"word":"景色","reading":"けしき","meaning":"경치"},{"id":"d23-10","day":23,"no":10,"word":"原因","reading":"げんいん","meaning":"원인"},{"id":"d23-11","day":23,"no":11,"word":"喧嘩","reading":"けんか","meaning":"싸움"},{"id":"d23-12","day":23,"no":12,"word":"研究室","reading":"けんきゅうしつ","meaning":"연구실"},{"id":"d23-13","day":23,"no":13,"word":"見物","reading":"けんぶつ","meaning":"구경"},{"id":"d23-14","day":23,"no":14,"word":"郊外","reading":"こうがい","meaning":"교외"},{"id":"d23-15","day":23,"no":15,"word":"講義","reading":"こうぎ","meaning":"강의"},{"id":"d23-16","day":23,"no":16,"word":"高校","reading":"こうこう","meaning":"고등학교"},{"id":"d23-17","day":23,"no":17,"word":"工場","reading":"こうじょう","meaning":"공장"},{"id":"d23-18","day":23,"no":18,"word":"交通","reading":"こうつう","meaning":"교통"},{"id":"d23-19","day":23,"no":19,"word":"講堂","reading":"こうどう","meaning":"강당"},{"id":"d23-20","day":23,"no":20,"word":"国際","reading":"こくさい","meaning":"국제"},{"id":"d24-1","day":24,"no":1,"word":"最近","reading":"さいきん","meaning":"최근 요즘"},{"id":"d24-2","day":24,"no":2,"word":"最後","reading":"さいご","meaning":"최후 마지막"},{"id":"d24-3","day":24,"no":3,"word":"最初","reading":"さいしょ","meaning":"최초 처음"},{"id":"d24-4","day":24,"no":4,"word":"財布","reading":"さいふ","meaning":"지갑"},{"id":"d24-5","day":24,"no":5,"word":"試合","reading":"しあい","meaning":"경기 시합"},{"id":"d24-6","day":24,"no":6,"word":"試験","reading":"しけん","meaning":"시험"},{"id":"d24-7","day":24,"no":7,"word":"事故","reading":"じこ","meaning":"사고"},{"id":"d24-8","day":24,"no":8,"word":"地震","reading":"じしん","meaning":"지진"},{"id":"d24-9","day":24,"no":9,"word":"時代","reading":"じだい","meaning":"시대"},{"id":"d24-10","day":24,"no":10,"word":"失敗","reading":"しっぱい","meaning":"실패"},{"id":"d24-11","day":24,"no":11,"word":"品物","reading":"しなもの","meaning":"물건 상품"},{"id":"d24-12","day":24,"no":12,"word":"市民","reading":"しみん","meaning":"시민"},{"id":"d24-13","day":24,"no":13,"word":"社会","reading":"しゃかい","meaning":"사회"},{"id":"d24-14","day":24,"no":14,"word":"社長","reading":"しゃちょ","meaning":"사장"},{"id":"d24-15","day":24,"no":15,"word":"習慣","reading":"しゅうかん","meaning":"습관"},{"id":"d24-16","day":24,"no":16,"word":"住所","reading":"じゅうしょ","meaning":"주소"},{"id":"d24-17","day":24,"no":17,"word":"出席","reading":"しゅっせき","meaning":"출석"},{"id":"d24-18","day":24,"no":18,"word":"出発","reading":"しゅっぱつ","meaning":"출발"},{"id":"d24-19","day":24,"no":19,"word":"趣味","reading":"しゅみ","meaning":"취미"},{"id":"d24-20","day":24,"no":20,"word":"準備","reading":"じゅんび","meaning":"준비"}];
+
+  </script>
+  <script>
+globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading":"きちょう","meaning":"귀중하다, 소중하다","source":"어휘 A","sentence":"この資料は歴史を知るうえで、とても___なものです。","sentenceFurigana":"この<ruby>資料<rt>しりょう</rt></ruby>は<ruby>歴史<rt>れきし</rt></ruby>を<ruby>知る<rt>しる</rt></ruby>うえで、とても___なものです。","sentenceTranslation":"이 자료는 역사를 이해하는 데 매우 귀중한 자료입니다."},{"id":"n2-002","level":"N2","word":"怪しい","reading":"あやしい","meaning":"수상하다, 의심스럽다","source":"어휘 A","sentence":"夜中に___人が家の周りを歩いていた。","sentenceFurigana":"<ruby>夜中<rt>よなか</rt></ruby>に___<ruby>人<rt>ひと</rt></ruby>が<ruby>家<rt>いえ</rt></ruby>の<ruby>周り<rt>まわり</rt></ruby>を<ruby>歩い<rt>あるい</rt></ruby>ていた。","sentenceTranslation":"한밤중에 수상한 사람이 집 주변을 걷고 있었습니다."},{"id":"n2-003","level":"N2","word":"容姿","reading":"ようし","meaning":"용모, 외모","source":"어휘 A","sentence":"彼は___だけでなく性格も魅力的だ。","sentenceFurigana":"<ruby>彼<rt>かれ</rt></ruby>は___だけでなく<ruby>性格<rt>せいかく</rt></ruby>も<ruby>魅力<rt>みりょく</rt></ruby><ruby>的<rt>てき</rt></ruby>だ。","sentenceTranslation":"그는 외모뿐 아니라 성격도 매력적입니다."},{"id":"n2-004","level":"N2","word":"伴う","reading":"ともなう","meaning":"동반하다, 수반하다","source":"어휘 A","sentence":"海外勤務には生活環境の変化が___。","sentenceFurigana":"<ruby>海外<rt>かいがい</rt></ruby><ruby>勤務<rt>きんむ</rt></ruby>には<ruby>生活<rt>せいかつ</rt></ruby><ruby>環境<rt>かんきょう</rt></ruby>の<ruby>変化<rt>へんか</rt></ruby>が___。","sentenceTranslation":"해외 근무에는 생활 환경의 변화가 수반됩니다."},{"id":"n2-005","level":"N2","word":"願望","reading":"がんぼう","meaning":"소망, 염원","source":"어휘 A","sentence":"いつか自分の店を持ちたいという___がある。","sentenceFurigana":"いつか<ruby>自分<rt>じぶん</rt></ruby>の<ruby>店<rt>みせ</rt></ruby>を<ruby>持ち<rt>もち</rt></ruby>たいという___がある。","sentenceTranslation":"언젠가 내 가게를 갖고 싶다는 소망이 있습니다."},{"id":"n2-006","level":"N2","word":"招く","reading":"まねく","meaning":"초대하다, 불러들이다","source":"어휘 A","sentence":"不注意な発言は大きな誤解を___ことがある。","sentenceFurigana":"<ruby>不注意<rt>ふちゅうい</rt></ruby>な<ruby>発言<rt>はつげん</rt></ruby>は<ruby>大きな<rt>おおきな</rt></ruby><ruby>誤解<rt>ごかい</rt></ruby>を___ことがある。","sentenceTranslation":"부주의한 발언은 큰 오해를 불러올 수 있습니다."},{"id":"n2-007","level":"N2","word":"保証","reading":"ほしょう","meaning":"보증","source":"어휘 A","sentence":"この製品には三年間の___が付いている。","sentenceFurigana":"この<ruby>製品<rt>せいひん</rt></ruby>には<ruby>三<rt>さん</rt></ruby><ruby>年間<rt>ねんかん</rt></ruby>の___が<ruby>付い<rt>つい</rt></ruby>ている。","sentenceTranslation":"이 제품에는 3년 보증이 붙어 있습니다."},{"id":"n2-008","level":"N2","word":"催し","reading":"もよおし","meaning":"행사, 이벤트","source":"어휘 A","sentence":"公園では子ども向けの___が開かれている。","sentenceFurigana":"<ruby>公園<rt>こうえん</rt></ruby>では<ruby>子ども<rt>こども</rt></ruby><ruby>向け<rt>むけ</rt></ruby>の___が<ruby>開か<rt>ひらか</rt></ruby>れている。","sentenceTranslation":"공원에서는 어린이를 위한 행사가 열리고 있습니다."},{"id":"n2-009","level":"N2","word":"硬貨","reading":"こうか","meaning":"동전, 경화","source":"어휘 A","sentence":"自動販売機に百円___を入れた。","sentenceFurigana":"<ruby>自動<rt>じどう</rt></ruby><ruby>販売<rt>はんばい</rt></ruby><ruby>機<rt>き</rt></ruby>に<ruby>百<rt>ひゃく</rt></ruby><ruby>円<rt>えん</rt></ruby>___を<ruby>入れ<rt>いれ</rt></ruby>た。","sentenceTranslation":"자판기에 100엔 동전을 넣었습니다."},{"id":"n2-010","level":"N2","word":"製造","reading":"せいぞう","meaning":"제조","source":"어휘 A","sentence":"この工場では自動車部品を___している。","sentenceFurigana":"この<ruby>工場<rt>こうじょう</rt></ruby>では<ruby>自動車<rt>じどうしゃ</rt></ruby><ruby>部品<rt>ぶひん</rt></ruby>を___している。","sentenceTranslation":"이 공장에서는 자동차 부품을 제조하고 있습니다."},{"id":"n2-011","level":"N2","word":"結婚観","reading":"けっこんかん","meaning":"결혼관","source":"어휘 A","sentence":"世代によって___は大きく異なる。","sentenceFurigana":"<ruby>世代<rt>せだい</rt></ruby>によって___は<ruby>大きく<rt>おおきく</rt></ruby><ruby>異なる<rt>ことなる</rt></ruby>。","sentenceTranslation":"세대에 따라 결혼관은 크게 다릅니다."},{"id":"n2-012","level":"N2","word":"高水準","reading":"こうすいじゅん","meaning":"높은 수준","source":"어휘 A","sentence":"この病院は医療技術を___に保っている。","sentenceFurigana":"この<ruby>病院<rt>びょういん</rt></ruby>は<ruby>医療<rt>いりょう</rt></ruby><ruby>技術<rt>ぎじゅつ</rt></ruby>を___に<ruby>保っ<rt>たもっ</rt></ruby>ている。","sentenceTranslation":"이 병원은 의료 기술을 높은 수준으로 유지하고 있습니다."},{"id":"n2-013","level":"N2","word":"日本式","reading":"にほんしき","meaning":"일본식","source":"어휘 A","sentence":"旅館では___の部屋に泊まった。","sentenceFurigana":"<ruby>旅館<rt>りょかん</rt></ruby>では___の<ruby>部屋<rt>へや</rt></ruby>に<ruby>泊まっ<rt>とまっ</rt></ruby>た。","sentenceTranslation":"료칸에서는 일본식 방에 묵었습니다."},{"id":"n2-014","level":"N2","word":"未使用","reading":"みしよう","meaning":"미사용, 사용하지 않음","source":"어휘 A","sentence":"箱を開けていない___の商品です。","sentenceFurigana":"<ruby>箱<rt>はこ</rt></ruby>を<ruby>開け<rt>あけ</rt></ruby>ていない___の<ruby>商品<rt>しょうひん</rt></ruby>です。","sentenceTranslation":"상자를 열지 않은 미사용 상품입니다."},{"id":"n2-015","level":"N2","word":"勉強漬け","reading":"べんきょうづけ","meaning":"공부에 파묻힘","source":"어휘 A","sentence":"試験前の一週間は毎日___だった。","sentenceFurigana":"<ruby>試験<rt>しけん</rt></ruby><ruby>前<rt>まえ</rt></ruby>の<ruby>一<rt>いち</rt></ruby><ruby>週間<rt>しゅうかん</rt></ruby>は<ruby>毎日<rt>まいにち</rt></ruby>___だった。","sentenceTranslation":"시험 전 일주일은 매일 공부에 파묻혀 지냈습니다."},{"id":"n2-016","level":"N2","word":"提供","reading":"ていきょう","meaning":"제공","source":"어휘 A","sentence":"ホテルでは宿泊客に無料の朝食を___している。","sentenceFurigana":"ホテルでは<ruby>宿泊<rt>しゅくはく</rt></ruby><ruby>客<rt>きゃく</rt></ruby>に<ruby>無料<rt>むりょう</rt></ruby>の<ruby>朝食<rt>ちょうしょく</rt></ruby>を___している。","sentenceTranslation":"호텔에서는 숙박객에게 무료 아침 식사를 제공합니다."},{"id":"n2-017","level":"N2","word":"邪魔","reading":"じゃま","meaning":"방해, 방해하다","source":"어휘 A","sentence":"通路に荷物を置くと人の___になる。","sentenceFurigana":"<ruby>通路<rt>つうろ</rt></ruby>に<ruby>荷物<rt>にもつ</rt></ruby>を<ruby>置く<rt>おく</rt></ruby>と<ruby>人<rt>ひと</rt></ruby>の___になる。","sentenceTranslation":"통로에 짐을 놓으면 사람들에게 방해가 됩니다."},{"id":"n2-018","level":"N2","word":"活発","reading":"かっぱつ","meaning":"활발함","source":"어휘 A","sentence":"会議では___な意見交換が行われた。","sentenceFurigana":"<ruby>会議<rt>かいぎ</rt></ruby>では___な<ruby>意見<rt>いけん</rt></ruby><ruby>交換<rt>こうかん</rt></ruby>が<ruby>行わ<rt>おこなわ</rt></ruby>れた。","sentenceTranslation":"회의에서는 활발한 의견 교환이 이루어졌습니다."},{"id":"n2-019","level":"N2","word":"割り込む","reading":"わりこむ","meaning":"끼어들다, 새치기하다","source":"어휘 A","sentence":"列に___のはマナー違反です。","sentenceFurigana":"<ruby>列<rt>れつ</rt></ruby>に___のはマナー<ruby>違反<rt>いはん</rt></ruby>です。","sentenceTranslation":"줄에 끼어드는 것은 예의에 어긋납니다."},{"id":"n2-020","level":"N2","word":"愉快","reading":"ゆかい","meaning":"유쾌함","source":"어휘 A","sentence":"彼の話はいつも___で、みんなを笑わせる。","sentenceFurigana":"<ruby>彼<rt>かれ</rt></ruby>の<ruby>話<rt>はなし</rt></ruby>はいつも___で、みんなを<ruby>笑わせる<rt>わらわせる</rt></ruby>。","sentenceTranslation":"그의 이야기는 언제나 유쾌해서 모두를 웃게 합니다."},{"id":"n2-021","level":"N2","word":"やむを得ない","reading":"やむをえない","meaning":"어쩔 수 없다","source":"어휘 A","sentence":"電車が止まったので、遅刻は___。","sentenceFurigana":"<ruby>電車<rt>でんしゃ</rt></ruby>が<ruby>止まっ<rt>とまっ</rt></ruby>たので、<ruby>遅刻<rt>ちこく</rt></ruby>は___。","sentenceTranslation":"전철이 멈췄기 때문에 지각은 어쩔 수 없습니다."},{"id":"n2-022","level":"N2","word":"息抜き","reading":"いきぬき","meaning":"휴식, 기분 전환","source":"어휘 A","sentence":"長時間勉強した後、散歩で___をした。","sentenceFurigana":"<ruby>長時間<rt>ちょうじかん</rt></ruby><ruby>勉強<rt>べんきょう</rt></ruby>した<ruby>後<rt>あと</rt></ruby>、<ruby>散歩<rt>さんぽ</rt></ruby>で___をした。","sentenceTranslation":"오랜 시간 공부한 뒤 산책하며 기분 전환을 했습니다."},{"id":"n2-023","level":"N2","word":"常に","reading":"つねに","meaning":"항상, 늘","source":"어휘 A","sentence":"安全のため、周囲を___確認してください。","sentenceFurigana":"<ruby>安全<rt>あんぜん</rt></ruby>のため、<ruby>周囲<rt>しゅうい</rt></ruby>を___<ruby>確認<rt>かくにん</rt></ruby>してください。","sentenceTranslation":"안전을 위해 주변을 항상 확인해 주세요."},{"id":"n2-024","level":"N2","word":"延長","reading":"えんちょう","meaning":"연장","source":"어휘 A","sentence":"雨のため試合は一時間___された。","sentenceFurigana":"<ruby>雨<rt>あめ</rt></ruby>のため<ruby>試合<rt>しあい</rt></ruby>は<ruby>一<rt>いち</rt></ruby><ruby>時間<rt>じかん</rt></ruby>___された。","sentenceTranslation":"비 때문에 경기가 한 시간 연장되었습니다."},{"id":"n2-025","level":"N2","word":"錆びる","reading":"さびる","meaning":"녹슬다","source":"어휘 A","sentence":"鉄は水にぬれたままだと___。","sentenceFurigana":"<ruby>鉄<rt>てつ</rt></ruby>は<ruby>水<rt>みず</rt></ruby>にぬれたままだと___。","sentenceTranslation":"철은 물에 젖은 채로 두면 녹이 습니다."},{"id":"n2-026","level":"N2","word":"目上","reading":"めうえ","meaning":"손윗사람, 윗사람","source":"어휘 A","sentence":"___の人には丁寧な言葉を使う。","sentenceFurigana":"___の<ruby>人<rt>ひと</rt></ruby>には<ruby>丁寧<rt>ていねい</rt></ruby>な<ruby>言葉<rt>ことば</rt></ruby>を<ruby>使う<rt>つかう</rt></ruby>。","sentenceTranslation":"윗사람에게는 정중한 말을 사용합니다."},{"id":"n2-027","level":"N2","word":"大げさ","reading":"おおげさ","meaning":"과장됨, 과장스러움","source":"어휘 A","sentence":"少しの傷なのに、彼は___に騒いだ。","sentenceFurigana":"<ruby>少し<rt>すこし</rt></ruby>の<ruby>傷<rt>きず</rt></ruby>なのに、<ruby>彼<rt>かれ</rt></ruby>は___に<ruby>騒い<rt>さわい</rt></ruby>だ。","sentenceTranslation":"작은 상처인데도 그는 과장되게 소란을 피웠습니다."},{"id":"n2-028","level":"N2","word":"反省","reading":"はんせい","meaning":"반성","source":"어휘 A","sentence":"失敗の原因を考え、深く___した。","sentenceFurigana":"<ruby>失敗<rt>しっぱい</rt></ruby>の<ruby>原因<rt>げんいん</rt></ruby>を<ruby>考え<rt>かんがえ</rt></ruby>、<ruby>深く<rt>ふかく</rt></ruby>___した。","sentenceTranslation":"실패 원인을 생각하고 깊이 반성했습니다."},{"id":"n2-029","level":"N2","word":"危険","reading":"きけん","meaning":"위험","source":"어휘 A","sentence":"この道は夜になると___なので通らない方がいい。","sentenceFurigana":"この<ruby>道<rt>みち</rt></ruby>は<ruby>夜<rt>よる</rt></ruby>になると___なので<ruby>通ら<rt>とおら</rt></ruby>ない<ruby>方<rt>ほう</rt></ruby>がいい。","sentenceTranslation":"이 길은 밤이 되면 위험하므로 지나가지 않는 편이 좋습니다."},{"id":"n2-030","level":"N2","word":"強引","reading":"ごういん","meaning":"억지스러움, 강제적임","source":"어휘 A","sentence":"彼は反対意見を聞かず、___に計画を進めた。","sentenceFurigana":"<ruby>彼<rt>かれ</rt></ruby>は<ruby>反対<rt>はんたい</rt></ruby><ruby>意見<rt>いけん</rt></ruby>を<ruby>聞か<rt>きか</rt></ruby>ず、___に<ruby>計画<rt>けいかく</rt></ruby>を<ruby>進め<rt>すすめ</rt></ruby>た。","sentenceTranslation":"그는 반대 의견을 듣지 않고 강제로 계획을 진행했습니다."},{"id":"n2-031","level":"N2","word":"好調","reading":"こうちょう","meaning":"호조, 상태가 좋음","source":"어휘 B","sentence":"新商品の売り上げは発売以来___だ。","sentenceFurigana":"<ruby>新<rt>しん</rt></ruby><ruby>商品<rt>しょうひん</rt></ruby>の<ruby>売り上げ<rt>うりあげ</rt></ruby>は<ruby>発売<rt>はつばい</rt></ruby><ruby>以来<rt>いらい</rt></ruby>___だ。","sentenceTranslation":"신상품 판매는 출시 이후 호조입니다."},{"id":"n2-032","level":"N2","word":"要求","reading":"ようきゅう","meaning":"요구, 필요 조건","source":"어휘 B","sentence":"客からの___にできるだけ早く対応する。","sentenceFurigana":"<ruby>客<rt>きゃく</rt></ruby>からの___にできるだけ<ruby>早く<rt>はやく</rt></ruby><ruby>対応<rt>たいおう</rt></ruby>する。","sentenceTranslation":"고객의 요구에 가능한 한 빨리 대응합니다."},{"id":"n2-033","level":"N2","word":"祝う","reading":"いわう","meaning":"축하하다","source":"어휘 B","sentence":"家族みんなで祖父の誕生日を___。","sentenceFurigana":"<ruby>家族<rt>かぞく</rt></ruby>みんなで<ruby>祖父<rt>そふ</rt></ruby>の<ruby>誕生<rt>たんじょう</rt></ruby><ruby>日<rt>び</rt></ruby>を___。","sentenceTranslation":"가족 모두가 할아버지의 생일을 축하합니다."},{"id":"n2-034","level":"N2","word":"調節","reading":"ちょうせつ","meaning":"조절","source":"어휘 B","sentence":"エアコンで部屋の温度を___する。","sentenceFurigana":"エアコンで<ruby>部屋<rt>へや</rt></ruby>の<ruby>温度<rt>おんど</rt></ruby>を___する。","sentenceTranslation":"에어컨으로 방의 온도를 조절합니다."},{"id":"n2-035","level":"N2","word":"至急","reading":"しきゅう","meaning":"급히, 매우 급함","source":"어휘 B","sentence":"この書類を___、部長に届けてください。","sentenceFurigana":"この<ruby>書類<rt>しょるい</rt></ruby>を___、<ruby>部長<rt>ぶちょう</rt></ruby>に<ruby>届け<rt>とどけ</rt></ruby>てください。","sentenceTranslation":"이 서류를 급히 부장에게 전달해 주세요."},{"id":"n2-036","level":"N2","word":"象徴","reading":"しょうちょう","meaning":"상징","source":"어휘 B","sentence":"桜は日本の春を___する花として知られている。","sentenceFurigana":"<ruby>桜<rt>さくら</rt></ruby>は<ruby>日本<rt>にほん</rt></ruby>の<ruby>春<rt>はる</rt></ruby>を___する<ruby>花<rt>はな</rt></ruby>として<ruby>知ら<rt>しら</rt></ruby>れている。","sentenceTranslation":"벚꽃은 일본의 봄을 상징하는 꽃으로 알려져 있습니다."},{"id":"n2-037","level":"N2","word":"激しい","reading":"はげしい","meaning":"격렬하다, 심하다","source":"어휘 B","sentence":"昨夜は___雨が降り続いた。","sentenceFurigana":"<ruby>昨夜<rt>さくや</rt></ruby>は___<ruby>雨<rt>あめ</rt></ruby>が<ruby>降り続い<rt>ふりつづい</rt></ruby>た。","sentenceTranslation":"어젯밤에는 거센 비가 계속 내렸습니다."},{"id":"n2-038","level":"N2","word":"登録","reading":"とうろく","meaning":"등록","source":"어휘 B","sentence":"サービスを利用するには会員___が必要だ。","sentenceFurigana":"サービスを<ruby>利用<rt>りよう</rt></ruby>するには<ruby>会員<rt>かいいん</rt></ruby>___が<ruby>必要<rt>ひつよう</rt></ruby>だ。","sentenceTranslation":"서비스를 이용하려면 회원 등록이 필요합니다."},{"id":"n2-039","level":"N2","word":"誘う","reading":"さそう","meaning":"권유하다, 유혹하다","source":"어휘 B","sentence":"週末、友達を映画に___つもりだ。","sentenceFurigana":"<ruby>週末<rt>しゅうまつ</rt></ruby>、<ruby>友達<rt>ともだち</rt></ruby>を<ruby>映画<rt>えいが</rt></ruby>に___つもりだ。","sentenceTranslation":"주말에 친구를 영화에 초대할 생각입니다."},{"id":"n2-040","level":"N2","word":"変更","reading":"へんこう","meaning":"변경","source":"어휘 B","sentence":"会議の時間が午後三時に___された。","sentenceFurigana":"<ruby>会議<rt>かいぎ</rt></ruby>の<ruby>時間<rt>じかん</rt></ruby>が<ruby>午後<rt>ごご</rt></ruby><ruby>三<rt>さん</rt></ruby><ruby>時<rt>じ</rt></ruby>に___された。","sentenceTranslation":"회의 시간이 오후 3시로 변경되었습니다."},{"id":"n2-041","level":"N2","word":"医学界","reading":"いがくかい","meaning":"의학계","source":"어휘 B","sentence":"その研究成果は___で大きな注目を集めた。","sentenceFurigana":"その<ruby>研究<rt>けんきゅう</rt></ruby><ruby>成果<rt>せいか</rt></ruby>は___で<ruby>大きな<rt>おおきな</rt></ruby><ruby>注目<rt>ちゅうもく</rt></ruby>を<ruby>集め<rt>あつめ</rt></ruby>た。","sentenceTranslation":"그 연구 성과는 의학계에서 큰 주목을 받았습니다."},{"id":"n2-042","level":"N2","word":"準優勝","reading":"じゅんゆうしょう","meaning":"준우승","source":"어휘 B","sentence":"決勝で惜しくも敗れ、___となった。","sentenceFurigana":"<ruby>決勝<rt>けっしょう</rt></ruby>で<ruby>惜しくも<rt>おしくも</rt></ruby><ruby>敗れ<rt>やぶれ</rt></ruby>、___となった。","sentenceTranslation":"결승에서 아쉽게 패해 준우승을 차지했습니다."},{"id":"n2-043","level":"N2","word":"現段階","reading":"げんだんかい","meaning":"현 단계","source":"어휘 B","sentence":"___では計画の詳細はまだ決まっていない。","sentenceFurigana":"___では<ruby>計画<rt>けいかく</rt></ruby>の<ruby>詳細<rt>しょうさい</rt></ruby>はまだ<ruby>決まっ<rt>きまっ</rt></ruby>ていない。","sentenceTranslation":"현 단계에서는 계획의 세부 사항이 아직 정해지지 않았습니다."},{"id":"n2-044","level":"N2","word":"非公式","reading":"ひこうしき","meaning":"비공식","source":"어휘 B","sentence":"両社は___に意見交換を行った。","sentenceFurigana":"<ruby>両社<rt>りょうしゃ</rt></ruby>は___に<ruby>意見<rt>いけん</rt></ruby><ruby>交換<rt>こうかん</rt></ruby>を<ruby>行っ<rt>おこなっ</rt></ruby>た。","sentenceTranslation":"두 회사는 비공식적으로 의견을 교환했습니다."},{"id":"n2-045","level":"N2","word":"総売上","reading":"そううりあげ","meaning":"총매출","source":"어휘 B","sentence":"今年の___は昨年を上回った。","sentenceFurigana":"<ruby>今年<rt>ことし</rt></ruby>の___は<ruby>昨年<rt>さくねん</rt></ruby>を<ruby>上回っ<rt>うわまわっ</rt></ruby>た。","sentenceTranslation":"올해 총매출은 작년을 웃돌았습니다."},{"id":"n2-046","level":"N2","word":"分析","reading":"ぶんせき","meaning":"분석","source":"어휘 B","sentence":"集めたデータを詳しく___する。","sentenceFurigana":"<ruby>集め<rt>あつめ</rt></ruby>たデータを<ruby>詳しく<rt>くわしく</rt></ruby>___する。","sentenceTranslation":"수집한 데이터를 자세히 분석합니다."},{"id":"n2-047","level":"N2","word":"活気","reading":"かっき","meaning":"활기","source":"어휘 B","sentence":"朝の市場は人が多く、___にあふれている。","sentenceFurigana":"<ruby>朝<rt>あさ</rt></ruby>の<ruby>市場<rt>しじょう</rt></ruby>は<ruby>人<rt>ひと</rt></ruby>が<ruby>多く<rt>おおく</rt></ruby>、___にあふれている。","sentenceTranslation":"아침 시장은 사람이 많고 활기가 넘칩니다."},{"id":"n2-048","level":"N2","word":"詰まる","reading":"つまる","meaning":"막히다, 가득 차다","source":"어휘 B","sentence":"排水口にごみが___と水が流れない。","sentenceFurigana":"<ruby>排水<rt>はいすい</rt></ruby><ruby>口<rt>ぐち</rt></ruby>にごみが___と<ruby>水<rt>みず</rt></ruby>が<ruby>流れ<rt>ながれ</rt></ruby>ない。","sentenceTranslation":"배수구에 쓰레기가 막히면 물이 흐르지 않습니다."},{"id":"n2-049","level":"N2","word":"反映","reading":"はんえい","meaning":"반영","source":"어휘 B","sentence":"利用者の意見を新しい制度に___させる。","sentenceFurigana":"<ruby>利用<rt>りよう</rt></ruby><ruby>者<rt>しゃ</rt></ruby>の<ruby>意見<rt>いけん</rt></ruby>を<ruby>新しい<rt>あたらしい</rt></ruby><ruby>制度<rt>せいど</rt></ruby>に___させる。","sentenceTranslation":"이용자의 의견을 새로운 제도에 반영합니다."},{"id":"n2-050","level":"N2","word":"強み","reading":"つよみ","meaning":"강점","source":"어휘 B","sentence":"語学力が彼女の最大の___だ。","sentenceFurigana":"<ruby>語学<rt>ごがく</rt></ruby><ruby>力<rt>りょく</rt></ruby>が<ruby>彼女<rt>かのじょ</rt></ruby>の<ruby>最大<rt>さいだい</rt></ruby>の___だ。","sentenceTranslation":"어학 능력이 그녀의 가장 큰 강점입니다."},{"id":"n2-051","level":"N2","word":"長続き","reading":"ながつづき","meaning":"오래 지속됨","source":"어휘 B","sentence":"無理なダイエットはなかなか___しない。","sentenceFurigana":"<ruby>無理<rt>むり</rt></ruby>なダイエットはなかなか___しない。","sentenceTranslation":"무리한 다이어트는 좀처럼 오래가지 않습니다."},{"id":"n2-052","level":"N2","word":"慎重","reading":"しんちょう","meaning":"신중함","source":"어휘 B","sentence":"契約書の内容を___に確認した。","sentenceFurigana":"<ruby>契約<rt>けいやく</rt></ruby><ruby>書<rt>しょ</rt></ruby>の<ruby>内容<rt>ないよう</rt></ruby>を___に<ruby>確認<rt>かくにん</rt></ruby>した。","sentenceTranslation":"계약서 내용을 신중하게 확인했습니다."},{"id":"n2-053","level":"N2","word":"回復","reading":"かいふく","meaning":"회복","source":"어휘 B","sentence":"手術後、体力は順調に___している。","sentenceFurigana":"<ruby>手術<rt>しゅじゅつ</rt></ruby><ruby>後<rt>ご</rt></ruby>、<ruby>体力<rt>たいりょく</rt></ruby>は<ruby>順調<rt>じゅんちょう</rt></ruby>に___している。","sentenceTranslation":"수술 후 체력이 순조롭게 회복되고 있습니다."},{"id":"n2-054","level":"N2","word":"方針","reading":"ほうしん","meaning":"방침","source":"어휘 B","sentence":"会社は環境を重視する___を発表した。","sentenceFurigana":"<ruby>会社<rt>かいしゃ</rt></ruby>は<ruby>環境<rt>かんきょう</rt></ruby>を<ruby>重視<rt>じゅうし</rt></ruby>する___を<ruby>発表<rt>はっぴょう</rt></ruby>した。","sentenceTranslation":"회사는 환경을 중시하는 방침을 발표했습니다."},{"id":"n2-055","level":"N2","word":"範囲","reading":"はんい","meaning":"범위","source":"어휘 B","sentence":"試験の___は教科書の三章までです。","sentenceFurigana":"<ruby>試験<rt>しけん</rt></ruby>の___は<ruby>教科書<rt>きょうかしょ</rt></ruby>の<ruby>三<rt>さん</rt></ruby><ruby>章<rt>しょう</rt></ruby>までです。","sentenceTranslation":"시험 범위는 교과서 3장까지입니다."},{"id":"n2-056","level":"N2","word":"利益","reading":"りえき","meaning":"이익","source":"어휘 B","sentence":"会社は今年、大きな___を上げた。","sentenceFurigana":"<ruby>会社<rt>かいしゃ</rt></ruby>は<ruby>今年<rt>ことし</rt></ruby>、<ruby>大きな<rt>おおきな</rt></ruby>___を<ruby>上げ<rt>あげ</rt></ruby>た。","sentenceTranslation":"회사는 올해 큰 이익을 올렸습니다."},{"id":"n2-057","level":"N2","word":"叶う","reading":"かなう","meaning":"이루어지다, 실현되다","source":"어휘 B","sentence":"長年の夢がついに___。","sentenceFurigana":"<ruby>長年の夢<rt>ながねんのゆめ</rt></ruby>がついに___。","sentenceTranslation":"오랜 꿈이 드디어 이루어집니다."},{"id":"n2-058","level":"N2","word":"合格","reading":"ごうかく","meaning":"합격","source":"어휘 B","sentence":"毎日勉強して、第一志望の大学に___した。","sentenceFurigana":"<ruby>毎日<rt>まいにち</rt></ruby><ruby>勉強<rt>べんきょう</rt></ruby>して、<ruby>第<rt>だい</rt></ruby><ruby>一<rt>いち</rt></ruby><ruby>志望<rt>しぼう</rt></ruby>の<ruby>大学<rt>だいがく</rt></ruby>に___した。","sentenceTranslation":"매일 공부해서 제1지망 대학에 합격했습니다."},{"id":"n2-059","level":"N2","word":"敗れる","reading":"やぶれる","meaning":"패하다, 지다","source":"어휘 B","sentence":"優勝候補のチームが初戦で___。","sentenceFurigana":"<ruby>優勝<rt>ゆうしょう</rt></ruby><ruby>候補<rt>こうほ</rt></ruby>のチームが<ruby>初戦<rt>しょせん</rt></ruby>で___。","sentenceTranslation":"우승 후보 팀이 첫 경기에서 패했습니다."},{"id":"n2-060","level":"N2","word":"存在","reading":"そんざい","meaning":"존재","source":"어휘 B","sentence":"この地域には珍しい動物が___している。","sentenceFurigana":"この<ruby>地域<rt>ちいき</rt></ruby>には<ruby>珍しい<rt>めずらしい</rt></ruby><ruby>動物<rt>どうぶつ</rt></ruby>が___している。","sentenceTranslation":"이 지역에는 희귀한 동물이 존재합니다."},{"id":"n2-061","level":"N2","word":"卒業論文","reading":"そつぎょうろんぶん","meaning":"졸업 논문","source":"문법","sentence":"大学四年生なので、今は___を書いている。","sentenceFurigana":"<ruby>大学<rt>だいがく</rt></ruby><ruby>四<rt>よん</rt></ruby><ruby>年生<rt>ねんせい</rt></ruby>なので、<ruby>今<rt>いま</rt></ruby>は___を<ruby>書い<rt>かい</rt></ruby>ている。","sentenceTranslation":"대학교 4학년이라 지금 졸업 논문을 쓰고 있습니다."},{"id":"n2-062","level":"N2","word":"提出","reading":"ていしゅつ","meaning":"제출","source":"문법","sentence":"レポートは金曜日までに___してください。","sentenceFurigana":"レポートは<ruby>金曜日<rt>きんようび</rt></ruby>までに___してください。","sentenceTranslation":"보고서는 금요일까지 제출해 주세요."},{"id":"n2-063","level":"N2","word":"膨大","reading":"ぼうだい","meaning":"방대함, 막대한 양","source":"문법","sentence":"調査には___な量の資料が必要だった。","sentenceFurigana":"<ruby>調査<rt>ちょうさ</rt></ruby>には___な<ruby>量<rt>りょう</rt></ruby>の<ruby>資料<rt>しりょう</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>だった。","sentenceTranslation":"조사에는 방대한 양의 자료가 필요했습니다."},{"id":"n2-064","level":"N2","word":"夜勤","reading":"やきん","meaning":"야간 근무","source":"문법","sentence":"看護師の姉は今夜___だ。","sentenceFurigana":"<ruby>看護<rt>かんご</rt></ruby><ruby>師<rt>し</rt></ruby>の<ruby>姉<rt>あね</rt></ruby>は<ruby>今夜<rt>こんや</rt></ruby>___だ。","sentenceTranslation":"간호사인 언니는 오늘 밤 야간 근무입니다."},{"id":"n2-065","level":"N2","word":"睡眠","reading":"すいみん","meaning":"수면, 잠","source":"문법","sentence":"健康のために十分な___を取ることが大切だ。","sentenceFurigana":"<ruby>健康<rt>けんこう</rt></ruby>のために<ruby>十分<rt>じゅうぶん</rt></ruby>な___を<ruby>取る<rt>とる</rt></ruby>ことが<ruby>大切<rt>たいせつ</rt></ruby>だ。","sentenceTranslation":"건강을 위해 충분한 수면을 취하는 것이 중요합니다."},{"id":"n2-066","level":"N2","word":"以来","reading":"いらい","meaning":"이래, 이후","source":"문법","sentence":"日本に来て___、毎日日記を書いている。","sentenceFurigana":"<ruby>日本<rt>にほん</rt></ruby>に<ruby>来<rt>き</rt></ruby>て___、<ruby>毎日<rt>まいにち</rt></ruby><ruby>日記<rt>にっき</rt></ruby>を<ruby>書い<rt>かい</rt></ruby>ている。","sentenceTranslation":"일본에 온 이후 매일 일기를 쓰고 있습니다."},{"id":"n2-067","level":"N2","word":"登山","reading":"とざん","meaning":"등산","source":"문법","sentence":"秋になったら友達と___に行く予定だ。","sentenceFurigana":"<ruby>秋<rt>あき</rt></ruby>になったら<ruby>友達<rt>ともだち</rt></ruby>と___に<ruby>行く<rt>いく</rt></ruby><ruby>予定<rt>よてい</rt></ruby>だ。","sentenceTranslation":"가을이 되면 친구와 등산하러 갈 예정입니다."},{"id":"n2-068","level":"N2","word":"魅力","reading":"みりょく","meaning":"매력","source":"문법","sentence":"この町の___は古い町並みにある。","sentenceFurigana":"この<ruby>町<rt>まち</rt></ruby>の___は<ruby>古い<rt>ふるい</rt></ruby><ruby>町並み<rt>まちなみ</rt></ruby>にある。","sentenceTranslation":"이 마을의 매력은 오래된 거리 풍경에 있습니다."},{"id":"n2-069","level":"N2","word":"彫刻","reading":"ちょうこく","meaning":"조각","source":"문법","sentence":"美術館の入口に大きな___が展示されている。","sentenceFurigana":"<ruby>美術館<rt>びじゅつかん</rt></ruby>の<ruby>入口<rt>いりぐち</rt></ruby>に<ruby>大きな<rt>おおきな</rt></ruby>___が<ruby>展示<rt>てんじ</rt></ruby>されている。","sentenceTranslation":"미술관 입구에 큰 조각이 전시되어 있습니다."},{"id":"n2-070","level":"N2","word":"生命力","reading":"せいめいりょく","meaning":"생명력","source":"문법","sentence":"この植物は乾燥に耐える強い___を持っている。","sentenceFurigana":"この<ruby>植物<rt>しょくぶつ</rt></ruby>は<ruby>乾燥<rt>かんそう</rt></ruby>に<ruby>耐える<rt>たえる</rt></ruby><ruby>強い<rt>つよい</rt></ruby>___を<ruby>持っ<rt>もっ</rt></ruby>ている。","sentenceTranslation":"이 식물은 건조함을 견디는 강한 생명력을 가지고 있습니다."},{"id":"n2-071","level":"N2","word":"公衆","reading":"こうしゅう","meaning":"공중, 일반 대중","source":"문법","sentence":"駅前に___電話が設置されている。","sentenceFurigana":"<ruby>駅前<rt>えきまえ</rt></ruby>に___<ruby>電話<rt>でんわ</rt></ruby>が<ruby>設置<rt>せっち</rt></ruby>されている。","sentenceTranslation":"역 앞에 공중전화가 설치되어 있습니다."},{"id":"n2-072","level":"N2","word":"施設","reading":"しせつ","meaning":"시설","source":"문법","sentence":"この___は午前九時から利用できます。","sentenceFurigana":"この___は<ruby>午前<rt>ごぜん</rt></ruby><ruby>九<rt>く</rt></ruby><ruby>時<rt>じ</rt></ruby>から<ruby>利用<rt>りよう</rt></ruby>できます。","sentenceTranslation":"이 시설은 오전 9시부터 이용할 수 있습니다."},{"id":"n2-073","level":"N2","word":"全面的","reading":"ぜんめんてき","meaning":"전면적","source":"문법","sentence":"市は新しい計画を___に支援する。","sentenceFurigana":"<ruby>市<rt>し</rt></ruby>は<ruby>新しい<rt>あたらしい</rt></ruby><ruby>計画<rt>けいかく</rt></ruby>を___に<ruby>支援<rt>しえん</rt></ruby>する。","sentenceTranslation":"시는 새로운 계획을 전면적으로 지원합니다."},{"id":"n2-074","level":"N2","word":"導入","reading":"どうにゅう","meaning":"도입","source":"문법","sentence":"学校は新しい学習システムを___した。","sentenceFurigana":"<ruby>学校<rt>がっこう</rt></ruby>は<ruby>新しい<rt>あたらしい</rt></ruby><ruby>学習<rt>がくしゅう</rt></ruby>システムを___した。","sentenceTranslation":"학교는 새로운 학습 시스템을 도입했습니다."},{"id":"n2-075","level":"N2","word":"評価","reading":"ひょうか","meaning":"평가","source":"문법","sentence":"上司から仕事ぶりを高く___された。","sentenceFurigana":"<ruby>上司<rt>じょうし</rt></ruby>から<ruby>仕事<rt>しごと</rt></ruby>ぶりを<ruby>高く<rt>たかく</rt></ruby>___された。","sentenceTranslation":"상사에게 업무 태도를 높이 평가받았습니다."},{"id":"n2-076","level":"N2","word":"価値","reading":"かち","meaning":"가치","source":"독해","sentence":"古くても歴史的な___のある建物だ。","sentenceFurigana":"<ruby>古く<rt>ふるく</rt></ruby>ても<ruby>歴史<rt>れきし</rt></ruby><ruby>的<rt>てき</rt></ruby>な___のある<ruby>建物<rt>たてもの</rt></ruby>だ。","sentenceTranslation":"오래되었지만 역사적 가치가 있는 건물입니다."},{"id":"n2-077","level":"N2","word":"節電","reading":"せつでん","meaning":"절전","source":"독해","sentence":"夏はエアコンの温度を上げて___に努める。","sentenceFurigana":"<ruby>夏<rt>なつ</rt></ruby>はエアコンの<ruby>温度<rt>おんど</rt></ruby>を<ruby>上げ<rt>あげ</rt></ruby>て___に<ruby>努める<rt>つとめる</rt></ruby>。","sentenceTranslation":"여름에는 에어컨 온도를 높여 절전에 힘씁니다."},{"id":"n2-078","level":"N2","word":"徹底","reading":"てってい","meaning":"철저히 함, 철저함","source":"독해","sentence":"工場では安全管理を___している。","sentenceFurigana":"<ruby>工場<rt>こうじょう</rt></ruby>では<ruby>安全<rt>あんぜん</rt></ruby><ruby>管理<rt>かんり</rt></ruby>を___している。","sentenceTranslation":"공장에서는 안전 관리를 철저히 하고 있습니다."},{"id":"n2-079","level":"N2","word":"主体的","reading":"しゅたいてき","meaning":"주체적","source":"독해","sentence":"生徒が___に学べる授業を目指している。","sentenceFurigana":"<ruby>生徒<rt>せいと</rt></ruby>が___に<ruby>学べる<rt>まなべる</rt></ruby><ruby>授業<rt>じゅぎょう</rt></ruby>を<ruby>目指し<rt>めざし</rt></ruby>ている。","sentenceTranslation":"학생이 주체적으로 배울 수 있는 수업을 지향합니다."},{"id":"n2-080","level":"N2","word":"探究","reading":"たんきゅう","meaning":"탐구","source":"독해","sentence":"研究者は未知の現象を___し続けている。","sentenceFurigana":"<ruby>研究<rt>けんきゅう</rt></ruby><ruby>者<rt>しゃ</rt></ruby>は<ruby>未知<rt>みち</rt></ruby>の<ruby>現象<rt>げんしょう</rt></ruby>を___し<ruby>続け<rt>つづけ</rt></ruby>ている。","sentenceTranslation":"연구자는 미지의 현상을 계속 탐구하고 있습니다."},{"id":"n2-081","level":"N2","word":"根本的","reading":"こんぽんてき","meaning":"근본적","source":"독해","sentence":"問題を解決するには___な見直しが必要だ。","sentenceFurigana":"<ruby>問題<rt>もんだい</rt></ruby>を<ruby>解決<rt>かいけつ</rt></ruby>するには___な<ruby>見直し<rt>みなおし</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>だ。","sentenceTranslation":"문제를 해결하려면 근본적인 재검토가 필요합니다."},{"id":"n2-082","level":"N2","word":"共通認識","reading":"きょうつうにんしき","meaning":"공통 인식","source":"독해","sentence":"チーム全員が目標について___を持つ必要がある。","sentenceFurigana":"チーム<ruby>全員<rt>ぜんいん</rt></ruby>が<ruby>目標<rt>もくひょう</rt></ruby>について___を<ruby>持つ<rt>もつ</rt></ruby><ruby>必要<rt>ひつよう</rt></ruby>がある。","sentenceTranslation":"팀원 모두가 목표에 대해 공통된 인식을 가져야 합니다."},{"id":"n2-083","level":"N2","word":"最低限","reading":"さいていげん","meaning":"최소한","source":"독해","sentence":"旅行には___の荷物だけを持っていく。","sentenceFurigana":"<ruby>旅行<rt>りょこう</rt></ruby>には___の<ruby>荷物<rt>にもつ</rt></ruby>だけを<ruby>持っ<rt>もっ</rt></ruby>ていく。","sentenceTranslation":"여행에는 최소한의 짐만 가져갑니다."},{"id":"n2-084","level":"N2","word":"多様化","reading":"たようか","meaning":"다양화","source":"독해","sentence":"消費者の好みが___している。","sentenceFurigana":"<ruby>消費<rt>しょうひ</rt></ruby><ruby>者<rt>しゃ</rt></ruby>の<ruby>好み<rt>このみ</rt></ruby>が___している。","sentenceTranslation":"소비자의 취향이 다양해지고 있습니다."},{"id":"n2-085","level":"N2","word":"発生","reading":"はっせい","meaning":"발생","source":"독해","sentence":"大雨の後、土砂崩れが___した。","sentenceFurigana":"<ruby>大雨<rt>おおあめ</rt></ruby>の<ruby>後<rt>あと</rt></ruby>、<ruby>土砂崩れ<rt>どしゃくずれ</rt></ruby>が___した。","sentenceTranslation":"폭우 후 산사태가 발생했습니다."},{"id":"n2-086","level":"N2","word":"短期間","reading":"たんきかん","meaning":"단기간","source":"독해","sentence":"この工事は___で完成した。","sentenceFurigana":"この<ruby>工事<rt>こうじ</rt></ruby>は___で<ruby>完成<rt>かんせい</rt></ruby>した。","sentenceTranslation":"이 공사는 단기간에 완성되었습니다."},{"id":"n2-087","level":"N2","word":"適切","reading":"てきせつ","meaning":"적절함","source":"독해","sentence":"状況に応じて___な判断をしてください。","sentenceFurigana":"<ruby>状況<rt>じょうきょう</rt></ruby>に<ruby>応じ<rt>おうじ</rt></ruby>て___な<ruby>判断<rt>はんだん</rt></ruby>をしてください。","sentenceTranslation":"상황에 맞게 적절한 판단을 해 주세요."},{"id":"n2-088","level":"N2","word":"多様性","reading":"たようせい","meaning":"다양성","source":"독해","sentence":"異なる考えを認め、___を尊重する。","sentenceFurigana":"<ruby>異なる<rt>ことなる</rt></ruby><ruby>考え<rt>かんがえ</rt></ruby>を<ruby>認め<rt>みとめ</rt></ruby>、___を<ruby>尊重<rt>そんちょう</rt></ruby>する。","sentenceTranslation":"서로 다른 생각을 인정하고 다양성을 존중합니다."},{"id":"n2-089","level":"N2","word":"鮮明","reading":"せんめい","meaning":"선명함","source":"독해","sentence":"新しいテレビは映像がとても___だ。","sentenceFurigana":"<ruby>新しい<rt>あたらしい</rt></ruby>テレビは<ruby>映像<rt>えいぞう</rt></ruby>がとても___だ。","sentenceTranslation":"새 텔레비전은 영상이 매우 선명합니다."},{"id":"n2-090","level":"N2","word":"存在意義","reading":"そんざいいぎ","meaning":"존재 의의","source":"독해","sentence":"地域におけるこの施設の___を考える。","sentenceFurigana":"<ruby>地域<rt>ちいき</rt></ruby>におけるこの<ruby>施設<rt>しせつ</rt></ruby>の___を<ruby>考える<rt>かんがえる</rt></ruby>。","sentenceTranslation":"지역에서 이 시설의 존재 의의를 생각합니다."},{"id":"n2-091","level":"N2","word":"海外出張","reading":"かいがいしゅっちょう","meaning":"해외 출장","source":"청해","sentence":"部長は来週、アメリカへ___に行く。","sentenceFurigana":"<ruby>部長<rt>ぶちょう</rt></ruby>は<ruby>来週<rt>らいしゅう</rt></ruby>、アメリカへ___に<ruby>行く<rt>いく</rt></ruby>。","sentenceTranslation":"부장은 다음 주 미국으로 해외 출장을 갑니다."},{"id":"n2-092","level":"N2","word":"名刺","reading":"めいし","meaning":"명함","source":"청해","sentence":"初対面の相手と___を交換した。","sentenceFurigana":"<ruby>初対面<rt>しょたいめん</rt></ruby>の<ruby>相手<rt>あいて</rt></ruby>と___を<ruby>交換<rt>こうかん</rt></ruby>した。","sentenceTranslation":"처음 만난 상대와 명함을 교환했습니다."},{"id":"n2-093","level":"N2","word":"調査","reading":"ちょうさ","meaning":"조사","source":"청해","sentence":"事故の原因を明らかにするため___を行う。","sentenceFurigana":"<ruby>事故<rt>じこ</rt></ruby>の<ruby>原因<rt>げんいん</rt></ruby>を<ruby>明らか<rt>あきらか</rt></ruby>にするため___を<ruby>行う<rt>おこなう</rt></ruby>。","sentenceTranslation":"사고 원인을 밝히기 위해 조사를 실시합니다."},{"id":"n2-094","level":"N2","word":"通信販売","reading":"つうしんはんばい","meaning":"통신 판매, 온라인·우편 판매","source":"청해","sentence":"この商品は店頭ではなく___で購入できる。","sentenceFurigana":"この<ruby>商品<rt>しょうひん</rt></ruby>は<ruby>店頭<rt>てんとう</rt></ruby>ではなく___で<ruby>購入<rt>こうにゅう</rt></ruby>できる。","sentenceTranslation":"이 상품은 매장이 아니라 통신 판매로 구매할 수 있습니다."},{"id":"n2-095","level":"N2","word":"充実","reading":"じゅうじつ","meaning":"충실함, 알참","source":"청해","sentence":"図書館の資料が___していて、研究に役立つ。","sentenceFurigana":"<ruby>図書館<rt>としょかん</rt></ruby>の<ruby>資料<rt>しりょう</rt></ruby>が___していて、<ruby>研究<rt>けんきゅう</rt></ruby>に<ruby>役立つ<rt>やくだつ</rt></ruby>。","sentenceTranslation":"도서관 자료가 충실해서 연구에 도움이 됩니다."},{"id":"n2-096","level":"N2","word":"雰囲気","reading":"ふんいき","meaning":"분위기","source":"청해","sentence":"この喫茶店は落ち着いた___がある。","sentenceFurigana":"この<ruby>喫茶店<rt>きっさてん</rt></ruby>は<ruby>落ち着い<rt>おちつい</rt></ruby>た___がある。","sentenceTranslation":"이 찻집에는 차분한 분위기가 있습니다."},{"id":"n2-097","level":"N2","word":"客観的","reading":"きゃっかんてき","meaning":"객관적","source":"청해","sentence":"感情ではなく、事実をもとに___に判断する。","sentenceFurigana":"<ruby>感情<rt>かんじょう</rt></ruby>ではなく、<ruby>事実<rt>じじつ</rt></ruby>をもとに___に<ruby>判断<rt>はんだん</rt></ruby>する。","sentenceTranslation":"감정이 아니라 사실을 바탕으로 객관적으로 판단합니다."},{"id":"n2-098","level":"N2","word":"不調","reading":"ふちょう","meaning":"부진, 상태가 좋지 않음","source":"청해","sentence":"パソコンの___で作業が進まない。","sentenceFurigana":"パソコンの___で<ruby>作業<rt>さぎょう</rt></ruby>が<ruby>進ま<rt>すすま</rt></ruby>ない。","sentenceTranslation":"컴퓨터 상태가 좋지 않아 작업이 진행되지 않습니다."},{"id":"n2-099","level":"N2","word":"負担","reading":"ふたん","meaning":"부담","source":"청해","sentence":"長時間の通勤は体への___が大きい。","sentenceFurigana":"<ruby>長時間<rt>ちょうじかん</rt></ruby>の<ruby>通勤<rt>つうきん</rt></ruby>は<ruby>体<rt>からだ</rt></ruby>への___が<ruby>大きい<rt>おおきい</rt></ruby>。","sentenceTranslation":"장시간 통근은 몸에 부담이 큽니다."},{"id":"n2-100","level":"N2","word":"視力","reading":"しりょく","meaning":"시력","source":"청해","sentence":"暗い場所で本を読むと___が低下することがある。","sentenceFurigana":"<ruby>暗い<rt>くらい</rt></ruby><ruby>場所<rt>ばしょ</rt></ruby>で<ruby>本<rt>ほん</rt></ruby>を<ruby>読む<rt>よむ</rt></ruby>と___が<ruby>低下<rt>ていか</rt></ruby>することがある。","sentenceTranslation":"어두운 곳에서 책을 읽으면 시력이 저하될 수 있습니다."}];
+
+  </script>
+  <script>
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  root.QuizEngine = api;
+}(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  "use strict";
+
+  function accuracy(correct, attempts) {
+    return attempts ? Math.round((correct / attempts) * 100) : null;
+  }
+
+  function normalizedReading(reading) {
+    return reading.replace(/[、,/]/g, " · ").replace(/\s+/g, " ").trim();
+  }
+
+  function shuffle(items, random = Math.random) {
+    const copy = [...items];
+    for (let i = copy.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
+  function buildChoices(data, correctItem, random = Math.random) {
+    const correctReading = normalizedReading(correctItem.reading);
+    const sameDay = shuffle(data.filter((item) => item.day === correctItem.day && item.id !== correctItem.id), random);
+    const others = shuffle(data.filter((item) => item.day !== correctItem.day), random);
+    const pool = [...sameDay, ...others];
+    const choices = [correctItem];
+    const usedReadings = new Set([correctReading]);
+
+    for (const candidate of pool) {
+      const candidateReading = normalizedReading(candidate.reading);
+      if (!usedReadings.has(candidateReading)) {
+        choices.push(candidate);
+        usedReadings.add(candidateReading);
+      }
+      if (choices.length === 4) break;
+    }
+    return shuffle(choices, random);
+  }
+
+  function buildChoicesByWord(data, correctItem, random = Math.random) {
+    const correctReading = normalizedReading(correctItem.reading);
+    const sameDay = shuffle(data.filter((item) => item.day === correctItem.day && item.id !== correctItem.id), random);
+    const others = shuffle(data.filter((item) => item.day !== correctItem.day), random);
+    const pool = [...sameDay, ...others];
+    const choices = [correctItem];
+    const usedWords = new Set([correctItem.word]);
+
+    for (const candidate of pool) {
+      const hasSameReading = normalizedReading(candidate.reading) === correctReading;
+      if (!hasSameReading && !usedWords.has(candidate.word)) {
+        choices.push(candidate);
+        usedWords.add(candidate.word);
+      }
+      if (choices.length === 4) break;
+    }
+    return shuffle(choices, random);
+  }
+
+  function selectSessionItems(data, progress, sessionSize, random = Math.random) {
+    const seen = new Set(progress.seenIds || []);
+    const scored = data.map((item) => ({
+      item,
+      score: (progress.mistakeCounts[item.id] || 0) * 100 + (seen.has(item.id) ? 0 : 25) + random() * 20,
+    }));
+    scored.sort((a, b) => b.score - a.score);
+    return shuffle(scored.slice(0, sessionSize).map(({ item }) => item), random);
+  }
+
+  function insertRetry(queue, itemId, delay) {
+    const insertionIndex = Math.min(delay, queue.length);
+    queue.splice(insertionIndex, 0, itemId);
+    return insertionIndex;
+  }
+
+  return {
+    accuracy,
+    normalizedReading,
+    shuffle,
+    buildChoices,
+    buildChoicesByWord,
+    selectSessionItems,
+    insertRetry,
+  };
+}));
+
+  </script>
+  <script>
+(function () {
+  "use strict";
+
+  const RETRY_DELAY = 3;
+  const STORAGE_KEY = "jlpt-vocab-quiz-progress-v1";
+  const engine = window.QuizEngine;
+
+  function normalizeData(items, prefix) {
+    return Array.isArray(items)
+      ? items.map((item, index) => ({
+        ...item,
+        id: item.id || `${prefix}-${String(index + 1).padStart(3, "0")}`,
+      }))
+      : [];
+  }
+
+  const datasets = {
+    n5n4: normalizeData(window.VOCAB_DATA, "basic"),
+    n2: normalizeData(window.N2_VOCAB_DATA, "n2"),
+  };
+  const difficultyLabels = { n5n4: "N5·N4", n2: "N2" };
+  const modeLabels = {
+    "kanji-to-reading": "한자→읽기",
+    "reading-to-kanji": "읽기→한자",
+    "sentence-to-kanji": "문장 빈칸→한자",
+  };
+
+  const screens = {
+    start: document.getElementById("start-screen"),
+    quiz: document.getElementById("quiz-screen"),
+    result: document.getElementById("result-screen"),
+  };
+
+  const elements = {
+    nextSessionNumber: document.getElementById("next-session-number"),
+    lastAccuracy: document.getElementById("last-accuracy"),
+    totalAccuracy: document.getElementById("total-accuracy"),
+    completedSessions: document.getElementById("completed-sessions"),
+    historyPanel: document.getElementById("history-panel"),
+    historyList: document.getElementById("history-list"),
+    difficultyBasic: document.getElementById("difficulty-basic"),
+    difficultyN2: document.getElementById("difficulty-n2"),
+    modeKanjiReading: document.getElementById("mode-kanji-reading"),
+    modeReadingKanji: document.getElementById("mode-reading-kanji"),
+    modeSentenceKanji: document.getElementById("mode-sentence-kanji"),
+    questionCountPanel: document.getElementById("question-count-panel"),
+    sentenceQuestionCount: document.getElementById("sentence-question-count"),
+    startButton: document.getElementById("start-button"),
+    quizSessionLabel: document.getElementById("quiz-session-label"),
+    quizProgressText: document.getElementById("quiz-progress-text"),
+    liveAccuracy: document.getElementById("live-accuracy"),
+    progressBar: document.getElementById("progress-bar"),
+    quizPrompt: document.getElementById("quiz-prompt"),
+    quizWord: document.getElementById("quiz-word"),
+    dayLabel: document.getElementById("day-label"),
+    answerGrid: document.getElementById("answer-grid"),
+    feedback: document.getElementById("feedback"),
+    feedbackIcon: document.getElementById("feedback-icon"),
+    feedbackTitle: document.getElementById("feedback-title"),
+    feedbackReading: document.getElementById("feedback-reading"),
+    feedbackMeaning: document.getElementById("feedback-meaning"),
+    feedbackTranslation: document.getElementById("feedback-translation"),
+    retryNote: document.getElementById("retry-note"),
+    nextButton: document.getElementById("next-button"),
+    resultSessionNumber: document.getElementById("result-session-number"),
+    resultMessage: document.getElementById("result-message"),
+    resultAccuracy: document.getElementById("result-accuracy"),
+    resultCorrect: document.getElementById("result-correct"),
+    resultWrong: document.getElementById("result-wrong"),
+    resultMastered: document.getElementById("result-mastered"),
+    returnButton: document.getElementById("return-button"),
+    appError: document.getElementById("app-error"),
+  };
+
+  let progress = loadProgress();
+  let session = null;
+
+  function defaultProgress() {
+    return {
+      completedSessions: 0,
+      totalCorrect: 0,
+      totalAttempts: 0,
+      lastAccuracy: null,
+      history: [],
+      mistakeCounts: {},
+      seenIds: [],
+    };
+  }
+
+  function loadProgress() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (!saved || typeof saved !== "object") return defaultProgress();
+      return { ...defaultProgress(), ...saved };
+    } catch (_error) {
+      return defaultProgress();
+    }
+  }
+
+  function saveProgress() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    } catch (_error) {
+      // The quiz remains usable if storage is unavailable.
+    }
+  }
+
+  function formatAccuracy(value) {
+    return value === null ? "—" : `${value}%`;
+  }
+
+  function showScreen(name) {
+    Object.entries(screens).forEach(([key, screen]) => {
+      screen.classList.toggle("is-active", key === name);
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function renderStartScreen() {
+    const nextSession = progress.completedSessions + 1;
+    const cumulative = engine.accuracy(progress.totalCorrect, progress.totalAttempts);
+    elements.nextSessionNumber.textContent = nextSession;
+    elements.lastAccuracy.textContent = formatAccuracy(progress.lastAccuracy);
+    elements.totalAccuracy.textContent = formatAccuracy(cumulative);
+    elements.completedSessions.textContent = `${progress.completedSessions}회`;
+
+    const recent = progress.history.slice(-5).reverse();
+    elements.historyPanel.hidden = recent.length === 0;
+    elements.historyList.replaceChildren();
+    recent.forEach((entry) => {
+      const row = document.createElement("li");
+      const label = document.createElement("strong");
+      const score = document.createElement("span");
+      const date = document.createElement("span");
+      const historyMode = modeLabels[entry.mode] || modeLabels["kanji-to-reading"];
+      const historyDifficulty = difficultyLabels[entry.difficulty] || difficultyLabels.n5n4;
+      label.textContent = `${entry.session}회차 · ${historyDifficulty} · ${historyMode}`;
+      score.textContent = `정답률 ${entry.accuracy}%`;
+      date.className = "history-date";
+      date.textContent = entry.date;
+      row.append(label, score, date);
+      elements.historyList.append(row);
+    });
+  }
+
+  function selectSessionItems(mode, difficulty, sessionSize) {
+    const quizData = datasets[difficulty];
+    const scopedMistakes = {};
+    quizData.forEach((item) => {
+      const legacyCount = difficulty === "n5n4" && mode === "kanji-to-reading"
+        ? (progress.mistakeCounts[item.id] || 0)
+        : 0;
+      scopedMistakes[item.id] = progress.mistakeCounts[`${difficulty}:${mode}:${item.id}`]
+        ?? progress.mistakeCounts[`${mode}:${item.id}`]
+        ?? legacyCount;
+    });
+    return engine.selectSessionItems(
+      quizData,
+      { mistakeCounts: scopedMistakes, seenIds: progress.seenIds },
+      sessionSize,
+    );
+  }
+
+  function startSession() {
+    const mode = elements.modeSentenceKanji.checked
+      ? "sentence-to-kanji"
+      : elements.modeReadingKanji.checked
+        ? "reading-to-kanji"
+        : "kanji-to-reading";
+    const difficulty = mode === "sentence-to-kanji"
+      ? "n2"
+      : elements.difficultyN2.checked
+        ? "n2"
+        : "n5n4";
+    const requestedSize = mode === "sentence-to-kanji"
+      ? Math.min(100, Math.max(10, Math.round(Number(elements.sentenceQuestionCount.value) || 20)))
+      : datasets[difficulty].length;
+    const items = selectSessionItems(mode, difficulty, requestedSize);
+    session = {
+      number: progress.completedSessions + 1,
+      difficulty,
+      mode,
+      total: items.length,
+      baseIds: new Set(items.map((item) => item.id)),
+      queue: items.map((item) => item.id),
+      masteredIds: new Set(),
+      correct: 0,
+      wrong: 0,
+      attempts: 0,
+      current: null,
+      currentMisses: 0,
+      answered: false,
+    };
+
+    const modeLabel = modeLabels[mode];
+    elements.quizSessionLabel.textContent = `${session.number}회차 · ${difficultyLabels[difficulty]} · ${modeLabel}`;
+    showScreen("quiz");
+    showNextQuestion();
+  }
+
+  function findItem(id) {
+    return datasets[session.difficulty].find((item) => item.id === id);
+  }
+
+  function normalizedReading(reading) {
+    return engine.normalizedReading(reading);
+  }
+
+  function buildChoices(correctItem) {
+    const quizData = datasets[session.difficulty];
+    return session.mode === "reading-to-kanji" || session.mode === "sentence-to-kanji"
+      ? engine.buildChoicesByWord(quizData, correctItem)
+      : engine.buildChoices(quizData, correctItem);
+  }
+
+  function showNextQuestion() {
+    if (session.queue.length === 0) {
+      completeSession();
+      return;
+    }
+
+    session.current = findItem(session.queue.shift());
+    session.currentMisses = 0;
+    session.answered = false;
+    const item = session.current;
+    const choices = buildChoices(item);
+    const isReadingToKanji = session.mode === "reading-to-kanji";
+    const isSentenceToKanji = session.mode === "sentence-to-kanji";
+
+    elements.quizPrompt.textContent = isSentenceToKanji
+      ? "문장의 빈칸에 알맞은 한자 단어는 무엇일까요?"
+      : isReadingToKanji
+        ? "이 읽기에 알맞은 단어는 무엇일까요?"
+        : "이 단어를 어떻게 읽을까요?";
+    elements.quizWord.textContent = isSentenceToKanji
+      ? item.sentence.replace("___", "＿＿＿")
+      : isReadingToKanji
+        ? normalizedReading(item.reading)
+        : item.word;
+    elements.quizWord.setAttribute("aria-label", elements.quizWord.textContent);
+    elements.quizWord.classList.toggle("is-reading", isReadingToKanji);
+    elements.quizWord.classList.toggle("is-sentence", isSentenceToKanji);
+    elements.dayLabel.textContent = isSentenceToKanji
+      ? `N2 · 문장 빈칸 · ${item.source}`
+      : session.difficulty === "n2"
+        ? `N2 · ${item.source}`
+      : `${item.day}일차`;
+    elements.answerGrid.replaceChildren();
+    choices.forEach((choice, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "answer-button";
+      button.dataset.itemId = choice.id;
+      const answerText = isReadingToKanji || isSentenceToKanji
+        ? choice.word
+        : normalizedReading(choice.reading);
+      button.setAttribute("aria-label", `${index + 1}번, ${answerText}`);
+      const number = document.createElement("span");
+      number.className = "answer-number";
+      number.textContent = index + 1;
+      const reading = document.createElement("span");
+      reading.lang = "ja";
+      reading.textContent = answerText;
+      button.append(number, reading);
+      button.addEventListener("click", () => answerQuestion(choice.id));
+      elements.answerGrid.append(button);
+    });
+
+    elements.feedback.hidden = true;
+    elements.feedback.className = "feedback";
+    elements.feedbackTranslation.hidden = true;
+    elements.feedbackTranslation.textContent = "";
+    elements.retryNote.hidden = true;
+    elements.nextButton.hidden = true;
+    updateSessionHeader();
+    elements.answerGrid.querySelector("button")?.focus();
+  }
+
+  function answerQuestion(selectedId) {
+    if (session.answered) return;
+    session.attempts += 1;
+    const isCorrect = selectedId === session.current.id;
+    const isSentenceToKanji = session.mode === "sentence-to-kanji";
+    const buttons = [...elements.answerGrid.querySelectorAll("button")];
+    const selectedButton = buttons.find((button) => button.dataset.itemId === selectedId);
+    const key = `${session.difficulty}:${session.mode}:${session.current.id}`;
+
+    if (isSentenceToKanji && !isCorrect && session.currentMisses === 0) {
+      session.currentMisses = 1;
+      session.wrong += 1;
+      progress.mistakeCounts[key] = (progress.mistakeCounts[key] || 0) + 1;
+      selectedButton.disabled = true;
+      selectedButton.classList.add("is-wrong");
+
+      elements.quizWord.innerHTML = session.current.sentenceFurigana.replace(
+        "___",
+        '<span class="sentence-blank" aria-hidden="true">＿＿＿</span>',
+      );
+      elements.feedback.hidden = false;
+      elements.feedback.className = "feedback";
+      elements.feedback.classList.add("is-wrong");
+      elements.feedbackIcon.innerHTML = "<span>!</span>";
+      elements.feedbackTitle.textContent = "한 번 더 생각해 보세요";
+      elements.feedbackReading.textContent = "힌트  문장에 후리가나를 표시했어요.";
+      elements.feedbackMeaning.textContent = "후리가나를 참고해서 다시 선택하세요.";
+      elements.feedbackTranslation.hidden = true;
+      elements.retryNote.hidden = true;
+      elements.nextButton.hidden = true;
+      updateSessionHeader();
+      buttons.find((button) => !button.disabled)?.focus();
+      return;
+    }
+
+    session.answered = true;
+    if (isSentenceToKanji && !isCorrect) session.currentMisses += 1;
+    buttons.forEach((button) => {
+      button.disabled = true;
+      if (button.dataset.itemId === session.current.id) button.classList.add("is-correct");
+      if (!isCorrect && button.dataset.itemId === selectedId) button.classList.add("is-wrong");
+    });
+
+    elements.feedback.hidden = false;
+    elements.feedback.className = "feedback";
+    elements.feedback.classList.add(isCorrect ? "is-correct" : "is-wrong");
+    elements.feedbackIcon.innerHTML = `<span>${isCorrect ? "✓" : "!"}</span>`;
+    elements.feedbackTitle.textContent = isCorrect
+      ? "정답이에요"
+      : isSentenceToKanji
+        ? "두 번 틀렸어요. 정답과 해석을 확인하세요"
+        : "아쉬워요, 정답을 확인하세요";
+    elements.feedbackReading.textContent = session.mode === "sentence-to-kanji"
+      ? `정답  ${session.current.word}（${normalizedReading(session.current.reading)}）`
+      : session.mode === "reading-to-kanji"
+        ? `정답  ${session.current.word}`
+        : `읽기  ${normalizedReading(session.current.reading)}`;
+    elements.feedbackMeaning.textContent = `뜻  ${session.current.meaning}`;
+    elements.feedbackTranslation.hidden = !(isSentenceToKanji && !isCorrect);
+    elements.feedbackTranslation.textContent = isSentenceToKanji && !isCorrect
+      ? `문장 해석  ${session.current.sentenceTranslation}`
+      : "";
+
+    if (isCorrect) {
+      session.correct += 1;
+      session.masteredIds.add(session.current.id);
+      if (progress.mistakeCounts[key]) {
+        progress.mistakeCounts[key] = Math.max(0, progress.mistakeCounts[key] - 1);
+      }
+    } else {
+      session.wrong += 1;
+      session.masteredIds.delete(session.current.id);
+      progress.mistakeCounts[key] = (progress.mistakeCounts[key] || 0) + 1;
+      engine.insertRetry(session.queue, session.current.id, RETRY_DELAY);
+      elements.retryNote.textContent = isSentenceToKanji
+        ? "이 문장은 잠시 뒤 다시 나옵니다."
+        : "이 단어는 잠시 뒤 다시 나옵니다.";
+      elements.retryNote.hidden = false;
+    }
+
+    elements.nextButton.textContent = session.queue.length
+      ? session.mode === "sentence-to-kanji" ? "다음 문제" : "다음 단어"
+      : "결과 보기";
+    elements.nextButton.hidden = false;
+    updateSessionHeader();
+    elements.nextButton.focus();
+  }
+
+  function updateSessionHeader() {
+    const mastered = session.masteredIds.size;
+    const currentPosition = Math.min(mastered + 1, session.total);
+    elements.quizProgressText.textContent = `${currentPosition} / ${session.total}`;
+    elements.liveAccuracy.textContent = formatAccuracy(engine.accuracy(session.correct, session.attempts));
+    elements.progressBar.style.width = `${(mastered / session.total) * 100}%`;
+  }
+
+  function completeSession() {
+    const sessionAccuracy = engine.accuracy(session.correct, session.attempts) || 0;
+    progress.completedSessions += 1;
+    progress.totalCorrect += session.correct;
+    progress.totalAttempts += session.attempts;
+    progress.lastAccuracy = sessionAccuracy;
+    progress.seenIds = [...new Set([...(progress.seenIds || []), ...session.baseIds])];
+    progress.history.push({
+      session: session.number,
+      difficulty: session.difficulty,
+      mode: session.mode,
+      accuracy: sessionAccuracy,
+      correct: session.correct,
+      wrong: session.wrong,
+      date: new Intl.DateTimeFormat("ko-KR", { month: "numeric", day: "numeric" }).format(new Date()),
+    });
+    progress.history = progress.history.slice(-20);
+    saveProgress();
+
+    elements.resultSessionNumber.textContent = session.number;
+    elements.resultAccuracy.textContent = `${sessionAccuracy}%`;
+    elements.resultCorrect.textContent = session.correct;
+    elements.resultWrong.textContent = session.wrong;
+    elements.resultMastered.textContent = session.total;
+    elements.resultMessage.textContent = session.wrong === 0
+      ? "한 번도 틀리지 않고 모두 맞혔습니다. 완벽해요!"
+      : `오답 ${session.wrong}번도 다시 풀어 모두 익혔습니다.`;
+    showScreen("result");
+    elements.returnButton.focus();
+  }
+
+  function returnToStart() {
+    session = null;
+    renderStartScreen();
+    showScreen("start");
+    elements.startButton.focus();
+  }
+
+  function handleKeyboard(event) {
+    if (!screens.quiz.classList.contains("is-active") || !session) return;
+    const numberKey = /^[1-4]$/.test(event.key)
+      ? Number(event.key)
+      : /^Numpad[1-4]$/.test(event.code)
+        ? Number(event.code.slice(-1))
+        : null;
+
+    if (!session.answered && numberKey !== null) {
+      event.preventDefault?.();
+      const buttons = elements.answerGrid.querySelectorAll("button");
+      buttons[numberKey - 1]?.click();
+    } else if (session.answered && (event.key === "Enter" || event.code === "NumpadEnter")) {
+      event.preventDefault?.();
+      elements.nextButton.click();
+    }
+  }
+
+  function syncModeControls() {
+    const sentenceMode = elements.modeSentenceKanji.checked;
+    elements.questionCountPanel.hidden = !sentenceMode;
+    elements.difficultyBasic.disabled = sentenceMode;
+    if (sentenceMode) {
+      elements.difficultyBasic.checked = false;
+      elements.difficultyN2.checked = true;
+    }
+  }
+
+  function init() {
+    const invalidSentenceData = datasets.n2.length !== 100
+      || datasets.n2.some(
+        (item) => !item.sentence
+          || item.sentence.split("___").length !== 2
+          || !item.sentenceFurigana
+          || item.sentenceFurigana.split("___").length !== 2
+          || !item.sentenceTranslation,
+      );
+    if (Object.values(datasets).some((quizData) => quizData.length < 4) || invalidSentenceData) {
+      elements.appError.hidden = false;
+      elements.appError.textContent = "단어 데이터를 불러오지 못했습니다. 단어 데이터 파일을 확인해 주세요.";
+      elements.startButton.disabled = true;
+      return;
+    }
+    renderStartScreen();
+    syncModeControls();
+    elements.startButton.addEventListener("click", startSession);
+    elements.nextButton.addEventListener("click", showNextQuestion);
+    elements.returnButton.addEventListener("click", returnToStart);
+    elements.modeKanjiReading.addEventListener("change", syncModeControls);
+    elements.modeReadingKanji.addEventListener("change", syncModeControls);
+    elements.modeSentenceKanji.addEventListener("change", syncModeControls);
+    document.addEventListener("keydown", handleKeyboard);
+  }
+
+  init();
+}());
+
+  </script>
+</body>
+</html>

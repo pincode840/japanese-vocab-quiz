@@ -1480,9 +1480,10 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     const isCorrect = selectedId === session.current.id;
     const isSentenceToKanji = session.mode === "sentence-to-kanji";
     const selectedItem = findItem(selectedId);
+    const selectedReading = normalizedReading(selectedItem.reading);
     const selectedAnswer = session.mode === "kanji-to-reading"
-      ? normalizedReading(selectedItem.reading)
-      : selectedItem.word;
+      ? `${selectedReading} · ${selectedItem.word} · ${selectedItem.meaning}`
+      : `${selectedItem.word}（${selectedReading}） · ${selectedItem.meaning}`;
     const buttons = [...elements.answerGrid.querySelectorAll("button")];
     const selectedButton = buttons.find((button) => button.dataset.itemId === selectedId);
     const key = `${session.difficulty}:${session.mode}:${session.current.id}`;

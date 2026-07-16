@@ -832,6 +832,12 @@ button:focus-visible {
           </label>
         </fieldset>
 
+        <div id="general-question-count-panel" class="question-count-picker">
+          <label for="general-question-count">일반 문제 수</label>
+          <input id="general-question-count" type="number" min="10" max="360" step="1" value="360" inputmode="numeric">
+          <small id="general-question-count-hint">10~360개 사이에서 선택 · N5·N4 단어에서 출제</small>
+        </div>
+
         <div id="question-count-panel" class="question-count-picker" hidden>
           <label for="sentence-question-count">문장 문제 수</label>
           <input id="sentence-question-count" type="number" min="10" max="100" step="1" value="20" inputmode="numeric">
@@ -839,7 +845,7 @@ button:focus-visible {
         </div>
 
         <button id="start-button" class="primary-button" type="button">학습 시작</button>
-        <p class="helper">기본 모드는 전체 단어 · 문장 모드는 10~100문제 · 오답 자동 재출제</p>
+        <p class="helper">모든 모드에서 문제 수 선택 · 오답 자동 재출제 · 기록 자동 저장</p>
 
         <div id="history-panel" class="history-panel" hidden>
           <h3>최근 기록</h3>
@@ -1054,6 +1060,9 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     modeKanjiReading: document.getElementById("mode-kanji-reading"),
     modeReadingKanji: document.getElementById("mode-reading-kanji"),
     modeSentenceKanji: document.getElementById("mode-sentence-kanji"),
+    generalQuestionCountPanel: document.getElementById("general-question-count-panel"),
+    generalQuestionCount: document.getElementById("general-question-count"),
+    generalQuestionCountHint: document.getElementById("general-question-count-hint"),
     questionCountPanel: document.getElementById("question-count-panel"),
     sentenceQuestionCount: document.getElementById("sentence-question-count"),
     startButton: document.getElementById("start-button"),
@@ -1183,9 +1192,14 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       : elements.difficultyN2.checked
         ? "n2"
         : "n5n4";
-    const requestedSize = mode === "sentence-to-kanji"
-      ? Math.min(100, Math.max(10, Math.round(Number(elements.sentenceQuestionCount.value) || 20)))
-      : datasets[difficulty].length;
+    const maximumSize = datasets[difficulty].length;
+    const countInput = mode === "sentence-to-kanji"
+      ? elements.sentenceQuestionCount
+      : elements.generalQuestionCount;
+    const requestedSize = Math.min(
+      maximumSize,
+      Math.max(10, Math.round(Number(countInput.value) || maximumSize)),
+    );
     const items = selectSessionItems(mode, difficulty, requestedSize);
     session = {
       number: progress.completedSessions + 1,
@@ -1442,11 +1456,24 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   function syncModeControls() {
     const sentenceMode = elements.modeSentenceKanji.checked;
     elements.questionCountPanel.hidden = !sentenceMode;
+    elements.generalQuestionCountPanel.hidden = sentenceMode;
     elements.difficultyBasic.disabled = sentenceMode;
     if (sentenceMode) {
       elements.difficultyBasic.checked = false;
       elements.difficultyN2.checked = true;
     }
+
+    const previousMaximum = Number(elements.generalQuestionCount.max) || datasets.n5n4.length;
+    const currentValue = Number(elements.generalQuestionCount.value) || previousMaximum;
+    const selectedDifficulty = elements.difficultyN2.checked ? "n2" : "n5n4";
+    const nextMaximum = datasets[selectedDifficulty].length;
+    elements.generalQuestionCount.max = String(nextMaximum);
+    if (currentValue >= previousMaximum || currentValue > nextMaximum || currentValue < 10) {
+      elements.generalQuestionCount.value = String(nextMaximum);
+    }
+    elements.generalQuestionCountHint.textContent = selectedDifficulty === "n2"
+      ? "10~100개 사이에서 선택 · N2 단어에서 출제"
+      : "10~360개 사이에서 선택 · N5·N4 단어에서 출제";
   }
 
   function init() {
@@ -1472,6 +1499,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     elements.modeKanjiReading.addEventListener("change", syncModeControls);
     elements.modeReadingKanji.addEventListener("change", syncModeControls);
     elements.modeSentenceKanji.addEventListener("change", syncModeControls);
+    elements.difficultyBasic.addEventListener("change", syncModeControls);
+    elements.difficultyN2.addEventListener("change", syncModeControls);
     document.addEventListener("keydown", handleKeyboard);
   }
 

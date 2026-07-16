@@ -210,6 +210,14 @@ button:focus-visible {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.choice-count-picker {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.choice-count-picker .mode-copy {
+  min-height: 62px;
+}
+
 .mode-picker legend {
   width: 100%;
   margin-bottom: 9px;
@@ -735,6 +743,10 @@ button:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .choice-count-picker {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .mode-option.is-wide {
     grid-column: auto;
   }
@@ -866,6 +878,31 @@ button:focus-visible {
           </label>
         </fieldset>
 
+        <fieldset class="mode-picker choice-count-picker">
+          <legend>선택지 수</legend>
+          <label class="mode-option" for="choice-count-4">
+            <input id="choice-count-4" name="choice-count" type="radio" value="4" checked>
+            <span class="mode-copy">
+              <strong>4개</strong>
+              <small>기본</small>
+            </span>
+          </label>
+          <label class="mode-option" for="choice-count-6">
+            <input id="choice-count-6" name="choice-count" type="radio" value="6">
+            <span class="mode-copy">
+              <strong>6개</strong>
+              <small>도전</small>
+            </span>
+          </label>
+          <label class="mode-option" for="choice-count-8">
+            <input id="choice-count-8" name="choice-count" type="radio" value="8">
+            <span class="mode-copy">
+              <strong>8개</strong>
+              <small>집중</small>
+            </span>
+          </label>
+        </fieldset>
+
         <div id="general-question-count-panel" class="question-count-picker">
           <label for="general-question-count">일반 문제 수</label>
           <input id="general-question-count" type="number" min="10" max="360" step="1" value="360" inputmode="numeric">
@@ -879,7 +916,7 @@ button:focus-visible {
         </div>
 
         <button id="start-button" class="primary-button" type="button">학습 시작</button>
-        <p class="helper">모든 모드에서 문제 수 선택 · 오답 자동 재출제 · 기록 자동 저장</p>
+        <p class="helper">선택지 4·6·8개 · 문제 수 선택 · 오답 자동 재출제 · 기록 자동 저장</p>
 
         <div id="history-panel" class="history-panel" hidden>
           <h3>최근 기록</h3>
@@ -922,7 +959,7 @@ button:focus-visible {
 
         <button id="next-button" class="primary-button" type="button" hidden>다음 단어</button>
       </div>
-      <p class="keyboard-hint">숫자키 1–4 또는 숫자패드로 선택 · Enter로 다음</p>
+      <p id="keyboard-hint" class="keyboard-hint">숫자키 1–4 또는 숫자패드로 선택 · Enter로 다음</p>
     </section>
 
     <section id="result-screen" class="screen" aria-labelledby="result-title">
@@ -986,10 +1023,22 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     return copy;
   }
 
-  function buildChoices(data, correctItem, random = Math.random) {
+  function resolveChoiceSettings(choiceCountOrRandom, random, dataLength) {
+    if (typeof choiceCountOrRandom === "function") {
+      return { choiceCount: 4, random: choiceCountOrRandom };
+    }
+    const requested = Number(choiceCountOrRandom) || 4;
+    return {
+      choiceCount: Math.min(dataLength, Math.max(2, Math.round(requested))),
+      random,
+    };
+  }
+
+  function buildChoices(data, correctItem, choiceCountOrRandom = 4, random = Math.random) {
+    const settings = resolveChoiceSettings(choiceCountOrRandom, random, data.length);
     const correctReading = normalizedReading(correctItem.reading);
-    const sameDay = shuffle(data.filter((item) => item.day === correctItem.day && item.id !== correctItem.id), random);
-    const others = shuffle(data.filter((item) => item.day !== correctItem.day), random);
+    const sameDay = shuffle(data.filter((item) => item.day === correctItem.day && item.id !== correctItem.id), settings.random);
+    const others = shuffle(data.filter((item) => item.day !== correctItem.day), settings.random);
     const pool = [...sameDay, ...others];
     const choices = [correctItem];
     const usedReadings = new Set([correctReading]);
@@ -1000,15 +1049,16 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
         choices.push(candidate);
         usedReadings.add(candidateReading);
       }
-      if (choices.length === 4) break;
+      if (choices.length === settings.choiceCount) break;
     }
-    return shuffle(choices, random);
+    return shuffle(choices, settings.random);
   }
 
-  function buildChoicesByWord(data, correctItem, random = Math.random) {
+  function buildChoicesByWord(data, correctItem, choiceCountOrRandom = 4, random = Math.random) {
+    const settings = resolveChoiceSettings(choiceCountOrRandom, random, data.length);
     const correctReading = normalizedReading(correctItem.reading);
-    const sameDay = shuffle(data.filter((item) => item.day === correctItem.day && item.id !== correctItem.id), random);
-    const others = shuffle(data.filter((item) => item.day !== correctItem.day), random);
+    const sameDay = shuffle(data.filter((item) => item.day === correctItem.day && item.id !== correctItem.id), settings.random);
+    const others = shuffle(data.filter((item) => item.day !== correctItem.day), settings.random);
     const pool = [...sameDay, ...others];
     const choices = [correctItem];
     const usedWords = new Set([correctItem.word]);
@@ -1019,9 +1069,9 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
         choices.push(candidate);
         usedWords.add(candidate.word);
       }
-      if (choices.length === 4) break;
+      if (choices.length === settings.choiceCount) break;
     }
-    return shuffle(choices, random);
+    return shuffle(choices, settings.random);
   }
 
   function selectSessionItems(data, progress, sessionSize, random = Math.random) {
@@ -1101,6 +1151,9 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     modeKanjiReading: document.getElementById("mode-kanji-reading"),
     modeReadingKanji: document.getElementById("mode-reading-kanji"),
     modeSentenceKanji: document.getElementById("mode-sentence-kanji"),
+    choiceCount4: document.getElementById("choice-count-4"),
+    choiceCount6: document.getElementById("choice-count-6"),
+    choiceCount8: document.getElementById("choice-count-8"),
     generalQuestionCountPanel: document.getElementById("general-question-count-panel"),
     generalQuestionCount: document.getElementById("general-question-count"),
     generalQuestionCountHint: document.getElementById("general-question-count-hint"),
@@ -1131,6 +1184,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     resultWrong: document.getElementById("result-wrong"),
     resultMastered: document.getElementById("result-mastered"),
     returnButton: document.getElementById("return-button"),
+    keyboardHint: document.getElementById("keyboard-hint"),
     appError: document.getElementById("app-error"),
   };
 
@@ -1160,6 +1214,12 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     if (elements.modeSentenceKanji.checked) return "sentence-to-kanji";
     if (elements.modeReadingKanji.checked) return "reading-to-kanji";
     return "kanji-to-reading";
+  }
+
+  function selectedChoiceCount() {
+    if (elements.choiceCount8.checked) return 8;
+    if (elements.choiceCount6.checked) return 6;
+    return 4;
   }
 
   function defaultProgress() {
@@ -1221,7 +1281,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       const date = document.createElement("span");
       const historyMode = modeLabels[entry.mode] || modeLabels["kanji-to-reading"];
       const historyDifficulty = difficultyLabels[entry.difficulty] || difficultyLabels.n5n4;
-      label.textContent = `${entry.session}회차 · ${historyDifficulty} · ${historyMode}`;
+      label.textContent = `${entry.session}회차 · ${historyDifficulty} · ${historyMode} · ${entry.choiceCount || 4}지선다`;
       score.textContent = `정답률 ${entry.accuracy}%`;
       date.className = "history-date";
       date.textContent = entry.date;
@@ -1251,6 +1311,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   function startSession() {
     const mode = selectedMode();
     const difficulty = selectedDifficulty();
+    const choiceCount = selectedChoiceCount();
     const maximumSize = datasetForMode(difficulty, mode).length;
     const countInput = mode === "sentence-to-kanji"
       ? elements.sentenceQuestionCount
@@ -1264,6 +1325,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       number: progress.completedSessions + 1,
       difficulty,
       mode,
+      choiceCount,
       total: items.length,
       baseIds: new Set(items.map((item) => item.id)),
       queue: items.map((item) => item.id),
@@ -1277,7 +1339,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     };
 
     const modeLabel = modeLabels[mode];
-    elements.quizSessionLabel.textContent = `${session.number}회차 · ${difficultyLabels[difficulty]} · ${modeLabel}`;
+    elements.quizSessionLabel.textContent = `${session.number}회차 · ${difficultyLabels[difficulty]} · ${modeLabel} · ${choiceCount}지선다`;
+    elements.keyboardHint.textContent = `숫자키 1–${choiceCount} 또는 숫자패드로 선택 · Enter로 다음`;
     showScreen("quiz");
     showNextQuestion();
   }
@@ -1293,8 +1356,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   function buildChoices(correctItem) {
     const quizData = datasetForMode(session.difficulty, session.mode);
     return session.mode === "reading-to-kanji" || session.mode === "sentence-to-kanji"
-      ? engine.buildChoicesByWord(quizData, correctItem)
-      : engine.buildChoices(quizData, correctItem);
+      ? engine.buildChoicesByWord(quizData, correctItem, session.choiceCount)
+      : engine.buildChoices(quizData, correctItem, session.choiceCount);
   }
 
   function showNextQuestion() {
@@ -1471,6 +1534,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       session: session.number,
       difficulty: session.difficulty,
       mode: session.mode,
+      choiceCount: session.choiceCount,
       accuracy: sessionAccuracy,
       correct: session.correct,
       wrong: session.wrong,
@@ -1500,9 +1564,9 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
 
   function handleKeyboard(event) {
     if (!screens.quiz.classList.contains("is-active") || !session) return;
-    const numberKey = /^[1-4]$/.test(event.key)
+    const numberKey = /^[1-8]$/.test(event.key)
       ? Number(event.key)
-      : /^Numpad[1-4]$/.test(event.code)
+      : /^Numpad[1-8]$/.test(event.code)
         ? Number(event.code.slice(-1))
         : null;
 

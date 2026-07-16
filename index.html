@@ -64,13 +64,32 @@ button:focus-visible {
   display: grid;
   width: 48px;
   height: 48px;
+  padding: 0;
   place-items: center;
   color: #fff;
   background: var(--accent);
+  border: 0;
   border-radius: 14px 14px 14px 4px;
   font-family: "Yu Mincho", "MS Mincho", serif;
   font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
   box-shadow: 0 8px 20px rgba(169, 51, 43, 0.22);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.brand-mark:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(169, 51, 43, 0.28);
+}
+
+.brand-mark:active {
+  transform: translateY(0);
+}
+
+.brand-mark:focus-visible {
+  outline: 3px solid rgba(169, 51, 43, 0.28);
+  outline-offset: 4px;
 }
 
 .brand h1 {
@@ -761,7 +780,7 @@ button:focus-visible {
 <body>
   <main class="app-shell">
     <header class="brand" aria-label="앱 제목">
-      <div class="brand-mark" aria-hidden="true">読</div>
+      <button id="home-button" class="brand-mark" type="button" aria-label="처음 화면으로 이동">読</button>
       <div>
         <p class="eyebrow">JLPT N5 · N4 · N2</p>
         <h1>한자 읽기 퀴즈</h1>
@@ -1049,6 +1068,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   };
 
   const elements = {
+    homeButton: document.getElementById("home-button"),
     nextSessionNumber: document.getElementById("next-session-number"),
     lastAccuracy: document.getElementById("last-accuracy"),
     totalAccuracy: document.getElementById("total-accuracy"),
@@ -1499,6 +1519,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     renderStartScreen();
     syncModeControls();
     elements.startButton.addEventListener("click", startSession);
+    elements.homeButton.addEventListener("click", returnToStart);
     elements.nextButton.addEventListener("click", showNextQuestion);
     elements.returnButton.addEventListener("click", returnToStart);
     elements.modeKanjiReading.addEventListener("change", syncModeControls);

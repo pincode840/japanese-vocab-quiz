@@ -167,31 +167,72 @@ button:focus-visible {
   word-break: keep-all;
 }
 
-.stats-grid {
+.mode-records {
+  position: relative;
+  z-index: 1;
+  margin: 30px 0 24px;
+  text-align: left;
+}
+
+.mode-records h3 {
+  margin: 0 0 9px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  text-align: center;
+}
+
+.mode-records-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin: 30px 0 24px;
 }
 
-.stat {
+.mode-record {
   min-width: 0;
-  padding: 17px 8px 15px;
+  padding: 15px 13px 13px;
   background: rgba(245, 239, 226, 0.72);
   border: 1px solid var(--line);
   border-radius: 14px;
+  transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
 }
 
-.stat-label {
+.mode-record.is-selected {
+  background: rgba(232, 238, 245, 0.88);
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.mode-record > strong {
   display: block;
-  margin-bottom: 4px;
-  color: var(--ink-soft);
-  font-size: 12px;
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-size: 13px;
+  text-align: center;
 }
 
-.stat strong {
-  font-size: clamp(20px, 4.5vw, 29px);
-  letter-spacing: -0.04em;
+.mode-record dl {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.mode-record dl div {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.mode-record dt {
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.mode-record dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .mode-picker {
@@ -766,7 +807,7 @@ button:focus-visible {
       var(--paper);
   }
 
-  .stats-grid {
+  .mode-records-grid {
     grid-template-columns: 1fr;
   }
 
@@ -794,15 +835,8 @@ button:focus-visible {
     grid-column: 1 / -1;
   }
 
-  .stat {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 15px;
-  }
-
-  .stat-label {
-    margin: 0;
+  .mode-record {
+    padding: 13px 15px;
   }
 
   .answer-grid {
@@ -845,23 +879,38 @@ button:focus-visible {
     <section id="start-screen" class="screen is-active" aria-labelledby="start-title">
       <div class="paper-card start-card">
         <p id="session-kicker" class="session-kicker">다음 학습</p>
-        <h2 id="start-title"><span id="next-session-number">1</span>회차를 시작할까요?</h2>
+        <h2 id="start-title"><span id="start-selection-label">N5·N4 · 한자→읽기</span><br><span id="next-session-number">1</span>회차를 시작할까요?</h2>
         <p class="lead">난이도와 학습 방향을 선택하세요. 어느 모드에서든 틀린 단어는 몇 문제 뒤에 다시 나옵니다.</p>
 
-        <div class="stats-grid" aria-label="학습 기록">
-          <div class="stat">
-            <span class="stat-label">최근 정답률</span>
-            <strong id="last-accuracy">—</strong>
+        <section class="mode-records" aria-labelledby="mode-records-title">
+          <h3 id="mode-records-title">N5·N4 학습 모드별 기록</h3>
+          <div class="mode-records-grid">
+            <article id="record-kanji-reading" class="mode-record is-selected">
+              <strong>한자 → 읽기</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="kanji-reading-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="kanji-reading-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="kanji-reading-total-accuracy">—</dd></div>
+              </dl>
+            </article>
+            <article id="record-reading-kanji" class="mode-record">
+              <strong>읽기 → 한자</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="reading-kanji-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="reading-kanji-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="reading-kanji-total-accuracy">—</dd></div>
+              </dl>
+            </article>
+            <article id="record-sentence-kanji" class="mode-record">
+              <strong>문장 빈칸 → 한자</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="sentence-kanji-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="sentence-kanji-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="sentence-kanji-total-accuracy">—</dd></div>
+              </dl>
+            </article>
           </div>
-          <div class="stat">
-            <span class="stat-label">누적 정답률</span>
-            <strong id="total-accuracy">—</strong>
-          </div>
-          <div class="stat">
-            <span class="stat-label">완료 회차</span>
-            <strong id="completed-sessions">0회</strong>
-          </div>
-        </div>
+        </section>
 
         <fieldset class="mode-picker difficulty-picker">
           <legend>난이도 선택</legend>
@@ -1177,10 +1226,21 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
 
   const elements = {
     homeButton: document.getElementById("home-button"),
+    startSelectionLabel: document.getElementById("start-selection-label"),
     nextSessionNumber: document.getElementById("next-session-number"),
-    lastAccuracy: document.getElementById("last-accuracy"),
-    totalAccuracy: document.getElementById("total-accuracy"),
-    completedSessions: document.getElementById("completed-sessions"),
+    modeRecordsTitle: document.getElementById("mode-records-title"),
+    recordKanjiReading: document.getElementById("record-kanji-reading"),
+    kanjiReadingSessions: document.getElementById("kanji-reading-sessions"),
+    kanjiReadingLastAccuracy: document.getElementById("kanji-reading-last-accuracy"),
+    kanjiReadingTotalAccuracy: document.getElementById("kanji-reading-total-accuracy"),
+    recordReadingKanji: document.getElementById("record-reading-kanji"),
+    readingKanjiSessions: document.getElementById("reading-kanji-sessions"),
+    readingKanjiLastAccuracy: document.getElementById("reading-kanji-last-accuracy"),
+    readingKanjiTotalAccuracy: document.getElementById("reading-kanji-total-accuracy"),
+    recordSentenceKanji: document.getElementById("record-sentence-kanji"),
+    sentenceKanjiSessions: document.getElementById("sentence-kanji-sessions"),
+    sentenceKanjiLastAccuracy: document.getElementById("sentence-kanji-last-accuracy"),
+    sentenceKanjiTotalAccuracy: document.getElementById("sentence-kanji-total-accuracy"),
     historyPanel: document.getElementById("history-panel"),
     historyList: document.getElementById("history-list"),
     difficultyBasic: document.getElementById("difficulty-basic"),
@@ -1228,6 +1288,27 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     appError: document.getElementById("app-error"),
   };
 
+  const modeRecordElements = {
+    "kanji-to-reading": {
+      card: elements.recordKanjiReading,
+      sessions: elements.kanjiReadingSessions,
+      lastAccuracy: elements.kanjiReadingLastAccuracy,
+      totalAccuracy: elements.kanjiReadingTotalAccuracy,
+    },
+    "reading-to-kanji": {
+      card: elements.recordReadingKanji,
+      sessions: elements.readingKanjiSessions,
+      lastAccuracy: elements.readingKanjiLastAccuracy,
+      totalAccuracy: elements.readingKanjiTotalAccuracy,
+    },
+    "sentence-to-kanji": {
+      card: elements.recordSentenceKanji,
+      sessions: elements.sentenceKanjiSessions,
+      lastAccuracy: elements.sentenceKanjiLastAccuracy,
+      totalAccuracy: elements.sentenceKanjiTotalAccuracy,
+    },
+  };
+
   let progress = loadProgress();
   let session = null;
 
@@ -1262,6 +1343,65 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     return 4;
   }
 
+  function emptySessionStat() {
+    return {
+      completedSessions: 0,
+      totalCorrect: 0,
+      totalAttempts: 0,
+      lastAccuracy: null,
+    };
+  }
+
+  function sessionScopeKey(difficulty, mode) {
+    return `${difficulty}:${mode}`;
+  }
+
+  function defaultSessionStats() {
+    const result = {};
+    Object.keys(difficultyLabels).forEach((difficulty) => {
+      Object.keys(modeLabels).forEach((mode) => {
+        result[sessionScopeKey(difficulty, mode)] = emptySessionStat();
+      });
+    });
+    return result;
+  }
+
+  function normalizeSessionStats(savedStats, history, savedProgress) {
+    const result = defaultSessionStats();
+    if (savedStats && typeof savedStats === "object" && Object.keys(savedStats).length > 0) {
+      Object.keys(result).forEach((key) => {
+        const saved = savedStats[key];
+        if (!saved || typeof saved !== "object") return;
+        result[key] = { ...emptySessionStat(), ...saved };
+      });
+      return result;
+    }
+
+    (Array.isArray(history) ? history : []).forEach((entry) => {
+      const difficulty = difficultyLabels[entry.difficulty] ? entry.difficulty : "n5n4";
+      const mode = modeLabels[entry.mode] ? entry.mode : "kanji-to-reading";
+      const stat = result[sessionScopeKey(difficulty, mode)];
+      const correct = Number(entry.correct) || 0;
+      const wrong = Number(entry.wrong) || 0;
+      stat.completedSessions += 1;
+      stat.totalCorrect += correct;
+      stat.totalAttempts += correct + wrong;
+      stat.lastAccuracy = Number.isFinite(Number(entry.accuracy)) ? Number(entry.accuracy) : null;
+    });
+
+    if (!(history || []).length && Number(savedProgress?.completedSessions) > 0) {
+      result[sessionScopeKey("n5n4", "kanji-to-reading")] = {
+        completedSessions: Number(savedProgress.completedSessions) || 0,
+        totalCorrect: Number(savedProgress.totalCorrect) || 0,
+        totalAttempts: Number(savedProgress.totalAttempts) || 0,
+        lastAccuracy: Number.isFinite(Number(savedProgress.lastAccuracy))
+          ? Number(savedProgress.lastAccuracy)
+          : null,
+      };
+    }
+    return result;
+  }
+
   function defaultProgress() {
     return {
       completedSessions: 0,
@@ -1271,6 +1411,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       history: [],
       mistakeCounts: {},
       seenIds: [],
+      sessionStats: defaultSessionStats(),
     };
   }
 
@@ -1278,7 +1419,9 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
       if (!saved || typeof saved !== "object") return defaultProgress();
-      return { ...defaultProgress(), ...saved };
+      const normalized = { ...defaultProgress(), ...saved };
+      normalized.sessionStats = normalizeSessionStats(saved.sessionStats, normalized.history, saved);
+      return normalized;
     } catch (_error) {
       return defaultProgress();
     }
@@ -1296,6 +1439,12 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     return value === null ? "—" : `${value}%`;
   }
 
+  function statsFor(difficulty, mode) {
+    const key = sessionScopeKey(difficulty, mode);
+    progress.sessionStats[key] ||= emptySessionStat();
+    return progress.sessionStats[key];
+  }
+
   function showScreen(name) {
     Object.entries(screens).forEach(([key, screen]) => {
       screen.classList.toggle("is-active", key === name);
@@ -1304,12 +1453,21 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   }
 
   function renderStartScreen() {
-    const nextSession = progress.completedSessions + 1;
-    const cumulative = engine.accuracy(progress.totalCorrect, progress.totalAttempts);
-    elements.nextSessionNumber.textContent = nextSession;
-    elements.lastAccuracy.textContent = formatAccuracy(progress.lastAccuracy);
-    elements.totalAccuracy.textContent = formatAccuracy(cumulative);
-    elements.completedSessions.textContent = `${progress.completedSessions}회`;
+    const difficulty = selectedDifficulty();
+    const selectedLearningMode = selectedMode();
+    const selectedStat = statsFor(difficulty, selectedLearningMode);
+    elements.startSelectionLabel.textContent = `${difficultyLabels[difficulty]} · ${modeLabels[selectedLearningMode]}`;
+    elements.nextSessionNumber.textContent = selectedStat.completedSessions + 1;
+    elements.modeRecordsTitle.textContent = `${difficultyLabels[difficulty]} 학습 모드별 기록`;
+
+    Object.entries(modeRecordElements).forEach(([mode, recordElements]) => {
+      const stat = statsFor(difficulty, mode);
+      const cumulative = engine.accuracy(stat.totalCorrect, stat.totalAttempts);
+      recordElements.sessions.textContent = `${stat.completedSessions}회`;
+      recordElements.lastAccuracy.textContent = formatAccuracy(stat.lastAccuracy);
+      recordElements.totalAccuracy.textContent = formatAccuracy(cumulative);
+      recordElements.card.classList.toggle("is-selected", mode === selectedLearningMode);
+    });
 
     const recent = progress.history.slice(-5).reverse();
     elements.historyPanel.hidden = recent.length === 0;
@@ -1361,8 +1519,9 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       Math.max(10, Math.round(Number(countInput.value) || maximumSize)),
     );
     const items = selectSessionItems(mode, difficulty, requestedSize);
+    const sessionStat = statsFor(difficulty, mode);
     session = {
-      number: progress.completedSessions + 1,
+      number: sessionStat.completedSessions + 1,
       difficulty,
       mode,
       choiceCount,
@@ -1581,6 +1740,13 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
 
   function completeSession() {
     const sessionAccuracy = engine.accuracy(session.correct, session.attempts) || 0;
+    const sessionStat = statsFor(session.difficulty, session.mode);
+    sessionStat.completedSessions += 1;
+    sessionStat.totalCorrect += session.correct;
+    sessionStat.totalAttempts += session.attempts;
+    sessionStat.lastAccuracy = sessionAccuracy;
+
+    // Keep the previous aggregate fields for saved-data compatibility.
     progress.completedSessions += 1;
     progress.totalCorrect += session.correct;
     progress.totalAttempts += session.attempts;
@@ -1671,6 +1837,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     };
     elements.generalQuestionCountHint.textContent = `10~${generalMaximum}개 사이에서 선택 · ${generalSources[difficulty]}에서 출제`;
     elements.sentenceQuestionCountHint.textContent = `10~${sentenceMaximum}개 사이에서 선택 · ${sentenceSources[difficulty]}에서 출제`;
+    renderStartScreen();
   }
 
   function init() {

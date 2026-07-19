@@ -332,6 +332,105 @@ button:focus-visible {
   line-height: 1.4;
 }
 
+.exam-mode-panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 8px;
+  padding: 14px 16px;
+  background: rgba(245, 239, 226, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  text-align: left;
+}
+
+.exam-mode-panel strong,
+.exam-mode-panel small {
+  display: block;
+}
+
+.exam-mode-panel strong {
+  margin-bottom: 3px;
+  font-size: 14px;
+}
+
+.exam-mode-panel small,
+.exam-mode-note {
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.exam-mode-note {
+  position: relative;
+  z-index: 1;
+  margin: 0 4px 18px;
+  color: var(--danger);
+  font-weight: 700;
+  text-align: left;
+}
+
+.switch {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.switch-track {
+  position: relative;
+  display: block;
+  width: 46px;
+  height: 26px;
+  background: #b9b3a8;
+  border-radius: 999px;
+  transition: background 150ms ease;
+}
+
+.switch-track span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(23, 50, 77, 0.22);
+  transition: transform 150ms ease;
+}
+
+.switch input:checked + .switch-track {
+  background: var(--accent);
+}
+
+.switch input:checked + .switch-track span {
+  transform: translateX(20px);
+}
+
+.switch input:focus-visible + .switch-track {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.switch-state {
+  min-width: 27px;
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 900;
+}
+
 .question-count-picker {
   position: relative;
   z-index: 1;
@@ -368,6 +467,11 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
+.question-count-picker input:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
 .question-count-picker small {
   color: var(--ink-soft);
   font-size: 11px;
@@ -398,6 +502,14 @@ button:focus-visible {
 
 .primary-button:active {
   transform: translateY(1px);
+}
+
+.primary-button:disabled,
+.primary-button:disabled:hover {
+  cursor: not-allowed;
+  opacity: 0.52;
+  box-shadow: none;
+  transform: none;
 }
 
 .helper,
@@ -461,6 +573,7 @@ button:focus-visible {
 
 .quiz-topbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: end;
   justify-content: space-between;
   gap: 12px;
@@ -481,6 +594,34 @@ button:focus-visible {
 .live-score strong {
   color: var(--ink);
   font-size: 17px;
+}
+
+.exam-timer {
+  min-width: 110px;
+  padding: 7px 11px;
+  color: var(--danger);
+  background: var(--danger-soft);
+  border: 1px solid rgba(166, 63, 54, 0.2);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.exam-timer strong {
+  display: inline-block;
+  min-width: 20px;
+  font-size: 18px;
+}
+
+.exam-timer.is-urgent {
+  color: #fff;
+  background: var(--danger);
+  animation: timer-pulse 700ms ease-in-out infinite alternate;
+}
+
+@keyframes timer-pulse {
+  to { transform: scale(1.035); }
 }
 
 .progress-track {
@@ -555,6 +696,20 @@ button:focus-visible {
   color: var(--accent);
   font-size: 12px;
   font-weight: 800;
+}
+
+.exam-mistake-badge {
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  margin: -15px auto 18px;
+  padding: 7px 12px;
+  color: var(--danger);
+  background: var(--danger-soft);
+  border: 1px solid rgba(166, 63, 54, 0.22);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
 }
 
 .answer-grid {
@@ -962,6 +1117,19 @@ button:focus-visible {
           </label>
         </fieldset>
 
+        <div class="exam-mode-panel">
+          <div>
+            <strong>시험 모드</strong>
+            <small>100문제 고정 · 단어 7초 · 문장 13초</small>
+          </div>
+          <label class="switch" for="exam-mode">
+            <input id="exam-mode" type="checkbox">
+            <span class="switch-track" aria-hidden="true"><span></span></span>
+            <span id="exam-mode-state" class="switch-state">OFF</span>
+          </label>
+        </div>
+        <p id="exam-mode-note" class="exam-mode-note" hidden>맞힌 문제는 이 난이도·학습 모드의 다음 3회차 동안 시험에 나오지 않습니다.</p>
+
         <fieldset class="mode-picker choice-count-picker">
           <legend>선택지 수</legend>
           <label class="mode-option" for="choice-count-4">
@@ -1019,6 +1187,9 @@ button:focus-visible {
         <div class="live-score" aria-label="현재 정답률">
           정답률 <strong id="live-accuracy">—</strong>
         </div>
+        <div id="exam-timer" class="exam-timer" aria-live="polite" hidden>
+          남은 시간 <strong id="exam-time-left">7</strong>초
+        </div>
       </div>
       <div class="progress-track" aria-hidden="true">
         <div id="progress-bar" class="progress-bar"></div>
@@ -1028,6 +1199,7 @@ button:focus-visible {
         <p id="quiz-prompt" class="prompt">이 단어를 어떻게 읽을까요?</p>
         <h2 id="quiz-word" lang="ja">日本語</h2>
         <p id="day-label" class="day-label">7일차</p>
+        <p id="exam-mistake-badge" class="exam-mistake-badge" hidden></p>
 
         <div id="answer-grid" class="answer-grid" aria-label="읽기 선택지"></div>
 
@@ -1194,6 +1366,9 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   "use strict";
 
   const RETRY_DELAY = 3;
+  const EXAM_QUESTION_COUNT = 100;
+  const WORD_TIME_LIMIT = 7;
+  const SENTENCE_TIME_LIMIT = 13;
   const STORAGE_KEY = "jlpt-vocab-quiz-progress-v1";
   const engine = window.QuizEngine;
 
@@ -1249,6 +1424,9 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     modeKanjiReading: document.getElementById("mode-kanji-reading"),
     modeReadingKanji: document.getElementById("mode-reading-kanji"),
     modeSentenceKanji: document.getElementById("mode-sentence-kanji"),
+    examMode: document.getElementById("exam-mode"),
+    examModeState: document.getElementById("exam-mode-state"),
+    examModeNote: document.getElementById("exam-mode-note"),
     choiceCount4: document.getElementById("choice-count-4"),
     choiceCount6: document.getElementById("choice-count-6"),
     choiceCount8: document.getElementById("choice-count-8"),
@@ -1262,10 +1440,13 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     quizSessionLabel: document.getElementById("quiz-session-label"),
     quizProgressText: document.getElementById("quiz-progress-text"),
     liveAccuracy: document.getElementById("live-accuracy"),
+    examTimer: document.getElementById("exam-timer"),
+    examTimeLeft: document.getElementById("exam-time-left"),
     progressBar: document.getElementById("progress-bar"),
     quizPrompt: document.getElementById("quiz-prompt"),
     quizWord: document.getElementById("quiz-word"),
     dayLabel: document.getElementById("day-label"),
+    examMistakeBadge: document.getElementById("exam-mistake-badge"),
     answerGrid: document.getElementById("answer-grid"),
     feedback: document.getElementById("feedback"),
     feedbackIcon: document.getElementById("feedback-icon"),
@@ -1311,6 +1492,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
 
   let progress = loadProgress();
   let session = null;
+  let examTimerId = null;
 
   function hasCompleteSentence(item) {
     return item.sentence?.split("___").length === 2
@@ -1410,6 +1592,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       lastAccuracy: null,
       history: [],
       mistakeCounts: {},
+      examMistakeCounts: {},
+      examCooldowns: {},
       seenIds: [],
       sessionStats: defaultSessionStats(),
     };
@@ -1421,6 +1605,12 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       if (!saved || typeof saved !== "object") return defaultProgress();
       const normalized = { ...defaultProgress(), ...saved };
       normalized.sessionStats = normalizeSessionStats(saved.sessionStats, normalized.history, saved);
+      normalized.examMistakeCounts = saved.examMistakeCounts && typeof saved.examMistakeCounts === "object"
+        ? saved.examMistakeCounts
+        : {};
+      normalized.examCooldowns = saved.examCooldowns && typeof saved.examCooldowns === "object"
+        ? saved.examCooldowns
+        : {};
       return normalized;
     } catch (_error) {
       return defaultProgress();
@@ -1443,6 +1633,53 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     const key = sessionScopeKey(difficulty, mode);
     progress.sessionStats[key] ||= emptySessionStat();
     return progress.sessionStats[key];
+  }
+
+  function itemProgressKey(difficulty, mode, itemId) {
+    return `${difficulty}:${mode}:${itemId}`;
+  }
+
+  function examEligibleItems(difficulty, mode, sessionNumber) {
+    return datasetForMode(difficulty, mode).filter((item) => {
+      const eligibleFrom = Number(progress.examCooldowns[itemProgressKey(difficulty, mode, item.id)]) || 0;
+      return sessionNumber >= eligibleFrom;
+    });
+  }
+
+  function stopExamTimer() {
+    if (examTimerId !== null) {
+      clearInterval(examTimerId);
+      examTimerId = null;
+    }
+    elements.examTimer.classList.remove("is-urgent");
+  }
+
+  function renderExamTime() {
+    elements.examTimeLeft.textContent = session?.timeRemaining ?? "—";
+    elements.examTimer.classList.toggle("is-urgent", Boolean(session && session.timeRemaining <= 3));
+  }
+
+  function startExamTimer() {
+    stopExamTimer();
+    if (!session?.examMode) {
+      elements.examTimer.hidden = true;
+      return;
+    }
+    session.timeRemaining = session.mode === "sentence-to-kanji" ? SENTENCE_TIME_LIMIT : WORD_TIME_LIMIT;
+    elements.examTimer.hidden = false;
+    renderExamTime();
+    examTimerId = setInterval(() => {
+      if (!session || session.answered) {
+        stopExamTimer();
+        return;
+      }
+      session.timeRemaining -= 1;
+      renderExamTime();
+      if (session.timeRemaining <= 0) {
+        stopExamTimer();
+        answerQuestion(null, true);
+      }
+    }, 1000);
   }
 
   function showScreen(name) {
@@ -1479,7 +1716,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       const date = document.createElement("span");
       const historyMode = modeLabels[entry.mode] || modeLabels["kanji-to-reading"];
       const historyDifficulty = difficultyLabels[entry.difficulty] || difficultyLabels.n5n4;
-      label.textContent = `${entry.session}회차 · ${historyDifficulty} · ${historyMode} · ${entry.choiceCount || 4}지선다`;
+      const examLabel = entry.examMode ? " · 시험" : "";
+      label.textContent = `${entry.session}회차 · ${historyDifficulty} · ${historyMode}${examLabel} · ${entry.choiceCount || 4}지선다`;
       score.textContent = `정답률 ${entry.accuracy}%`;
       date.className = "history-date";
       date.textContent = entry.date;
@@ -1488,8 +1726,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     });
   }
 
-  function selectSessionItems(mode, difficulty, sessionSize) {
-    const quizData = datasetForMode(difficulty, mode);
+  function selectSessionItems(mode, difficulty, sessionSize, sourceItems = null) {
+    const quizData = sourceItems || datasetForMode(difficulty, mode);
     const scopedMistakes = {};
     quizData.forEach((item) => {
       const legacyCount = difficulty === "n5n4" && mode === "kanji-to-reading"
@@ -1510,20 +1748,27 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     const mode = selectedMode();
     const difficulty = selectedDifficulty();
     const choiceCount = selectedChoiceCount();
+    const examMode = elements.examMode.checked;
     const maximumSize = datasetForMode(difficulty, mode).length;
+    const sessionStat = statsFor(difficulty, mode);
+    const sessionNumber = sessionStat.completedSessions + 1;
+    const eligibleItems = examMode ? examEligibleItems(difficulty, mode, sessionNumber) : null;
+    if (examMode && eligibleItems.length < EXAM_QUESTION_COUNT) {
+      syncModeControls();
+      return;
+    }
     const countInput = mode === "sentence-to-kanji"
       ? elements.sentenceQuestionCount
       : elements.generalQuestionCount;
-    const requestedSize = Math.min(
-      maximumSize,
-      Math.max(10, Math.round(Number(countInput.value) || maximumSize)),
-    );
-    const items = selectSessionItems(mode, difficulty, requestedSize);
-    const sessionStat = statsFor(difficulty, mode);
+    const requestedSize = examMode
+      ? EXAM_QUESTION_COUNT
+      : Math.min(maximumSize, Math.max(10, Math.round(Number(countInput.value) || maximumSize)));
+    const items = selectSessionItems(mode, difficulty, requestedSize, eligibleItems);
     session = {
-      number: sessionStat.completedSessions + 1,
+      number: sessionNumber,
       difficulty,
       mode,
+      examMode,
       choiceCount,
       total: items.length,
       baseIds: new Set(items.map((item) => item.id)),
@@ -1532,14 +1777,19 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       correct: 0,
       wrong: 0,
       attempts: 0,
+      completedQuestions: 0,
+      correctIds: new Set(),
       current: null,
       currentMisses: 0,
       answered: false,
     };
 
     const modeLabel = modeLabels[mode];
-    elements.quizSessionLabel.textContent = `${session.number}회차 · ${difficultyLabels[difficulty]} · ${modeLabel} · ${choiceCount}지선다`;
-    elements.keyboardHint.textContent = `숫자키 1–${choiceCount} 또는 숫자패드로 선택 · Enter로 다음`;
+    const examLabel = examMode ? " · 시험 모드" : "";
+    elements.quizSessionLabel.textContent = `${session.number}회차 · ${difficultyLabels[difficulty]} · ${modeLabel}${examLabel} · ${choiceCount}지선다`;
+    elements.keyboardHint.textContent = examMode
+      ? `숫자키 1–${choiceCount} 또는 숫자패드로 선택 · 제한시간 안에 답하세요`
+      : `숫자키 1–${choiceCount} 또는 숫자패드로 선택 · Enter로 다음`;
     showScreen("quiz");
     showNextQuestion();
   }
@@ -1560,6 +1810,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   }
 
   function showNextQuestion() {
+    stopExamTimer();
     if (session.queue.length === 0) {
       completeSession();
       return;
@@ -1595,6 +1846,12 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       const sentenceLabel = isSentenceToKanji ? " · 문장 빈칸" : "";
       elements.dayLabel.textContent = `${difficultyLabels[session.difficulty]}${sentenceLabel} · ${source}`;
     }
+    const examMistakeKey = itemProgressKey(session.difficulty, session.mode, item.id);
+    const examMistakeCount = Number(progress.examMistakeCounts[examMistakeKey]) || 0;
+    elements.examMistakeBadge.hidden = !(session.examMode && examMistakeCount > 0);
+    elements.examMistakeBadge.textContent = examMistakeCount > 0
+      ? `⚠ 이 문제는 시험에서 ${examMistakeCount}회 틀렸습니다`
+      : "";
     elements.answerGrid.replaceChildren();
     choices.forEach((choice, index) => {
       const button = document.createElement("button");
@@ -1631,23 +1888,27 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     elements.nextButton.hidden = true;
     updateSessionHeader();
     elements.answerGrid.querySelector("button")?.focus();
+    startExamTimer();
   }
 
-  function answerQuestion(selectedId) {
+  function answerQuestion(selectedId, timedOut = false) {
     if (session.answered) return;
+    if (session.examMode) stopExamTimer();
     session.attempts += 1;
-    const isCorrect = selectedId === session.current.id;
+    const isCorrect = !timedOut && selectedId === session.current.id;
     const isSentenceToKanji = session.mode === "sentence-to-kanji";
-    const selectedItem = findItem(selectedId);
-    const selectedReading = normalizedReading(selectedItem.reading);
-    const selectedAnswer = session.mode === "kanji-to-reading"
-      ? `${selectedReading} · ${selectedItem.word} · ${selectedItem.meaning}`
-      : `${selectedItem.word}（${selectedReading}） · ${selectedItem.meaning}`;
+    const selectedItem = timedOut ? null : findItem(selectedId);
+    const selectedReading = selectedItem ? normalizedReading(selectedItem.reading) : "";
+    const selectedAnswer = timedOut
+      ? "시간 초과"
+      : session.mode === "kanji-to-reading"
+        ? `${selectedReading} · ${selectedItem.word} · ${selectedItem.meaning}`
+        : `${selectedItem.word}（${selectedReading}） · ${selectedItem.meaning}`;
     const buttons = [...elements.answerGrid.querySelectorAll("button")];
     const selectedButton = buttons.find((button) => button.dataset.itemId === selectedId);
-    const key = `${session.difficulty}:${session.mode}:${session.current.id}`;
+    const key = itemProgressKey(session.difficulty, session.mode, session.current.id);
 
-    if (isSentenceToKanji && !isCorrect && session.currentMisses === 0) {
+    if (!session.examMode && isSentenceToKanji && !isCorrect && session.currentMisses === 0) {
       session.currentMisses = 1;
       session.wrong += 1;
       progress.mistakeCounts[key] = (progress.mistakeCounts[key] || 0) + 1;
@@ -1680,7 +1941,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     buttons.forEach((button) => {
       button.disabled = true;
       if (button.dataset.itemId === session.current.id) button.classList.add("is-correct");
-      if (!isCorrect && button.dataset.itemId === selectedId) button.classList.add("is-wrong");
+      if (!isCorrect && selectedId && button.dataset.itemId === selectedId) button.classList.add("is-wrong");
     });
 
     elements.feedback.hidden = false;
@@ -1689,8 +1950,12 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     elements.feedbackIcon.innerHTML = `<span>${isCorrect ? "✓" : "!"}</span>`;
     elements.feedbackTitle.textContent = isCorrect
       ? "정답이에요"
+      : timedOut
+        ? "시간이 초과됐어요. 정답을 확인하세요"
       : isSentenceToKanji
-        ? "두 번 틀렸어요. 정답과 해석을 확인하세요"
+        ? session.examMode
+          ? "오답이에요. 정답과 해석을 확인하세요"
+          : "두 번 틀렸어요. 정답과 해석을 확인하세요"
         : "아쉬워요, 정답을 확인하세요";
     elements.feedbackSelected.hidden = isCorrect;
     elements.feedbackSelected.textContent = isCorrect ? "" : `선택한 답  ${selectedAnswer}`;
@@ -1708,6 +1973,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     if (isCorrect) {
       session.correct += 1;
       session.masteredIds.add(session.current.id);
+      if (session.examMode) session.correctIds.add(session.current.id);
       if (progress.mistakeCounts[key]) {
         progress.mistakeCounts[key] = Math.max(0, progress.mistakeCounts[key] - 1);
       }
@@ -1715,12 +1981,23 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       session.wrong += 1;
       session.masteredIds.delete(session.current.id);
       progress.mistakeCounts[key] = (progress.mistakeCounts[key] || 0) + 1;
-      engine.insertRetry(session.queue, session.current.id, RETRY_DELAY);
-      elements.retryNote.textContent = isSentenceToKanji
-        ? "이 문장은 잠시 뒤 다시 나옵니다."
-        : "이 단어는 잠시 뒤 다시 나옵니다.";
+      if (session.examMode) {
+        progress.examMistakeCounts[key] = (progress.examMistakeCounts[key] || 0) + 1;
+        const examMistakeCount = progress.examMistakeCounts[key];
+        elements.examMistakeBadge.hidden = false;
+        elements.examMistakeBadge.textContent = `⚠ 이 문제는 시험에서 ${examMistakeCount}회 틀렸습니다`;
+        elements.retryNote.textContent = `시험 누적 오답 ${examMistakeCount}회가 기록되었습니다.`;
+        saveProgress();
+      } else {
+        engine.insertRetry(session.queue, session.current.id, RETRY_DELAY);
+        elements.retryNote.textContent = isSentenceToKanji
+          ? "이 문장은 잠시 뒤 다시 나옵니다."
+          : "이 단어는 잠시 뒤 다시 나옵니다.";
+      }
       elements.retryNote.hidden = false;
     }
+
+    if (session.examMode) session.completedQuestions += 1;
 
     elements.nextButton.textContent = session.queue.length
       ? session.mode === "sentence-to-kanji" ? "다음 문제" : "다음 단어"
@@ -1731,14 +2008,16 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   }
 
   function updateSessionHeader() {
-    const mastered = session.masteredIds.size;
-    const currentPosition = Math.min(mastered + 1, session.total);
+    const completed = session.examMode ? session.completedQuestions : session.masteredIds.size;
+    const currentPosition = Math.min(completed + 1, session.total);
     elements.quizProgressText.textContent = `${currentPosition} / ${session.total}`;
     elements.liveAccuracy.textContent = formatAccuracy(engine.accuracy(session.correct, session.attempts));
-    elements.progressBar.style.width = `${(mastered / session.total) * 100}%`;
+    elements.progressBar.style.width = `${(completed / session.total) * 100}%`;
   }
 
   function completeSession() {
+    stopExamTimer();
+    elements.examTimer.hidden = true;
     const sessionAccuracy = engine.accuracy(session.correct, session.attempts) || 0;
     const sessionStat = statsFor(session.difficulty, session.mode);
     sessionStat.completedSessions += 1;
@@ -1751,11 +2030,17 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     progress.totalCorrect += session.correct;
     progress.totalAttempts += session.attempts;
     progress.lastAccuracy = sessionAccuracy;
+    if (session.examMode) {
+      session.correctIds.forEach((itemId) => {
+        progress.examCooldowns[itemProgressKey(session.difficulty, session.mode, itemId)] = session.number + 4;
+      });
+    }
     progress.seenIds = [...new Set([...(progress.seenIds || []), ...session.baseIds])];
     progress.history.push({
       session: session.number,
       difficulty: session.difficulty,
       mode: session.mode,
+      examMode: session.examMode,
       choiceCount: session.choiceCount,
       accuracy: sessionAccuracy,
       correct: session.correct,
@@ -1770,16 +2055,23 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     elements.resultCorrect.textContent = session.correct;
     elements.resultWrong.textContent = session.wrong;
     elements.resultMastered.textContent = session.total;
-    elements.resultMessage.textContent = session.wrong === 0
-      ? "한 번도 틀리지 않고 모두 맞혔습니다. 완벽해요!"
-      : `오답 ${session.wrong}번도 다시 풀어 모두 익혔습니다.`;
+    elements.resultMessage.textContent = session.examMode
+      ? session.wrong === 0
+        ? "100문제를 모두 맞혔습니다. 정답 문제는 다음 3회차 동안 시험에서 제외됩니다."
+        : `100문제 시험을 마쳤습니다. 오답 ${session.wrong}개를 다시 확인해 보세요.`
+      : session.wrong === 0
+        ? "한 번도 틀리지 않고 모두 맞혔습니다. 완벽해요!"
+        : `오답 ${session.wrong}번도 다시 풀어 모두 익혔습니다.`;
     showScreen("result");
     elements.returnButton.focus();
   }
 
   function returnToStart() {
+    stopExamTimer();
+    elements.examTimer.hidden = true;
+    elements.examMistakeBadge.hidden = true;
     session = null;
-    renderStartScreen();
+    syncModeControls();
     showScreen("start");
     elements.startButton.focus();
   }
@@ -1804,6 +2096,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
 
   function syncModeControls() {
     const sentenceMode = elements.modeSentenceKanji.checked;
+    const examMode = elements.examMode.checked;
     elements.questionCountPanel.hidden = !sentenceMode;
     elements.generalQuestionCountPanel.hidden = sentenceMode;
     elements.difficultyBasic.disabled = false;
@@ -1822,6 +2115,12 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     };
     syncCountInput(elements.generalQuestionCount);
     syncCountInput(elements.sentenceQuestionCount);
+    elements.generalQuestionCount.disabled = examMode;
+    elements.sentenceQuestionCount.disabled = examMode;
+    if (examMode) {
+      elements.generalQuestionCount.value = String(EXAM_QUESTION_COUNT);
+      elements.sentenceQuestionCount.value = String(EXAM_QUESTION_COUNT);
+    }
 
     const generalMaximum = datasetForMode(difficulty, "kanji-to-reading").length;
     const sentenceMaximum = datasetForMode(difficulty, "sentence-to-kanji").length;
@@ -1835,8 +2134,28 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       n3: "N3 실전·Tatoeba 예문",
       n2: "N2 PDF 어휘 예문",
     };
-    elements.generalQuestionCountHint.textContent = `10~${generalMaximum}개 사이에서 선택 · ${generalSources[difficulty]}에서 출제`;
-    elements.sentenceQuestionCountHint.textContent = `10~${sentenceMaximum}개 사이에서 선택 · ${sentenceSources[difficulty]}에서 출제`;
+    elements.generalQuestionCountHint.textContent = examMode
+      ? `시험 모드 · 100문제 고정 · ${generalSources[difficulty]}에서 출제`
+      : `10~${generalMaximum}개 사이에서 선택 · ${generalSources[difficulty]}에서 출제`;
+    elements.sentenceQuestionCountHint.textContent = examMode
+      ? `시험 모드 · 100문제 고정 · ${sentenceSources[difficulty]}에서 출제`
+      : `10~${sentenceMaximum}개 사이에서 선택 · ${sentenceSources[difficulty]}에서 출제`;
+
+    elements.examModeState.textContent = examMode ? "ON" : "OFF";
+    elements.examModeNote.hidden = !examMode;
+    elements.startButton.textContent = examMode ? "100문제 시험 시작" : "학습 시작";
+    if (examMode) {
+      const nextSessionNumber = statsFor(difficulty, mode).completedSessions + 1;
+      const eligibleCount = examEligibleItems(difficulty, mode, nextSessionNumber).length;
+      const enoughQuestions = eligibleCount >= EXAM_QUESTION_COUNT;
+      elements.startButton.disabled = !enoughQuestions;
+      elements.examModeNote.textContent = enoughQuestions
+        ? `현재 ${eligibleCount}개 출제 가능 · 맞힌 문제는 이 난이도·학습 모드의 다음 3회차 동안 시험에서 제외됩니다.`
+        : `현재 출제 가능한 문제가 ${eligibleCount}개라 시험을 시작할 수 없습니다. 일반 학습 회차를 진행하면 보호 기간이 지나 다시 출제됩니다.`;
+    } else {
+      elements.startButton.disabled = false;
+      elements.examModeNote.textContent = "맞힌 문제는 이 난이도·학습 모드의 다음 3회차 동안 시험에서 제외됩니다.";
+    }
     renderStartScreen();
   }
 
@@ -1866,6 +2185,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     elements.modeKanjiReading.addEventListener("change", syncModeControls);
     elements.modeReadingKanji.addEventListener("change", syncModeControls);
     elements.modeSentenceKanji.addEventListener("change", syncModeControls);
+    elements.examMode.addEventListener("change", syncModeControls);
     elements.difficultyBasic.addEventListener("change", syncModeControls);
     elements.difficultyN3.addEventListener("change", syncModeControls);
     elements.difficultyN2.addEventListener("change", syncModeControls);

@@ -183,7 +183,7 @@ button:focus-visible {
 
 .mode-records-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
@@ -768,6 +768,101 @@ button:focus-visible {
   vertical-align: 2px;
 }
 
+.kana-composer {
+  position: relative;
+  z-index: 1;
+}
+
+.kana-answer {
+  display: grid;
+  min-height: 68px;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  place-items: center;
+  color: var(--ink);
+  background: rgba(255, 253, 248, 0.88);
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  font-size: clamp(27px, 7vw, 42px);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  word-break: break-all;
+}
+
+.kana-answer.is-empty {
+  color: var(--ink-soft);
+  border-color: var(--line);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.kana-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.kana-tile {
+  min-height: 58px;
+  color: var(--ink);
+  background: rgba(255, 253, 248, 0.9);
+  border: 1px solid #c9c1b4;
+  border-radius: 12px;
+  font-size: 23px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 130ms ease, border-color 130ms ease, background 130ms ease;
+}
+
+.kana-tile:hover:not(:disabled) {
+  background: #fff;
+  border-color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.kana-tile .answer-number {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  font-size: 10px;
+}
+
+.kana-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 11px;
+}
+
+.secondary-button,
+.kana-submit {
+  min-height: 43px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.secondary-button {
+  color: var(--ink);
+  background: var(--paper-deep);
+  border: 1px solid var(--line);
+}
+
+.kana-submit {
+  color: #fff;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+}
+
+.secondary-button:disabled,
+.kana-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
 .feedback {
   position: relative;
   z-index: 1;
@@ -1048,6 +1143,14 @@ button:focus-visible {
                 <div><dt>누적 정답률</dt><dd id="kanji-reading-total-accuracy">—</dd></div>
               </dl>
             </article>
+            <article id="record-kanji-kana" class="mode-record">
+              <strong>한자 → 히라가나 조합</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="kanji-kana-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="kanji-kana-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="kanji-kana-total-accuracy">—</dd></div>
+              </dl>
+            </article>
             <article id="record-reading-kanji" class="mode-record">
               <strong>읽기 → 한자</strong>
               <dl>
@@ -1108,6 +1211,13 @@ button:focus-visible {
               <small>읽는 법을 보고 알맞은 단어 고르기</small>
             </span>
           </label>
+          <label class="mode-option is-wide" for="mode-kanji-kana">
+            <input id="mode-kanji-kana" name="quiz-mode" type="radio" value="kanji-to-kana">
+            <span class="mode-copy">
+              <strong>한자 → 히라가나 조합</strong>
+              <small>9개의 히라가나를 순서대로 눌러 한자의 읽기 완성하기</small>
+            </span>
+          </label>
           <label class="mode-option is-wide" for="mode-sentence-kanji">
             <input id="mode-sentence-kanji" name="quiz-mode" type="radio" value="sentence-to-kanji">
             <span class="mode-copy">
@@ -1130,7 +1240,7 @@ button:focus-visible {
         </div>
         <p id="exam-mode-note" class="exam-mode-note" hidden>맞힌 문제는 이 난이도·학습 모드의 다음 3회차 동안 시험에 나오지 않습니다.</p>
 
-        <fieldset class="mode-picker choice-count-picker">
+        <fieldset id="choice-count-picker" class="mode-picker choice-count-picker">
           <legend>선택지 수</legend>
           <label class="mode-option" for="choice-count-4">
             <input id="choice-count-4" name="choice-count" type="radio" value="4" checked>
@@ -1202,6 +1312,15 @@ button:focus-visible {
         <p id="exam-mistake-badge" class="exam-mistake-badge" hidden></p>
 
         <div id="answer-grid" class="answer-grid" aria-label="읽기 선택지"></div>
+        <div id="kana-composer" class="kana-composer" hidden>
+          <div id="kana-answer" class="kana-answer" lang="ja" aria-live="polite">히라가나를 선택하세요</div>
+          <div id="kana-grid" class="kana-grid" aria-label="히라가나 9개"></div>
+          <div class="kana-actions">
+            <button id="kana-backspace" class="secondary-button" type="button">한 글자 지우기</button>
+            <button id="kana-clear" class="secondary-button" type="button">전체 지우기</button>
+            <button id="kana-submit" class="kana-submit" type="button" disabled>정답 제출</button>
+          </div>
+        </div>
 
         <div id="feedback" class="feedback" aria-live="polite" hidden>
           <div id="feedback-icon" class="feedback-icon" aria-hidden="true"></div>
@@ -1389,9 +1508,14 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   const difficultyLabels = { n5n4: "N5·N4", n3: "N3", n2: "N2" };
   const modeLabels = {
     "kanji-to-reading": "한자→읽기",
+    "kanji-to-kana": "한자→히라가나 조합",
     "reading-to-kanji": "읽기→한자",
     "sentence-to-kanji": "문장 빈칸→한자",
   };
+  const HIRAGANA_POOL = [...new Set(
+    "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん"
+    + "がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっゔー",
+  )];
 
   const screens = {
     start: document.getElementById("start-screen"),
@@ -1408,6 +1532,10 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     kanjiReadingSessions: document.getElementById("kanji-reading-sessions"),
     kanjiReadingLastAccuracy: document.getElementById("kanji-reading-last-accuracy"),
     kanjiReadingTotalAccuracy: document.getElementById("kanji-reading-total-accuracy"),
+    recordKanjiKana: document.getElementById("record-kanji-kana"),
+    kanjiKanaSessions: document.getElementById("kanji-kana-sessions"),
+    kanjiKanaLastAccuracy: document.getElementById("kanji-kana-last-accuracy"),
+    kanjiKanaTotalAccuracy: document.getElementById("kanji-kana-total-accuracy"),
     recordReadingKanji: document.getElementById("record-reading-kanji"),
     readingKanjiSessions: document.getElementById("reading-kanji-sessions"),
     readingKanjiLastAccuracy: document.getElementById("reading-kanji-last-accuracy"),
@@ -1422,6 +1550,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     difficultyN3: document.getElementById("difficulty-n3"),
     difficultyN2: document.getElementById("difficulty-n2"),
     modeKanjiReading: document.getElementById("mode-kanji-reading"),
+    modeKanjiKana: document.getElementById("mode-kanji-kana"),
     modeReadingKanji: document.getElementById("mode-reading-kanji"),
     modeSentenceKanji: document.getElementById("mode-sentence-kanji"),
     examMode: document.getElementById("exam-mode"),
@@ -1430,6 +1559,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     choiceCount4: document.getElementById("choice-count-4"),
     choiceCount6: document.getElementById("choice-count-6"),
     choiceCount8: document.getElementById("choice-count-8"),
+    choiceCountPicker: document.getElementById("choice-count-picker"),
     generalQuestionCountPanel: document.getElementById("general-question-count-panel"),
     generalQuestionCount: document.getElementById("general-question-count"),
     generalQuestionCountHint: document.getElementById("general-question-count-hint"),
@@ -1448,6 +1578,12 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     dayLabel: document.getElementById("day-label"),
     examMistakeBadge: document.getElementById("exam-mistake-badge"),
     answerGrid: document.getElementById("answer-grid"),
+    kanaComposer: document.getElementById("kana-composer"),
+    kanaAnswer: document.getElementById("kana-answer"),
+    kanaGrid: document.getElementById("kana-grid"),
+    kanaBackspace: document.getElementById("kana-backspace"),
+    kanaClear: document.getElementById("kana-clear"),
+    kanaSubmit: document.getElementById("kana-submit"),
     feedback: document.getElementById("feedback"),
     feedbackIcon: document.getElementById("feedback-icon"),
     feedbackTitle: document.getElementById("feedback-title"),
@@ -1476,6 +1612,12 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       lastAccuracy: elements.kanjiReadingLastAccuracy,
       totalAccuracy: elements.kanjiReadingTotalAccuracy,
     },
+    "kanji-to-kana": {
+      card: elements.recordKanjiKana,
+      sessions: elements.kanjiKanaSessions,
+      lastAccuracy: elements.kanjiKanaLastAccuracy,
+      totalAccuracy: elements.kanjiKanaTotalAccuracy,
+    },
     "reading-to-kanji": {
       card: elements.recordReadingKanji,
       sessions: elements.readingKanjiSessions,
@@ -1500,11 +1642,26 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       && item.sentenceTranslation;
   }
 
+  function kanaReading(reading) {
+    return String(reading || "")
+      .split(/[、,/]/)[0]
+      .trim()
+      .replace(/[ァ-ヶ]/g, (character) => String.fromCharCode(character.charCodeAt(0) - 0x60))
+      .replace(/[^ぁ-ゖー]/g, "");
+  }
+
+  function hasKanaReading(item) {
+    const reading = kanaReading(item.reading);
+    return reading && new Set([...reading]).size <= 9;
+  }
+
   function datasetForMode(difficulty, mode) {
     const quizData = datasets[difficulty] || [];
     if (mode === "sentence-to-kanji") return quizData.filter(hasCompleteSentence);
-    if (difficulty === "n3") return quizData.filter((item) => /[一-龯々〆ヵヶ]/.test(item.word));
-    return quizData;
+    const generalData = difficulty === "n3"
+      ? quizData.filter((item) => /[一-龯々〆ヵヶ]/.test(item.word))
+      : quizData;
+    return mode === "kanji-to-kana" ? generalData.filter(hasKanaReading) : generalData;
   }
 
   function selectedDifficulty() {
@@ -1515,6 +1672,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
 
   function selectedMode() {
     if (elements.modeSentenceKanji.checked) return "sentence-to-kanji";
+    if (elements.modeKanjiKana.checked) return "kanji-to-kana";
     if (elements.modeReadingKanji.checked) return "reading-to-kanji";
     return "kanji-to-reading";
   }
@@ -1717,7 +1875,10 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       const historyMode = modeLabels[entry.mode] || modeLabels["kanji-to-reading"];
       const historyDifficulty = difficultyLabels[entry.difficulty] || difficultyLabels.n5n4;
       const examLabel = entry.examMode ? " · 시험" : "";
-      label.textContent = `${entry.session}회차 · ${historyDifficulty} · ${historyMode}${examLabel} · ${entry.choiceCount || 4}지선다`;
+      const choiceLabel = entry.mode === "kanji-to-kana"
+        ? "히라가나 9개"
+        : `${entry.choiceCount || 4}지선다`;
+      label.textContent = `${entry.session}회차 · ${historyDifficulty} · ${historyMode}${examLabel} · ${choiceLabel}`;
       score.textContent = `정답률 ${entry.accuracy}%`;
       date.className = "history-date";
       date.textContent = entry.date;
@@ -1747,7 +1908,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   function startSession() {
     const mode = selectedMode();
     const difficulty = selectedDifficulty();
-    const choiceCount = selectedChoiceCount();
+    const choiceCount = mode === "kanji-to-kana" ? 9 : selectedChoiceCount();
     const examMode = elements.examMode.checked;
     const maximumSize = datasetForMode(difficulty, mode).length;
     const sessionStat = statsFor(difficulty, mode);
@@ -1779,6 +1940,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       attempts: 0,
       completedQuestions: 0,
       correctIds: new Set(),
+      kanaAnswer: "",
       current: null,
       currentMisses: 0,
       answered: false,
@@ -1786,10 +1948,15 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
 
     const modeLabel = modeLabels[mode];
     const examLabel = examMode ? " · 시험 모드" : "";
-    elements.quizSessionLabel.textContent = `${session.number}회차 · ${difficultyLabels[difficulty]} · ${modeLabel}${examLabel} · ${choiceCount}지선다`;
-    elements.keyboardHint.textContent = examMode
-      ? `숫자키 1–${choiceCount} 또는 숫자패드로 선택 · 제한시간 안에 답하세요`
-      : `숫자키 1–${choiceCount} 또는 숫자패드로 선택 · Enter로 다음`;
+    const choiceLabel = mode === "kanji-to-kana" ? "히라가나 9개" : `${choiceCount}지선다`;
+    elements.quizSessionLabel.textContent = `${session.number}회차 · ${difficultyLabels[difficulty]} · ${modeLabel}${examLabel} · ${choiceLabel}`;
+    elements.keyboardHint.textContent = mode === "kanji-to-kana"
+      ? examMode
+        ? "숫자키 1–9로 히라가나 선택 · Backspace로 지우기 · 제한시간 안에 Enter로 제출"
+        : "숫자키 1–9로 히라가나 선택 · Backspace로 지우기 · Enter로 제출"
+      : examMode
+        ? `숫자키 1–${choiceCount} 또는 숫자패드로 선택 · 제한시간 안에 답하세요`
+        : `숫자키 1–${choiceCount} 또는 숫자패드로 선택 · Enter로 다음`;
     showScreen("quiz");
     showNextQuestion();
   }
@@ -1809,6 +1976,48 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       : engine.buildChoices(quizData, correctItem, session.choiceCount);
   }
 
+  function buildKanaTiles(item) {
+    const required = [...new Set([...kanaReading(item.reading)])];
+    const distractors = engine.shuffle(
+      HIRAGANA_POOL.filter((character) => !required.includes(character)),
+    ).slice(0, 9 - required.length);
+    return engine.shuffle([...required, ...distractors]);
+  }
+
+  function renderKanaAnswer() {
+    const answer = session?.kanaAnswer || "";
+    elements.kanaAnswer.textContent = answer || "히라가나를 선택하세요";
+    elements.kanaAnswer.classList.toggle("is-empty", !answer);
+    const unavailable = !session || session.answered;
+    elements.kanaBackspace.disabled = unavailable || !answer;
+    elements.kanaClear.disabled = unavailable || !answer;
+    elements.kanaSubmit.disabled = unavailable || !answer;
+  }
+
+  function appendKana(character) {
+    if (!session || session.answered || session.mode !== "kanji-to-kana") return;
+    if (session.kanaAnswer.length >= 20) return;
+    session.kanaAnswer += character;
+    renderKanaAnswer();
+  }
+
+  function removeLastKana() {
+    if (!session || session.answered || session.mode !== "kanji-to-kana") return;
+    session.kanaAnswer = session.kanaAnswer.slice(0, -1);
+    renderKanaAnswer();
+  }
+
+  function clearKanaAnswer() {
+    if (!session || session.answered || session.mode !== "kanji-to-kana") return;
+    session.kanaAnswer = "";
+    renderKanaAnswer();
+  }
+
+  function submitKanaAnswer() {
+    if (!session || session.answered || session.mode !== "kanji-to-kana" || !session.kanaAnswer) return;
+    answerQuestion(null, false, session.kanaAnswer);
+  }
+
   function showNextQuestion() {
     stopExamTimer();
     if (session.queue.length === 0) {
@@ -1819,12 +2028,16 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     session.current = findItem(session.queue.shift());
     session.currentMisses = 0;
     session.answered = false;
+    session.kanaAnswer = "";
     const item = session.current;
-    const choices = buildChoices(item);
+    const isKanjiToKana = session.mode === "kanji-to-kana";
+    const choices = isKanjiToKana ? [] : buildChoices(item);
     const isReadingToKanji = session.mode === "reading-to-kanji";
     const isSentenceToKanji = session.mode === "sentence-to-kanji";
 
-    elements.quizPrompt.textContent = isSentenceToKanji
+    elements.quizPrompt.textContent = isKanjiToKana
+      ? "히라가나를 순서대로 눌러 한자의 읽기를 완성하세요."
+      : isSentenceToKanji
       ? "문장의 빈칸에 알맞은 한자 단어는 무엇일까요?"
       : isReadingToKanji
         ? "이 읽기에 알맞은 단어는 무엇일까요?"
@@ -1853,6 +2066,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       ? `⚠ 이 문제는 시험에서 ${examMistakeCount}회 틀렸습니다`
       : "";
     elements.answerGrid.replaceChildren();
+    elements.answerGrid.hidden = isKanjiToKana;
+    elements.kanaComposer.hidden = !isKanjiToKana;
     choices.forEach((choice, index) => {
       const button = document.createElement("button");
       button.type = "button";
@@ -1872,6 +2087,26 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       button.addEventListener("click", () => answerQuestion(choice.id));
       elements.answerGrid.append(button);
     });
+    elements.kanaGrid.replaceChildren();
+    if (isKanjiToKana) {
+      buildKanaTiles(item).forEach((character, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "kana-tile";
+        button.dataset.kana = character;
+        button.setAttribute("aria-label", `${index + 1}번, ${character}`);
+        const number = document.createElement("span");
+        number.className = "answer-number";
+        number.textContent = index + 1;
+        const kana = document.createElement("span");
+        kana.lang = "ja";
+        kana.textContent = character;
+        button.append(number, kana);
+        button.addEventListener("click", () => appendKana(character));
+        elements.kanaGrid.append(button);
+      });
+      renderKanaAnswer();
+    }
 
     elements.feedback.hidden = true;
     elements.feedback.className = "feedback";
@@ -1887,20 +2122,29 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     elements.retryNote.hidden = true;
     elements.nextButton.hidden = true;
     updateSessionHeader();
-    elements.answerGrid.querySelector("button")?.focus();
+    const firstInput = isKanjiToKana
+      ? elements.kanaGrid.querySelector("button")
+      : elements.answerGrid.querySelector("button");
+    firstInput?.focus();
     startExamTimer();
   }
 
-  function answerQuestion(selectedId, timedOut = false) {
+  function answerQuestion(selectedId, timedOut = false, constructedAnswer = null) {
     if (session.answered) return;
     if (session.examMode) stopExamTimer();
     session.attempts += 1;
-    const isCorrect = !timedOut && selectedId === session.current.id;
+    const isKanjiToKana = session.mode === "kanji-to-kana";
+    const correctKana = isKanjiToKana ? kanaReading(session.current.reading) : "";
+    const isCorrect = !timedOut && (
+      isKanjiToKana ? constructedAnswer === correctKana : selectedId === session.current.id
+    );
     const isSentenceToKanji = session.mode === "sentence-to-kanji";
-    const selectedItem = timedOut ? null : findItem(selectedId);
+    const selectedItem = timedOut || isKanjiToKana ? null : findItem(selectedId);
     const selectedReading = selectedItem ? normalizedReading(selectedItem.reading) : "";
     const selectedAnswer = timedOut
       ? "시간 초과"
+      : isKanjiToKana
+        ? constructedAnswer
       : session.mode === "kanji-to-reading"
         ? `${selectedReading} · ${selectedItem.word} · ${selectedItem.meaning}`
         : `${selectedItem.word}（${selectedReading}） · ${selectedItem.meaning}`;
@@ -1943,6 +2187,12 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       if (button.dataset.itemId === session.current.id) button.classList.add("is-correct");
       if (!isCorrect && selectedId && button.dataset.itemId === selectedId) button.classList.add("is-wrong");
     });
+    if (isKanjiToKana) {
+      [...elements.kanaGrid.querySelectorAll("button")].forEach((button) => {
+        button.disabled = true;
+      });
+      renderKanaAnswer();
+    }
 
     elements.feedback.hidden = false;
     elements.feedback.className = "feedback";
@@ -1961,6 +2211,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     elements.feedbackSelected.textContent = isCorrect ? "" : `선택한 답  ${selectedAnswer}`;
     elements.feedbackReading.textContent = session.mode === "sentence-to-kanji"
       ? `정답  ${session.current.word}（${normalizedReading(session.current.reading)}）`
+      : isKanjiToKana
+        ? `정답 읽기  ${correctKana}`
       : session.mode === "reading-to-kanji"
         ? `정답  ${session.current.word}`
         : `읽기  ${normalizedReading(session.current.reading)}`;
@@ -2078,11 +2330,28 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
 
   function handleKeyboard(event) {
     if (!screens.quiz.classList.contains("is-active") || !session) return;
-    const numberKey = /^[1-8]$/.test(event.key)
+    const numberKey = /^[1-9]$/.test(event.key)
       ? Number(event.key)
-      : /^Numpad[1-8]$/.test(event.code)
+      : /^Numpad[1-9]$/.test(event.code)
         ? Number(event.code.slice(-1))
         : null;
+
+    if (!session.answered && session.mode === "kanji-to-kana") {
+      if (numberKey !== null) {
+        event.preventDefault?.();
+        elements.kanaGrid.querySelectorAll("button")[numberKey - 1]?.click();
+      } else if (event.key === "Backspace") {
+        event.preventDefault?.();
+        removeLastKana();
+      } else if (event.key === "Escape" || event.key === "Delete") {
+        event.preventDefault?.();
+        clearKanaAnswer();
+      } else if (event.key === "Enter" || event.code === "NumpadEnter") {
+        event.preventDefault?.();
+        submitKanaAnswer();
+      }
+      return;
+    }
 
     if (!session.answered && numberKey !== null) {
       event.preventDefault?.();
@@ -2096,9 +2365,11 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
 
   function syncModeControls() {
     const sentenceMode = elements.modeSentenceKanji.checked;
+    const kanaMode = elements.modeKanjiKana.checked;
     const examMode = elements.examMode.checked;
     elements.questionCountPanel.hidden = !sentenceMode;
     elements.generalQuestionCountPanel.hidden = sentenceMode;
+    elements.choiceCountPicker.hidden = kanaMode;
     elements.difficultyBasic.disabled = false;
 
     const difficulty = selectedDifficulty();
@@ -2170,7 +2441,11 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       const sentenceData = datasetForMode(difficulty, "sentence-to-kanji");
       return sentenceData.length < 4 || sentenceData.some((item) => !hasCompleteSentence(item));
     });
-    if (Object.values(datasets).some((quizData) => quizData.length < 4) || invalidCoreData || invalidSentenceData) {
+    const invalidKanaData = Object.keys(datasets).some(
+      (difficulty) => datasetForMode(difficulty, "kanji-to-kana").length < EXAM_QUESTION_COUNT,
+    );
+    if (Object.values(datasets).some((quizData) => quizData.length < 4)
+      || invalidCoreData || invalidSentenceData || invalidKanaData) {
       elements.appError.hidden = false;
       elements.appError.textContent = "단어 데이터를 불러오지 못했습니다. 단어 데이터 파일을 확인해 주세요.";
       elements.startButton.disabled = true;
@@ -2182,7 +2457,11 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     elements.homeButton.addEventListener("click", returnToStart);
     elements.nextButton.addEventListener("click", showNextQuestion);
     elements.returnButton.addEventListener("click", returnToStart);
+    elements.kanaBackspace.addEventListener("click", removeLastKana);
+    elements.kanaClear.addEventListener("click", clearKanaAnswer);
+    elements.kanaSubmit.addEventListener("click", submitKanaAnswer);
     elements.modeKanjiReading.addEventListener("change", syncModeControls);
+    elements.modeKanjiKana.addEventListener("change", syncModeControls);
     elements.modeReadingKanji.addEventListener("change", syncModeControls);
     elements.modeSentenceKanji.addEventListener("change", syncModeControls);
     elements.examMode.addEventListener("change", syncModeControls);

@@ -373,6 +373,10 @@ button:focus-visible {
   text-align: left;
 }
 
+.exam-mode-note.is-practice-note {
+  color: var(--focus);
+}
+
 .switch {
   display: inline-flex;
   flex: 0 0 auto;
@@ -1278,7 +1282,7 @@ button:focus-visible {
         </div>
 
         <button id="start-button" class="primary-button" type="button">학습 시작</button>
-        <p class="helper">선택지 4·6·8개 · 문제 수 선택 · 오답 자동 재출제 · 기록 자동 저장</p>
+        <p class="helper">선택지 4·6·8개 · 문제 수 선택 · 오답 자동 재출제 · 무오답 3회 간격 반복 · 기록 자동 저장</p>
         <p class="source-note">N3 추가 예문: <a href="https://tatoeba.org/ko/" target="_blank" rel="noreferrer">Tatoeba · CC BY 2.0 FR</a></p>
 
         <div id="history-panel" class="history-panel" hidden>
@@ -1468,6 +1472,42 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     return insertionIndex;
   }
 
+  function isReviewEligible(cooldowns, itemKey, practiceRound) {
+    const eligibleFrom = Number(cooldowns[itemKey]) || 0;
+    return practiceRound >= eligibleFrom;
+  }
+
+  function updateCleanReview(
+    cleanStreaks,
+    cooldowns,
+    itemKeys,
+    mistakenKeys,
+    practiceRound,
+    requiredCleanAnswers = 3,
+    cooldownRounds = 3,
+  ) {
+    const mistakes = new Set(mistakenKeys || []);
+    const protectedKeys = [];
+
+    itemKeys.forEach((itemKey) => {
+      if (mistakes.has(itemKey)) {
+        cleanStreaks[itemKey] = 0;
+        return;
+      }
+
+      const nextStreak = (Number(cleanStreaks[itemKey]) || 0) + 1;
+      if (nextStreak >= requiredCleanAnswers) {
+        cleanStreaks[itemKey] = 0;
+        cooldowns[itemKey] = practiceRound + cooldownRounds + 1;
+        protectedKeys.push(itemKey);
+      } else {
+        cleanStreaks[itemKey] = nextStreak;
+      }
+    });
+
+    return protectedKeys;
+  }
+
   return {
     accuracy,
     normalizedReading,
@@ -1476,6 +1516,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     buildChoicesByWord,
     selectSessionItems,
     insertRetry,
+    isReviewEligible,
+    updateCleanReview,
   };
 }));
 
@@ -1485,6 +1527,8 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   "use strict";
 
   const RETRY_DELAY = 3;
+  const PRACTICE_CLEAN_STREAK_REQUIRED = 3;
+  const PRACTICE_COOLDOWN_ROUNDS = 3;
   const EXAM_QUESTION_COUNT = 100;
   const WORD_TIME_LIMIT = 7;
   const KANA_TIME_LIMIT = 10;
@@ -1751,6 +1795,9 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       lastAccuracy: null,
       history: [],
       mistakeCounts: {},
+      practiceSessionCount: 0,
+      practiceCleanStreaks: {},
+      practiceCooldowns: {},
       examMistakeCounts: {},
       examCooldowns: {},
       seenIds: [],
@@ -1764,6 +1811,15 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       if (!saved || typeof saved !== "object") return defaultProgress();
       const normalized = { ...defaultProgress(), ...saved };
       normalized.sessionStats = normalizeSessionStats(saved.sessionStats, normalized.history, saved);
+      normalized.practiceSessionCount = Math.max(0, Number(saved.practiceSessionCount) || 0);
+      normalized.practiceCleanStreaks = saved.practiceCleanStreaks
+        && typeof saved.practiceCleanStreaks === "object"
+        ? saved.practiceCleanStreaks
+        : {};
+      normalized.practiceCooldowns = saved.practiceCooldowns
+        && typeof saved.practiceCooldowns === "object"
+        ? saved.practiceCooldowns
+        : {};
       normalized.examMistakeCounts = saved.examMistakeCounts && typeof saved.examMistakeCounts === "object"
         ? saved.examMistakeCounts
         : {};
@@ -1803,6 +1859,44 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       const eligibleFrom = Number(progress.examCooldowns[itemProgressKey(difficulty, mode, item.id)]) || 0;
       return sessionNumber >= eligibleFrom;
     });
+  }
+
+  function isPracticeWordMode(mode) {
+    return mode !== "sentence-to-kanji";
+  }
+
+  function practiceEligibleItems(difficulty, mode, practiceRound) {
+    return datasetForMode(difficulty, mode).filter((item) => engine.isReviewEligible(
+      progress.practiceCooldowns,
+      itemProgressKey(difficulty, mode, item.id),
+      practiceRound,
+    ));
+  }
+
+  function updatePracticeReviewProgress() {
+    if (session.examMode || !isPracticeWordMode(session.mode)) return 0;
+
+    const itemKeys = [...session.baseIds].map((itemId) => itemProgressKey(
+      session.difficulty,
+      session.mode,
+      itemId,
+    ));
+    const mistakenKeys = [...session.mistakenIds].map((itemId) => itemProgressKey(
+      session.difficulty,
+      session.mode,
+      itemId,
+    ));
+    const protectedKeys = engine.updateCleanReview(
+      progress.practiceCleanStreaks,
+      progress.practiceCooldowns,
+      itemKeys,
+      mistakenKeys,
+      session.practiceRound,
+      PRACTICE_CLEAN_STREAK_REQUIRED,
+      PRACTICE_COOLDOWN_ROUNDS,
+    );
+    progress.practiceSessionCount = session.practiceRound;
+    return protectedKeys.length;
   }
 
   function stopExamTimer() {
@@ -1920,8 +2014,18 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     const maximumSize = datasetForMode(difficulty, mode).length;
     const sessionStat = statsFor(difficulty, mode);
     const sessionNumber = sessionStat.completedSessions + 1;
-    const eligibleItems = examMode ? examEligibleItems(difficulty, mode, sessionNumber) : null;
+    const practiceRound = (Number(progress.practiceSessionCount) || 0) + 1;
+    const practiceWordMode = !examMode && isPracticeWordMode(mode);
+    const eligibleItems = examMode
+      ? examEligibleItems(difficulty, mode, sessionNumber)
+      : practiceWordMode
+        ? practiceEligibleItems(difficulty, mode, practiceRound)
+        : null;
     if (examMode && eligibleItems.length < EXAM_QUESTION_COUNT) {
+      syncModeControls();
+      return;
+    }
+    if (practiceWordMode && eligibleItems.length === 0) {
       syncModeControls();
       return;
     }
@@ -1937,11 +2041,13 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       difficulty,
       mode,
       examMode,
+      practiceRound,
       choiceCount,
       total: items.length,
       baseIds: new Set(items.map((item) => item.id)),
       queue: items.map((item) => item.id),
       masteredIds: new Set(),
+      mistakenIds: new Set(),
       correct: 0,
       wrong: 0,
       attempts: 0,
@@ -2239,6 +2345,9 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     } else {
       session.wrong += 1;
       session.masteredIds.delete(session.current.id);
+      if (!session.examMode && !isSentenceToKanji) {
+        session.mistakenIds.add(session.current.id);
+      }
       progress.mistakeCounts[key] = (progress.mistakeCounts[key] || 0) + 1;
       if (session.examMode) {
         progress.examMistakeCounts[key] = (progress.examMistakeCounts[key] || 0) + 1;
@@ -2278,6 +2387,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     stopExamTimer();
     elements.examTimer.hidden = true;
     const sessionAccuracy = engine.accuracy(session.correct, session.attempts) || 0;
+    const newlyProtectedCount = updatePracticeReviewProgress();
     const sessionStat = statsFor(session.difficulty, session.mode);
     sessionStat.completedSessions += 1;
     sessionStat.totalCorrect += session.correct;
@@ -2314,13 +2424,16 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     elements.resultCorrect.textContent = session.correct;
     elements.resultWrong.textContent = session.wrong;
     elements.resultMastered.textContent = session.total;
-    elements.resultMessage.textContent = session.examMode
+    const baseResultMessage = session.examMode
       ? session.wrong === 0
         ? "100문제를 모두 맞혔습니다. 정답 문제는 다음 3회차 동안 시험에서 제외됩니다."
         : `100문제 시험을 마쳤습니다. 오답 ${session.wrong}개를 다시 확인해 보세요.`
       : session.wrong === 0
         ? "한 번도 틀리지 않고 모두 맞혔습니다. 완벽해요!"
         : `오답 ${session.wrong}번도 다시 풀어 모두 익혔습니다.`;
+    elements.resultMessage.textContent = newlyProtectedCount > 0
+      ? `${baseResultMessage} ${newlyProtectedCount}개 단어는 다음 3회차 동안 쉬고 다시 나옵니다.`
+      : baseResultMessage;
     showScreen("result");
     elements.returnButton.focus();
   }
@@ -2420,9 +2533,10 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
       : `10~${sentenceMaximum}개 사이에서 선택 · ${sentenceSources[difficulty]}에서 출제`;
 
     elements.examModeState.textContent = examMode ? "ON" : "OFF";
-    elements.examModeNote.hidden = !examMode;
+    elements.examModeNote.classList.toggle("is-practice-note", !examMode);
     elements.startButton.textContent = examMode ? "100문제 시험 시작" : "학습 시작";
     if (examMode) {
+      elements.examModeNote.hidden = false;
       const nextSessionNumber = statsFor(difficulty, mode).completedSessions + 1;
       const eligibleCount = examEligibleItems(difficulty, mode, nextSessionNumber).length;
       const enoughQuestions = eligibleCount >= EXAM_QUESTION_COUNT;
@@ -2431,8 +2545,17 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
         ? `현재 ${eligibleCount}개 출제 가능 · 맞힌 문제는 이 난이도·학습 모드의 다음 3회차 동안 시험에서 제외됩니다.`
         : `현재 출제 가능한 문제가 ${eligibleCount}개라 시험을 시작할 수 없습니다. 일반 학습 회차를 진행하면 보호 기간이 지나 다시 출제됩니다.`;
     } else {
-      elements.startButton.disabled = false;
-      elements.examModeNote.textContent = "맞힌 문제는 이 난이도·학습 모드의 다음 3회차 동안 시험에서 제외됩니다.";
+      const practiceRound = (Number(progress.practiceSessionCount) || 0) + 1;
+      const practiceWordMode = isPracticeWordMode(mode);
+      const practiceEligibleCount = practiceWordMode
+        ? practiceEligibleItems(difficulty, mode, practiceRound).length
+        : nextMaximum;
+      const coolingCount = practiceWordMode ? nextMaximum - practiceEligibleCount : 0;
+      elements.startButton.disabled = practiceWordMode && practiceEligibleCount === 0;
+      elements.examModeNote.hidden = coolingCount === 0;
+      elements.examModeNote.textContent = coolingCount > 0
+        ? `무오답 3회 완료 단어 ${coolingCount}개는 복습 대기 중입니다. 현재 ${practiceEligibleCount}개 출제 가능하며, 다른 단어 연습 3회차가 지나면 다시 나옵니다.`
+        : "맞힌 문제는 이 난이도·학습 모드의 다음 3회차 동안 시험에서 제외됩니다.";
     }
     renderStartScreen();
   }

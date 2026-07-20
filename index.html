@@ -1230,7 +1230,7 @@ button:focus-visible {
         <div class="exam-mode-panel">
           <div>
             <strong>시험 모드</strong>
-            <small>100문제 고정 · 단어 7초 · 문장 13초</small>
+            <small>100문제 고정 · 객관식 단어 7초 · 히라가나 조합 10초 · 문장 13초</small>
           </div>
           <label class="switch" for="exam-mode">
             <input id="exam-mode" type="checkbox">
@@ -1487,6 +1487,7 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
   const RETRY_DELAY = 3;
   const EXAM_QUESTION_COUNT = 100;
   const WORD_TIME_LIMIT = 7;
+  const KANA_TIME_LIMIT = 10;
   const SENTENCE_TIME_LIMIT = 13;
   const STORAGE_KEY = "jlpt-vocab-quiz-progress-v1";
   const engine = window.QuizEngine;
@@ -1817,13 +1818,19 @@ globalThis.N2_VOCAB_DATA = [{"id":"n2-001","level":"N2","word":"貴重","reading
     elements.examTimer.classList.toggle("is-urgent", Boolean(session && session.timeRemaining <= 3));
   }
 
+  function examTimeLimit(mode) {
+    if (mode === "sentence-to-kanji") return SENTENCE_TIME_LIMIT;
+    if (mode === "kanji-to-kana") return KANA_TIME_LIMIT;
+    return WORD_TIME_LIMIT;
+  }
+
   function startExamTimer() {
     stopExamTimer();
     if (!session?.examMode) {
       elements.examTimer.hidden = true;
       return;
     }
-    session.timeRemaining = session.mode === "sentence-to-kanji" ? SENTENCE_TIME_LIMIT : WORD_TIME_LIMIT;
+    session.timeRemaining = examTimeLimit(session.mode);
     elements.examTimer.hidden = false;
     renderExamTime();
     examTimerId = setInterval(() => {

@@ -1,0 +1,28 @@
+name: Verify app
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run quiz logic tests
+        run: node japanese-vocab-quiz/test-quiz-logic.js
+      - name: Run app interaction tests
+        run: node japanese-vocab-quiz/test-app-flow.js
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Rebuild deployable page
+        run: python bundle_quiz_app.py
+      - name: Verify generated page is current
+        run: git diff --exit-code -- index.html

@@ -1,0 +1,4 @@
+janome
+lxml
+pdfplumber
+python-docx

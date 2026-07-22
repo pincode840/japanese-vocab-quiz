@@ -1,0 +1,4802 @@
+[
+  {
+    "id": "d7-1",
+    "word": "中",
+    "sentence": "かばんの___に眼鏡があります。",
+    "sentenceFurigana": "かばんの___に<ruby>眼鏡<rt>めがね</rt></ruby>があります。",
+    "sentenceTranslation": "가방 안에 안경이 있습니다.",
+    "blankSurface": "中",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-2",
+    "word": "夏",
+    "sentence": "___には水遊びをします。",
+    "sentenceFurigana": "___には<ruby>水遊<rt>みずあそ</rt></ruby>びをします。",
+    "sentenceTranslation": "여름은 물놀이를 합니다.",
+    "blankSurface": "夏",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-3",
+    "word": "夏休み",
+    "sentence": "___には何をしますか。",
+    "sentenceFurigana": "___には<ruby>何<rt>なに</rt></ruby>をしますか。",
+    "sentenceTranslation": "여름방학에는 무엇을 합니까?.",
+    "blankSurface": "夏休み",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-4",
+    "word": "何",
+    "sentence": "スポーツの中で___が一番すきですか。",
+    "sentenceFurigana": "<ruby>スポ<rt>すぽ</rt></ruby>ー<ruby>ツ<rt>つ</rt></ruby>の<ruby>中<rt>なか</rt></ruby>で___が<ruby>一番<rt>いちばん</rt></ruby>すきですか。",
+    "sentenceTranslation": "스포츠 중에서 무엇을 가장 좋아합니까?",
+    "blankSurface": "何",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-5",
+    "word": "名前",
+    "sentence": "ご住所とお___を書いてください。",
+    "sentenceFurigana": "ご<ruby>住所<rt>じゅうしょ</rt></ruby>とお___を<ruby>書<rt>か</rt></ruby>いてください。",
+    "sentenceTranslation": "주소와 이름(성함)을 적어 주세요.",
+    "blankSurface": "名前",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-6",
+    "word": "肉",
+    "sentence": "運動の後には主に___と野菜を食べます。",
+    "sentenceFurigana": "<ruby>運動<rt>うんどう</rt></ruby>の<ruby>後<rt>あと</rt></ruby>には<ruby>主<rt>おも</rt></ruby>に___と<ruby>野菜<rt>やさい</rt></ruby>を<ruby>食<rt>た</rt></ruby>べます。",
+    "sentenceTranslation": "운동 후에는 주로 고기와 야채를 먹습니다.",
+    "blankSurface": "肉",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-7",
+    "word": "西",
+    "sentence": "日は___に沈む。",
+    "sentenceFurigana": "<ruby>日<rt>ひ</rt></ruby>は___に<ruby>沈<rt>しず</rt></ruby>む。",
+    "sentenceTranslation": "해는 서쪽으로 진다.",
+    "blankSurface": "西",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-8",
+    "word": "荷物",
+    "sentence": "多くの___は保管できません。",
+    "sentenceFurigana": "<ruby>多<rt>おお</rt></ruby>くの___は<ruby>保管<rt>ほかん</rt></ruby>できません。",
+    "sentenceTranslation": "많은 짐(화물)은 보관할 수 없습니다.",
+    "blankSurface": "荷物",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-9",
+    "word": "庭",
+    "sentence": "___にりんごの木を植えました。",
+    "sentenceFurigana": "___にりんごの<ruby>木<rt>き</rt></ruby>を<ruby>植<rt>う</rt></ruby>えました。",
+    "sentenceTranslation": "정원에 사과나무를 심었습니다.",
+    "blankSurface": "庭",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-10",
+    "word": "飲み物",
+    "sentence": "___は何にしますか。",
+    "sentenceFurigana": "___は<ruby>何<rt>なに</rt></ruby>にしますか。",
+    "sentenceTranslation": "음료수는 무엇으로 하겠습니까?",
+    "blankSurface": "飲み物",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-11",
+    "word": "歯",
+    "sentence": "___が痛いです。",
+    "sentenceFurigana": "___が<ruby>痛<rt>いた</rt></ruby>いです。",
+    "sentenceTranslation": "이가 아픕니다.",
+    "blankSurface": "歯",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-12",
+    "word": "葉書",
+    "sentence": "旅行中に記念___を買いました。",
+    "sentenceFurigana": "<ruby>旅行中<rt>りょこうちゅう</rt></ruby>に記念___を<ruby>買<rt>か</rt></ruby>いました。",
+    "sentenceTranslation": "여행 중에 기념엽서를 샀습니다.",
+    "blankSurface": "葉書",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-13",
+    "word": "箱",
+    "sentence": "___のサイズを確認してください。",
+    "sentenceFurigana": "___の<ruby>サイズ<rt>さいず</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>してください。",
+    "sentenceTranslation": "상자 크기를 확인해 주세요.",
+    "blankSurface": "箱",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-14",
+    "word": "橋",
+    "sentence": "この___は危ないので一人ずつ渡りましょう。",
+    "sentenceFurigana": "この___は<ruby>危<rt>あぶ</rt></ruby>ないので<ruby>一人<rt>ひとり</rt></ruby>ずつ<ruby>渡<rt>わた</rt></ruby>りましょう。",
+    "sentenceTranslation": "이 다리는 위험하니까 한 사람씩 건너갑니다..",
+    "blankSurface": "橋",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-15",
+    "word": "箸",
+    "sentence": "子供はもう___を使います。",
+    "sentenceFurigana": "<ruby>子供<rt>こども</rt></ruby>はもう___を<ruby>使<rt>つか</rt></ruby>います。",
+    "sentenceTranslation": "아이는 벌써 젓가락을 사용합니다.",
+    "blankSurface": "箸",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-16",
+    "word": "花",
+    "sentence": "バラの___がぱあっと咲きました。",
+    "sentenceFurigana": "<ruby>バラ<rt>ばら</rt></ruby>の___がぱあっと<ruby>咲<rt>さ</rt></ruby>きました。",
+    "sentenceTranslation": "장미꽃이 활짝 피었습니다.",
+    "blankSurface": "花",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-17",
+    "word": "鼻",
+    "sentence": "私は___を弄る癖があります。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>は___を<ruby>弄<rt>いじ</rt></ruby>る<ruby>癖<rt>くせ</rt></ruby>があります。",
+    "sentenceTranslation": "나는 코를 만지는 버릇이 있습니다.",
+    "blankSurface": "鼻",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-18",
+    "word": "話",
+    "sentence": "彼女に信じられない___を聞きました。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>に<ruby>信<rt>しん</rt></ruby>じられない___を<ruby>聞<rt>き</rt></ruby>きました。",
+    "sentenceTranslation": "그녀에게 믿을 수 없는 이야기를 들었습니다.",
+    "blankSurface": "話",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-19",
+    "word": "春",
+    "sentence": "___になると花が咲きます。",
+    "sentenceFurigana": "___になると<ruby>花<rt>はな</rt></ruby>が<ruby>咲<rt>さ</rt></ruby>きます。",
+    "sentenceTranslation": "봄이 되면 꽃이 핍니다.",
+    "blankSurface": "春",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d7-20",
+    "word": "番号",
+    "sentence": "カード___を入力してください。",
+    "sentenceFurigana": "<ruby>カ<rt>か</rt></ruby>ー<ruby>ド<rt>ど</rt></ruby>___を<ruby>入力<rt>にゅうりょく</rt></ruby>してください。",
+    "sentenceTranslation": "카드 번호를 입력해 주세요.",
+    "blankSurface": "番号",
+    "matchMethod": "base-form",
+    "source": "능력단어7.docx"
+  },
+  {
+    "id": "d8-1",
+    "word": "東",
+    "sentence": "太陽は___から昇ります。",
+    "sentenceFurigana": "<ruby>太陽<rt>たいよう</rt></ruby>は___から<ruby>昇<rt>のぼ</rt></ruby>ります。",
+    "sentenceTranslation": "태양은 동쪽에서 뜹니다.",
+    "blankSurface": "東",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-2",
+    "word": "飛行機",
+    "sentence": "___に搭乗してください。",
+    "sentenceFurigana": "___に<ruby>搭乗<rt>とうじょう</rt></ruby>してください。",
+    "sentenceTranslation": "비행기에 탑승해 주세요.",
+    "blankSurface": "飛行機",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-3",
+    "word": "左",
+    "sentence": "お茶碗は___に置きます。",
+    "sentenceFurigana": "お<ruby>茶碗<rt>ちゃわん</rt></ruby>は___に<ruby>置<rt>お</rt></ruby>きます。",
+    "sentenceTranslation": "밥그릇은 왼쪽에 놓습니다.",
+    "blankSurface": "左",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-4",
+    "word": "人",
+    "sentence": "彼女は心が暖かい___です。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>は<ruby>心<rt>こころ</rt></ruby>が<ruby>暖<rt>あたた</rt></ruby>かい___です。",
+    "sentenceTranslation": "그녀는 마음이 따뜻한 사람입니다.",
+    "blankSurface": "人",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-5",
+    "word": "一月",
+    "sentence": "___に一度故郷へ行きます。",
+    "sentenceFurigana": "___に<ruby>一度故郷<rt>いちどふるさと</rt></ruby>へ<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "한 달에 한 번 고향에 갑니다.",
+    "blankSurface": "ひと月",
+    "matchMethod": "source-override",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-6",
+    "word": "病気",
+    "sentence": "父は___で亡くなりました。",
+    "sentenceFurigana": "<ruby>父<rt>ちち</rt></ruby>は___で<ruby>亡<rt>な</rt></ruby>くなりました。",
+    "sentenceTranslation": "아버지는 병으로 돌아가셨습니다.",
+    "blankSurface": "病気",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-7",
+    "word": "昼",
+    "sentence": "___には仕事をし、夜には勉強をする。",
+    "sentenceFurigana": "___には<ruby>仕事<rt>しごと</rt></ruby>をし、<ruby>夜<rt>よる</rt></ruby>には<ruby>勉強<rt>べんきょう</rt></ruby>をする。",
+    "sentenceTranslation": "낮에는 일을 하고, 밤에는 공부를 한다.",
+    "blankSurface": "昼",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-8",
+    "word": "昼ご飯",
+    "sentence": "昨日は友達と___を食べました。",
+    "sentenceFurigana": "<ruby>昨日<rt>きのう</rt></ruby>は<ruby>友達<rt>ともだち</rt></ruby>と___を<ruby>食<rt>た</rt></ruby>べました。",
+    "sentenceTranslation": "어제는 친구와 점심밥을 먹었습니다.",
+    "blankSurface": "昼ご飯",
+    "matchMethod": "exact",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-9",
+    "word": "封筒",
+    "sentence": "手紙の___に住所を書いてください。",
+    "sentenceFurigana": "<ruby>手紙<rt>てがみ</rt></ruby>の___に<ruby>住所<rt>じゅうしょ</rt></ruby>を<ruby>書<rt>か</rt></ruby>いてください。",
+    "sentenceTranslation": "편지 봉투에 주소를 적어 주세요.",
+    "blankSurface": "封筒",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-10",
+    "word": "服",
+    "sentence": "赤ちゃんの___は柔らかいです。",
+    "sentenceFurigana": "<ruby>赤<rt>あか</rt></ruby>ちゃんの___は<ruby>柔<rt>やわ</rt></ruby>らかいです。",
+    "sentenceTranslation": "아기 옷은 부드럽습니다.",
+    "blankSurface": "服",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-11",
+    "word": "豚肉",
+    "sentence": "彼は___が好きです。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は___が<ruby>好<rt>す</rt></ruby>きです。",
+    "sentenceTranslation": "그는 돼지고기를 좋아합니다.",
+    "blankSurface": "豚肉",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-12",
+    "word": "冬",
+    "sentence": "私は___に生まれました。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>は___に<ruby>生<rt>う</rt></ruby>まれました。",
+    "sentenceTranslation": "나는 겨울에 태어났습니다.",
+    "blankSurface": "冬",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-13",
+    "word": "風呂",
+    "sentence": "音楽を聞きながらお___に入ります。",
+    "sentenceFurigana": "<ruby>音楽<rt>おんがく</rt></ruby>を<ruby>聞<rt>き</rt></ruby>きながらお___に<ruby>入<rt>はい</rt></ruby>ります。",
+    "sentenceTranslation": "음악을 들으면서 목욕을 합니다.",
+    "blankSurface": "風呂",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-14",
+    "word": "部屋",
+    "sentence": "___は暖かいです。",
+    "sentenceFurigana": "___は<ruby>暖<rt>あたた</rt></ruby>かいです。",
+    "sentenceTranslation": "방은 따뜻합니다..",
+    "blankSurface": "部屋",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-15",
+    "word": "辺",
+    "sentence": "この___にはレスランがない。",
+    "sentenceFurigana": "この___には<ruby>レスラン<rt>れすらん</rt></ruby>がない。",
+    "sentenceTranslation": "이 주변에는 레스토랑이 없다.",
+    "blankSurface": "辺",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-16",
+    "word": "勉強",
+    "sentence": "今日は英語の___をするつもりです（予定です）",
+    "sentenceFurigana": "<ruby>今日<rt>きょう</rt></ruby>は<ruby>英語<rt>えいご</rt></ruby>の___をするつもりです（<ruby>予定<rt>よてい</rt></ruby>です）",
+    "sentenceTranslation": "오늘은 영어 공부를 할 예정입니다.",
+    "blankSurface": "勉強",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-17",
+    "word": "帽子",
+    "sentence": "子供は___をかぶっています。",
+    "sentenceFurigana": "<ruby>子供<rt>こども</rt></ruby>は___をかぶっています。",
+    "sentenceTranslation": "아이는 모자를 쓰고 있습니다.",
+    "blankSurface": "帽子",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-18",
+    "word": "他",
+    "sentence": "このコーヒーは___のーヒーより高いです。",
+    "sentenceFurigana": "この<ruby>コ<rt>こ</rt></ruby>ー<ruby>ヒ<rt>ひ</rt></ruby>ーは___のー<ruby>ヒ<rt>ひ</rt></ruby>ーより<ruby>高<rt>たか</rt></ruby>いです。",
+    "sentenceTranslation": "이 커피는 다른 커피보다 비쌉니다.",
+    "blankSurface": "他",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-19",
+    "word": "本",
+    "sentence": "これは日本語の___ですか。",
+    "sentenceFurigana": "これは<ruby>日本語<rt>にほんご</rt></ruby>の___ですか。",
+    "sentenceTranslation": "이것은 일본어 책입니까?",
+    "blankSurface": "本",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d8-20",
+    "word": "本棚",
+    "sentence": "マンガは___にあります。",
+    "sentenceFurigana": "<ruby>マンガ<rt>まんが</rt></ruby>は___にあります。",
+    "sentenceTranslation": "만화책은 책장에 있습니다.",
+    "blankSurface": "本棚",
+    "matchMethod": "base-form",
+    "source": "능력단어8.docx"
+  },
+  {
+    "id": "d9-1",
+    "word": "毎朝",
+    "sentence": "彼は___ジョギングをします。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は___<ruby>ジョギング<rt>じょぎんぐ</rt></ruby>をします。",
+    "sentenceTranslation": "그는 매일 아침 조깅을 합니다.",
+    "blankSurface": "毎朝",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-2",
+    "word": "毎月",
+    "sentence": "彼女は___ボランティア活動をしています。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>は___<ruby>ボランティア<rt>ぼらんてぃあ</rt></ruby><ruby>活動<rt>かつどう</rt></ruby>をしています。",
+    "sentenceTranslation": "그녀는 매월 봉사활동을 하고 있습니다.",
+    "blankSurface": "毎月",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-3",
+    "word": "毎年",
+    "sentence": "___、飲酒運転事故が発生しています。",
+    "sentenceFurigana": "___、<ruby>飲酒運転事故<rt>いんしゅうんてんじこ</rt></ruby>が<ruby>発生<rt>はっせい</rt></ruby>しています。",
+    "sentenceTranslation": "매년 음주운전 사고가 발생하고 있습니다.",
+    "blankSurface": "毎年",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-4",
+    "word": "毎晩",
+    "sentence": "彼は___酒を飲みます。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は___酒を<ruby>飲<rt>の</rt></ruby>みます。",
+    "sentenceTranslation": "그는 매일 밤, 술을 마십니다.",
+    "blankSurface": "毎晩",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-5",
+    "word": "前",
+    "sentence": "郵便局の___に郵便ポストがあります。",
+    "sentenceFurigana": "<ruby>郵便局<rt>ゆうびんきょく</rt></ruby>の___に<ruby>郵便<rt>ゆうびん</rt></ruby><ruby>ポスト<rt>ぽすと</rt></ruby>があります。",
+    "sentenceTranslation": "우체국 앞에 우체통(포스트)가 있습니다.",
+    "blankSurface": "前",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-6",
+    "word": "町",
+    "sentence": "この___は人口が少ないです。",
+    "sentenceFurigana": "この___は<ruby>人口<rt>じんこう</rt></ruby>が<ruby>少<rt>すく</rt></ruby>ないです。",
+    "sentenceTranslation": "이 마을은 인구가 적습니다.",
+    "blankSurface": "町",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-7",
+    "word": "窓",
+    "sentence": "___を閉めてください。",
+    "sentenceFurigana": "___を<ruby>閉<rt>し</rt></ruby>めてください。",
+    "sentenceTranslation": "창문을 닫아주세요.",
+    "blankSurface": "窓",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-8",
+    "word": "万年筆",
+    "sentence": "___はいくらですか。",
+    "sentenceFurigana": "___はいくらですか。",
+    "sentenceTranslation": "만년필은 얼마입니까?.",
+    "blankSurface": "万年筆",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-9",
+    "word": "右",
+    "sentence": "コンビニの前で___に曲がってください。",
+    "sentenceFurigana": "<ruby>コンビニ<rt>こんびに</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>で___に<ruby>曲<rt>ま</rt></ruby>がってください。",
+    "sentenceTranslation": "편의점 앞에서 오른쪽으로 돌아주세요.",
+    "blankSurface": "右",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-10",
+    "word": "水",
+    "sentence": "食事の前に___を飲みます。",
+    "sentenceFurigana": "<ruby>食事<rt>しょくじ</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>に___を<ruby>飲<rt>の</rt></ruby>みます。",
+    "sentenceTranslation": "식사 전에 물을 마십니다.",
+    "blankSurface": "水",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-11",
+    "word": "店",
+    "sentence": "その___の店長は親切です。",
+    "sentenceFurigana": "その___の<ruby>店長<rt>てんちょう</rt></ruby>は<ruby>親切<rt>しんせつ</rt></ruby>です。",
+    "sentenceTranslation": "그 가게의 점장은 친절합니다.",
+    "blankSurface": "店",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-12",
+    "word": "道",
+    "sentence": "___に迷っている人を案内した。",
+    "sentenceFurigana": "___に<ruby>迷<rt>まよ</rt></ruby>っている<ruby>人<rt>ひと</rt></ruby>を<ruby>案内<rt>あんない</rt></ruby>した。",
+    "sentenceTranslation": "길에서 헤매고 있는(길잃은) 사람을 안내했다.",
+    "blankSurface": "道",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-13",
+    "word": "皆さん",
+    "sentence": "___、おはようございます。",
+    "sentenceFurigana": "___、おはようございます。",
+    "sentenceTranslation": "여러분 안녕하세요(아침).",
+    "blankSurface": "皆さん",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-14",
+    "word": "南",
+    "sentence": "あちらは___です。",
+    "sentenceFurigana": "あちらは___です。",
+    "sentenceTranslation": "저쪽은 남쪽입니다..",
+    "blankSurface": "南",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-15",
+    "word": "耳",
+    "sentence": "___に炎症が起きた。",
+    "sentenceFurigana": "___に<ruby>炎症<rt>えんしょう</rt></ruby>が<ruby>起<rt>お</rt></ruby>きた。",
+    "sentenceTranslation": "귀에 염증이 생겼다.",
+    "blankSurface": "耳",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-16",
+    "word": "皆",
+    "sentence": "___、何人ですか。",
+    "sentenceFurigana": "___、<ruby>何人<rt>なんにん</rt></ruby>ですか。",
+    "sentenceTranslation": "모두 몇 명입니까?.",
+    "blankSurface": "みんな",
+    "matchMethod": "source-override",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-17",
+    "word": "目",
+    "sentence": "彼女の___はうつくしです。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>の___はうつくしです。",
+    "sentenceTranslation": "그녀의 눈은 아름답습니다.",
+    "blankSurface": "眼",
+    "matchMethod": "source-override",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-18",
+    "word": "眼鏡",
+    "sentence": "___やで眼鏡を買いました。",
+    "sentenceFurigana": "___やで<ruby>眼鏡<rt>めがね</rt></ruby>を<ruby>買<rt>か</rt></ruby>いました。",
+    "sentenceTranslation": "안경점에서 안경을 샀습니다.",
+    "blankSurface": "眼鏡",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-19",
+    "word": "物",
+    "sentence": "高い___はロッカーに保管してください。",
+    "sentenceFurigana": "<ruby>高<rt>たか</rt></ruby>い___は<ruby>ロッカ<rt>ろっか</rt></ruby>ーに<ruby>保管<rt>ほかん</rt></ruby>してください。",
+    "sentenceTranslation": "비싼 물건은 보관함(라커)에 보관해 주세요.",
+    "blankSurface": "物",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d9-20",
+    "word": "問題",
+    "sentence": "今回の試験___はとても難しかったです。",
+    "sentenceFurigana": "<ruby>今回<rt>こんかい</rt></ruby>の試験___はとても<ruby>難<rt>むずか</rt></ruby>しかったです。",
+    "sentenceTranslation": "이번 시험 문제는 매우 어려웠습니다.",
+    "blankSurface": "問題",
+    "matchMethod": "base-form",
+    "source": "능력단어9.docx"
+  },
+  {
+    "id": "d10-1",
+    "word": "野菜",
+    "sentence": "この店の___は新鮮です。",
+    "sentenceFurigana": "この<ruby>店<rt>みせ</rt></ruby>の___は<ruby>新鮮<rt>しんせん</rt></ruby>です。",
+    "sentenceTranslation": "이 가게의 야채는 신선합니다.",
+    "blankSurface": "野菜",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-2",
+    "word": "休み",
+    "sentence": "今度の___にはスキー場に行きます。",
+    "sentenceFurigana": "<ruby>今度<rt>こんど</rt></ruby>の___には<ruby>スキ<rt>すき</rt></ruby>ー<ruby>場<rt>じょう</rt></ruby>に<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "이번 방학에는 스키장에 갑니다.",
+    "blankSurface": "休み",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-3",
+    "word": "山",
+    "sentence": "___に登ると爽快です。",
+    "sentenceFurigana": "___に<ruby>登<rt>のぼ</rt></ruby>ると<ruby>爽快<rt>そうかい</rt></ruby>です。",
+    "sentenceTranslation": "산에 오르면 상쾌합니다.",
+    "blankSurface": "山",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-4",
+    "word": "夕方",
+    "sentence": "___の空はきれいです。",
+    "sentenceFurigana": "___の<ruby>空<rt>そら</rt></ruby>はきれいです。",
+    "sentenceTranslation": "저녁 하늘은 예쁩니다.",
+    "blankSurface": "夕方",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-5",
+    "word": "郵便局",
+    "sentence": "切手は___で販売しています。",
+    "sentenceFurigana": "<ruby>切手<rt>きって</rt></ruby>は___で<ruby>販売<rt>はんばい</rt></ruby>しています。",
+    "sentenceTranslation": "우표는 우체국에서 판매하고 있습니다.",
+    "blankSurface": "郵便局",
+    "matchMethod": "exact",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-6",
+    "word": "ゆうべ",
+    "sentence": "___恐ろしい夢を見た。",
+    "sentenceFurigana": "___<ruby>恐<rt>おそ</rt></ruby>ろしい<ruby>夢<rt>ゆめ</rt></ruby>を<ruby>見<rt>み</rt></ruby>た。",
+    "sentenceTranslation": "어젯밤 무서운 꿈을 꾸었다.",
+    "blankSurface": "ゆうべ",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-7",
+    "word": "雪",
+    "sentence": "___が１０センチ積りました。",
+    "sentenceFurigana": "___が１０<ruby>センチ<rt>せんち</rt></ruby><ruby>積<rt>つも</rt></ruby>りました。",
+    "sentenceTranslation": "눈이 10센티미터 쌓였습니다.",
+    "blankSurface": "雪",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-8",
+    "word": "横",
+    "sentence": "テーブルの___に椅子があります。",
+    "sentenceFurigana": "<ruby>テ<rt>て</rt></ruby>ー<ruby>ブル<rt>ぶる</rt></ruby>の___に<ruby>椅子<rt>いす</rt></ruby>があります。",
+    "sentenceTranslation": "테이블 옆에 의자가 있습니다.",
+    "blankSurface": "横",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-9",
+    "word": "夜",
+    "sentence": "秋の___は涼しいです。",
+    "sentenceFurigana": "<ruby>秋<rt>あき</rt></ruby>の___は<ruby>涼<rt>すず</rt></ruby>しいです。",
+    "sentenceTranslation": "가을 밤은 선선합니다.",
+    "blankSurface": "夜",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-10",
+    "word": "来月",
+    "sentence": "___に日本語の試験があります。",
+    "sentenceFurigana": "___に<ruby>日本語<rt>にほんご</rt></ruby>の<ruby>試験<rt>しけん</rt></ruby>があります。",
+    "sentenceTranslation": "다음달에 일본어 시험이 있습니다.",
+    "blankSurface": "来月",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-11",
+    "word": "来週",
+    "sentence": "___から休みです。",
+    "sentenceFurigana": "___から<ruby>休<rt>やす</rt></ruby>みです。",
+    "sentenceTranslation": "다음주부터 휴가입니다.",
+    "blankSurface": "来週",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-12",
+    "word": "来年",
+    "sentence": "___に留学を計画しています。",
+    "sentenceFurigana": "___に<ruby>留学<rt>りゅうがく</rt></ruby>を<ruby>計画<rt>けいかく</rt></ruby>しています。",
+    "sentenceTranslation": "내년에 유학을 계획하고 있습니다.",
+    "blankSurface": "来年",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-13",
+    "word": "留学生",
+    "sentence": "___として韓国に来ました。",
+    "sentenceFurigana": "___として<ruby>韓国<rt>かんこく</rt></ruby>に<ruby>来<rt>き</rt></ruby>ました。",
+    "sentenceTranslation": "유학생으로 한국에 왔습니다.",
+    "blankSurface": "留学生",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-14",
+    "word": "両親",
+    "sentence": "彼女の___にあいさつに行きました。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>の___にあいさつに<ruby>行<rt>い</rt></ruby>きました。",
+    "sentenceTranslation": "그녀의 부모님께 인사드리러 갔습니다.",
+    "blankSurface": "両親",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-15",
+    "word": "料理",
+    "sentence": "私は日本___を習っています。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>は日本___を<ruby>習<rt>なら</rt></ruby>っています。",
+    "sentenceTranslation": "저는 일본요리를 배우고 있습니다.",
+    "blankSurface": "料理",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-16",
+    "word": "旅行",
+    "sentence": "今度の休みは友達とインド___に行きます。",
+    "sentenceFurigana": "<ruby>今度<rt>こんど</rt></ruby>の<ruby>休<rt>やす</rt></ruby>みは<ruby>友達<rt>ともだち</rt></ruby>と<ruby>インド<rt>いんど</rt></ruby>___に<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "이번 휴가는 친구와 인도여행을 갑니다.",
+    "blankSurface": "旅行",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-17",
+    "word": "零（0）",
+    "sentence": "５から５を引くと___になります。",
+    "sentenceFurigana": "５から５を<ruby>引<rt>ひ</rt></ruby>くと___になります。",
+    "sentenceTranslation": "5에서 5를 빼면 0이 됩니다.",
+    "blankSurface": "０",
+    "matchMethod": "source-override",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-18",
+    "word": "冷蔵庫",
+    "sentence": "牛乳は___に入れてください。",
+    "sentenceFurigana": "<ruby>牛乳<rt>ぎゅうにゅう</rt></ruby>は___に<ruby>入<rt>い</rt></ruby>れてください。",
+    "sentenceTranslation": "우유는 냉장고에 넣어주세요.",
+    "blankSurface": "冷蔵庫",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-19",
+    "word": "練習",
+    "sentence": "サッカーの試合のために___をします。",
+    "sentenceFurigana": "<ruby>サッカ<rt>さっか</rt></ruby>ーの<ruby>試合<rt>しあい</rt></ruby>のために___をします。",
+    "sentenceTranslation": "축구시합을 위해 연습을 합니다.",
+    "blankSurface": "練習",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d10-20",
+    "word": "私",
+    "sentence": "___はコーヒーが好きです。",
+    "sentenceFurigana": "___は<ruby>コ<rt>こ</rt></ruby>ー<ruby>ヒ<rt>ひ</rt></ruby>ーが<ruby>好<rt>す</rt></ruby>きです。",
+    "sentenceTranslation": "저는 커피를 좋아합니다.",
+    "blankSurface": "私",
+    "matchMethod": "base-form",
+    "source": "능력단어10.docx"
+  },
+  {
+    "id": "d11-1",
+    "word": "青い",
+    "sentence": "___絵の具をこぼしました。",
+    "sentenceFurigana": "___<ruby>絵<rt>え</rt></ruby>の<ruby>具<rt>ぐ</rt></ruby>をこぼしました。",
+    "sentenceTranslation": "파란 물감을 쏟았습니다.",
+    "blankSurface": "青い",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-2",
+    "word": "赤い",
+    "sentence": "___バラの花を買いました。",
+    "sentenceFurigana": "___<ruby>バラ<rt>ばら</rt></ruby>の<ruby>花<rt>はな</rt></ruby>を<ruby>買<rt>か</rt></ruby>いました。",
+    "sentenceTranslation": "빨간 장미꽃을 샀습니다.",
+    "blankSurface": "赤い",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-3",
+    "word": "明るい",
+    "sentence": "彼の表情はいつも___です。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>の<ruby>表情<rt>ひょうじょう</rt></ruby>はいつも___です。",
+    "sentenceTranslation": "그의 표정은 항상 밝습니다.",
+    "blankSurface": "明るい",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-4",
+    "word": "暖かい",
+    "sentence": "天気が___春ですね。",
+    "sentenceFurigana": "<ruby>天気<rt>てんき</rt></ruby>が___<ruby>春<rt>はる</rt></ruby>ですね。",
+    "sentenceTranslation": "날씨가 따뜻한 봄이네요.",
+    "blankSurface": "暖かい",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-5",
+    "word": "新しい",
+    "sentence": "海外でのボランティア活動は___経験だった。",
+    "sentenceFurigana": "<ruby>海外<rt>かいがい</rt></ruby>での<ruby>ボランティア<rt>ぼらんてぃあ</rt></ruby><ruby>活動<rt>かつどう</rt></ruby>は___<ruby>経験<rt>けいけん</rt></ruby>だった。",
+    "sentenceTranslation": "해외에서의 봉사활동은 새로운 경험이었다.",
+    "blankSurface": "新しい",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-6",
+    "word": "暑い",
+    "sentence": "今日は天気が___です。",
+    "sentenceFurigana": "<ruby>今日<rt>きょう</rt></ruby>は<ruby>天気<rt>てんき</rt></ruby>が___です。",
+    "sentenceTranslation": "오늘은 날씨가 덥습니다.",
+    "blankSurface": "暑い",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-7",
+    "word": "危ない",
+    "sentence": "木の上に登ると___です。",
+    "sentenceFurigana": "<ruby>木<rt>き</rt></ruby>の<ruby>上<rt>うえ</rt></ruby>に<ruby>登<rt>のぼ</rt></ruby>ると___です。",
+    "sentenceTranslation": "나무 위에 올라가면 위험합니다.",
+    "blankSurface": "危ない",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-8",
+    "word": "甘い",
+    "sentence": "この桃は___ておいしいです。",
+    "sentenceFurigana": "この<ruby>桃<rt>もも</rt></ruby>は___ておいしいです。",
+    "sentenceTranslation": "이 복숭아는 달고 맛있습니다.",
+    "blankSurface": "甘く",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-9",
+    "word": "忙しい",
+    "sentence": "彼は相変わらず___です。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>相変<rt>あいか</rt></ruby>わらず___です。",
+    "sentenceTranslation": "그는 여전히 바쁩니다.",
+    "blankSurface": "忙しい",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-10",
+    "word": "痛い",
+    "sentence": "喉に炎症が起きて___です。",
+    "sentenceFurigana": "<ruby>喉<rt>のど</rt></ruby>に<ruby>炎症<rt>えんしょう</rt></ruby>が<ruby>起<rt>お</rt></ruby>きて___です。",
+    "sentenceTranslation": "목에 염증이 생겨서 아픕니다.",
+    "blankSurface": "いたい",
+    "matchMethod": "source-override",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-11",
+    "word": "美味しい",
+    "sentence": "この店のカレーは___です。",
+    "sentenceFurigana": "この<ruby>店<rt>みせ</rt></ruby>の<ruby>カレ<rt>かれ</rt></ruby>ーは___です。",
+    "sentenceTranslation": "이 가게의 카레는 맛있습니다.",
+    "blankSurface": "美味しい",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-12",
+    "word": "大きい",
+    "sentence": "___声で答えてください。",
+    "sentenceFurigana": "___<ruby>声<rt>こえ</rt></ruby>で<ruby>答<rt>こた</rt></ruby>えてください。",
+    "sentenceTranslation": "큰 소리로 대답해 주세요.",
+    "blankSurface": "大きい",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-13",
+    "word": "遅い",
+    "sentence": "試験の準備で___時間まで勉強しました。",
+    "sentenceFurigana": "<ruby>試験<rt>しけん</rt></ruby>の<ruby>準備<rt>じゅんび</rt></ruby>で___<ruby>時間<rt>じかん</rt></ruby>まで<ruby>勉強<rt>べんきょう</rt></ruby>しました。",
+    "sentenceTranslation": "시험 준비로 늦은 시간까지 공부하였습니다.",
+    "blankSurface": "遅い",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-14",
+    "word": "重い",
+    "sentence": "___荷物を運ぶのを手伝ってくれました。",
+    "sentenceFurigana": "___<ruby>荷物<rt>にもつ</rt></ruby>を<ruby>運<rt>はこ</rt></ruby>ぶのを<ruby>手伝<rt>てつだ</rt></ruby>ってくれました。",
+    "sentenceTranslation": "무거운 짐을 나르는 것을 도와주었습니다.",
+    "blankSurface": "重い",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-15",
+    "word": "面白い",
+    "sentence": "___ゲームをしています。",
+    "sentenceFurigana": "___<ruby>ゲ<rt>げ</rt></ruby>ー<ruby>ム<rt>む</rt></ruby>をしています。",
+    "sentenceTranslation": "재미있는 게임을 하고 있습니다.",
+    "blankSurface": "面白い",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-16",
+    "word": "軽い",
+    "sentence": "ダイエットで体が___なった。",
+    "sentenceFurigana": "<ruby>ダイエット<rt>だいえっと</rt></ruby>で<ruby>体<rt>からだ</rt></ruby>が___なった。",
+    "sentenceTranslation": "다이어트로 몸이 가벼워졌다.",
+    "blankSurface": "軽く",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-17",
+    "word": "可愛い",
+    "sentence": "彼氏に___人形をプレゼントしてもらった。",
+    "sentenceFurigana": "<ruby>彼氏<rt>かれし</rt></ruby>に___<ruby>人形<rt>にんぎょう</rt></ruby>を<ruby>プレゼント<rt>ぷれぜんと</rt></ruby>してもらった。",
+    "sentenceTranslation": "남자친구에게 귀여운 인형을 선물받았다.",
+    "blankSurface": "かわいい",
+    "matchMethod": "source-override",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-18",
+    "word": "汚い",
+    "sentence": "___服を捨てました。",
+    "sentenceFurigana": "___<ruby>服<rt>ふく</rt></ruby>を<ruby>捨<rt>す</rt></ruby>てました。",
+    "sentenceTranslation": "더러운 옷을 버렸습니다.",
+    "blankSurface": "汚い",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-19",
+    "word": "暗い",
+    "sentence": "部屋は___て静かでした。",
+    "sentenceFurigana": "<ruby>部屋<rt>へや</rt></ruby>は___て<ruby>静<rt>しず</rt></ruby>かでした。",
+    "sentenceTranslation": "방은 어둡고 조용했습니다.",
+    "blankSurface": "暗く",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d11-20",
+    "word": "黒い",
+    "sentence": "彼女は___コートを着ています。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>は___<ruby>コ<rt>こ</rt></ruby>ー<ruby>ト<rt>と</rt></ruby>を<ruby>着<rt>き</rt></ruby>ています。",
+    "sentenceTranslation": "그녀는 검정 코트를 입고 있습니다.",
+    "blankSurface": "黒い",
+    "matchMethod": "base-form",
+    "source": "능력단어11.docx"
+  },
+  {
+    "id": "d12-1",
+    "word": "寒い",
+    "sentence": "冷たい風が吹いて___です。",
+    "sentenceFurigana": "<ruby>冷<rt>つめ</rt></ruby>たい<ruby>風<rt>かぜ</rt></ruby>が<ruby>吹<rt>ふ</rt></ruby>いて___です。",
+    "sentenceTranslation": "차가운 바람이 불어서 춥습니다.",
+    "blankSurface": "寒い",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-2",
+    "word": "白い",
+    "sentence": "___画用紙に絵を描きました。",
+    "sentenceFurigana": "___<ruby>画用紙<rt>がようし</rt></ruby>に<ruby>絵<rt>え</rt></ruby>を<ruby>描<rt>か</rt></ruby>きました。",
+    "sentenceTranslation": "하얀 도화지에 그림을 그렸습니다.",
+    "blankSurface": "白い",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-3",
+    "word": "涼しい",
+    "sentence": "秋には___風が吹きます。",
+    "sentenceFurigana": "<ruby>秋<rt>あき</rt></ruby>には___<ruby>風<rt>かぜ</rt></ruby>が<ruby>吹<rt>ふ</rt></ruby>きます。",
+    "sentenceTranslation": "가을에는 선선한 바람이 붑니다.",
+    "blankSurface": "涼しい",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-4",
+    "word": "狭い",
+    "sentence": "行動範囲が___です。",
+    "sentenceFurigana": "<ruby>行動範囲<rt>こうどうはんい</rt></ruby>が___です。",
+    "sentenceTranslation": "행동 범위가 좁습니다.",
+    "blankSurface": "狭い",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-5",
+    "word": "高い",
+    "sentence": "値段は___が価値がない。",
+    "sentenceFurigana": "<ruby>値段<rt>ねだん</rt></ruby>は___が<ruby>価値<rt>かち</rt></ruby>がない。",
+    "sentenceTranslation": "값은 비싸지만 가치가 없다.",
+    "blankSurface": "高い",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-6",
+    "word": "楽しい",
+    "sentence": "遠足は___たです。",
+    "sentenceFurigana": "<ruby>遠足<rt>えんそく</rt></ruby>は___たです。",
+    "sentenceTranslation": "소풍은 즐거웠습니다.",
+    "blankSurface": "楽しかっ",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-7",
+    "word": "小さい",
+    "sentence": "この服は___て着られない。",
+    "sentenceFurigana": "この<ruby>服<rt>ふく</rt></ruby>は___て<ruby>着<rt>き</rt></ruby>られない。",
+    "sentenceTranslation": "이 옷은 작아서 입을 수 없다.",
+    "blankSurface": "小さく",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-8",
+    "word": "近い",
+    "sentence": "駅から___所に銀行があります。。",
+    "sentenceFurigana": "<ruby>駅<rt>えき</rt></ruby>から___所に<ruby>銀行<rt>ぎんこう</rt></ruby>があります。。",
+    "sentenceTranslation": "역에서 가까운 곳에 은행이 있습니다.",
+    "blankSurface": "地下",
+    "matchMethod": "source-override",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-9",
+    "word": "つまらない",
+    "sentence": "彼は___話を深刻にしています。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は___<ruby>話<rt>はなし</rt></ruby>を<ruby>深刻<rt>しんこく</rt></ruby>にしています。",
+    "sentenceTranslation": "그는 시시한 이야기를 심각하게 하고 있습니다.",
+    "blankSurface": "つまらない",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-10",
+    "word": "冷たい",
+    "sentence": "___ビールがおいしいです。",
+    "sentenceFurigana": "___<ruby>ビ<rt>び</rt></ruby>ー<ruby>ル<rt>る</rt></ruby>がおいしいです。",
+    "sentenceTranslation": "차가운 맥주가 맛있습니다.",
+    "blankSurface": "冷たい",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-11",
+    "word": "強い",
+    "sentence": "私は寒さに___です。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>は<ruby>寒<rt>さむ</rt></ruby>さに___です。",
+    "sentenceTranslation": "나는 추위에 강합니다.",
+    "blankSurface": "強い",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-12",
+    "word": "遠い",
+    "sentence": "家から駅まで距離が___。",
+    "sentenceFurigana": "<ruby>家<rt>うち</rt></ruby>から<ruby>駅<rt>えき</rt></ruby>まで<ruby>距離<rt>きょり</rt></ruby>が___。",
+    "sentenceTranslation": "집(우리집)에서 역까지 거리가 멀다.",
+    "blankSurface": "遠い",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-13",
+    "word": "長い",
+    "sentence": "キリンは首が___。",
+    "sentenceFurigana": "<ruby>キリン<rt>きりん</rt></ruby>は<ruby>首<rt>くび</rt></ruby>が___。",
+    "sentenceTranslation": "기린은 목이 길다.",
+    "blankSurface": "長い",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-14",
+    "word": "広い",
+    "sentence": "___公園を散歩しました。",
+    "sentenceFurigana": "___<ruby>公園<rt>こうえん</rt></ruby>を<ruby>散歩<rt>さんぽ</rt></ruby>しました。",
+    "sentenceTranslation": "넓은 공원을 산책했습니다.",
+    "blankSurface": "広い",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-15",
+    "word": "太い",
+    "sentence": "鉛筆の芯が___。",
+    "sentenceFurigana": "<ruby>鉛筆<rt>えんぴつ</rt></ruby>の<ruby>芯<rt>しん</rt></ruby>が___。",
+    "sentenceTranslation": "연필심이 굵다.",
+    "blankSurface": "太い",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-16",
+    "word": "欲しい",
+    "sentence": "新型ノートパソコンが___です。。",
+    "sentenceFurigana": "<ruby>新型<rt>しんがた</rt></ruby><ruby>ノ<rt>の</rt></ruby>ー<ruby>トパソコン<rt>とぱそこん</rt></ruby>が___です。。",
+    "sentenceTranslation": "신형 노트북을 갖고 싶습니다.",
+    "blankSurface": "欲しい",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-17",
+    "word": "細い",
+    "sentence": "最近は___ペンが流行しています。",
+    "sentenceFurigana": "<ruby>最近<rt>さいきん</rt></ruby>は___<ruby>ペン<rt>ぺん</rt></ruby>が<ruby>流行<rt>りゅうこう</rt></ruby>しています。",
+    "sentenceTranslation": "최근에는 가는 펜이 유행하고 있습니다.",
+    "blankSurface": "細い",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-18",
+    "word": "まずい",
+    "sentence": "この食べ物は___。。",
+    "sentenceFurigana": "この<ruby>食<rt>た</rt></ruby>べ<ruby>物<rt>もの</rt></ruby>は___。。",
+    "sentenceTranslation": "이 음식은 맛이 없다..",
+    "blankSurface": "まずい",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-19",
+    "word": "丸い",
+    "sentence": "日が暮れると、___月が出た。",
+    "sentenceFurigana": "<ruby>日<rt>ひ</rt></ruby>が<ruby>暮<rt>く</rt></ruby>れると、___<ruby>月<rt>つき</rt></ruby>が<ruby>出<rt>で</rt></ruby>た。",
+    "sentenceTranslation": "날이 저물자 둥근 달이 떴다.",
+    "blankSurface": "丸い",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d12-20",
+    "word": "短い",
+    "sentence": "試験時間はとても___たです。",
+    "sentenceFurigana": "<ruby>試験時間<rt>しけんじかん</rt></ruby>はとても___たです。",
+    "sentenceTranslation": "시험시간은 매우 짧았습니다.",
+    "blankSurface": "短かっ",
+    "matchMethod": "base-form",
+    "source": "능력단어12.docx"
+  },
+  {
+    "id": "d13-1",
+    "word": "難しい",
+    "sentence": "この本の内容は___です。",
+    "sentenceFurigana": "この<ruby>本<rt>ほん</rt></ruby>の<ruby>内容<rt>ないよう</rt></ruby>は___です。",
+    "sentenceTranslation": "이 책의 내용은 어렵습니다.",
+    "blankSurface": "難しい",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-2",
+    "word": "安い",
+    "sentence": "このりんごは値段も___し、美味しいです。",
+    "sentenceFurigana": "このりんごは<ruby>値段<rt>ねだん</rt></ruby>も___し、<ruby>美味<rt>おい</rt></ruby>しいです。",
+    "sentenceTranslation": "이 사과는 값도 싸고 맛도 좋습니다.",
+    "blankSurface": "安い",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-3",
+    "word": "若い",
+    "sentence": "私は___時登山がすきでした。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>は___<ruby>時登山<rt>ときとざん</rt></ruby>がすきでした。",
+    "sentenceTranslation": "나는 젊었을 때 등산을 좋아했습니다.",
+    "blankSurface": "若い",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-4",
+    "word": "悪い",
+    "sentence": "嘘は___。",
+    "sentenceFurigana": "<ruby>嘘<rt>うそ</rt></ruby>は___。",
+    "sentenceTranslation": "거짓말은 나쁘다.",
+    "blankSurface": "悪い",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-5",
+    "word": "嫌いだ",
+    "sentence": "田中さんは牛乳が___です。",
+    "sentenceFurigana": "<ruby>田中<rt>たなか</rt></ruby>さんは<ruby>牛乳<rt>ぎゅうにゅう</rt></ruby>が___です。",
+    "sentenceTranslation": "다나카씨는 우유를 싫어합니다.",
+    "blankSurface": "嫌い",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-6",
+    "word": "綺麗だ",
+    "sentence": "この公園は___です。",
+    "sentenceFurigana": "この<ruby>公園<rt>こうえん</rt></ruby>は___です。",
+    "sentenceTranslation": "이 공원은 깨끗합니다.",
+    "blankSurface": "きれい",
+    "matchMethod": "source-override",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-7",
+    "word": "静かだ",
+    "sentence": "図書館は___です。",
+    "sentenceFurigana": "<ruby>図書館<rt>としょかん</rt></ruby>は___です。",
+    "sentenceTranslation": "도서관은 조용합니다.",
+    "blankSurface": "静か",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-8",
+    "word": "上手だ",
+    "sentence": "彼女は料理が___です。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>は<ruby>料理<rt>りょうり</rt></ruby>が___です。",
+    "sentenceTranslation": "그녀는 요리를 잘합니다.",
+    "blankSurface": "上手",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-9",
+    "word": "丈夫だ",
+    "sentence": "子供は___にすくすく育っています。",
+    "sentenceFurigana": "<ruby>子供<rt>こども</rt></ruby>は___にすくすく<ruby>育<rt>そだ</rt></ruby>っています。",
+    "sentenceTranslation": "아이는 튼튼하게 무럭무럭 자라고 있습니다.",
+    "blankSurface": "丈夫",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-10",
+    "word": "好きだ",
+    "sentence": "私は音楽が___です。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>は<ruby>音楽<rt>おんがく</rt></ruby>が___です。",
+    "sentenceTranslation": "저는 음악을 좋아합니다.",
+    "blankSurface": "好き",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-11",
+    "word": "大丈夫だ",
+    "sentence": "このお菓子、食べても___ですか。",
+    "sentenceFurigana": "このお<ruby>菓子<rt>かし</rt></ruby>、<ruby>食<rt>た</rt></ruby>べても___ですか。",
+    "sentenceTranslation": "이 과자, 먹어도 괜찮습니까?",
+    "blankSurface": "大丈夫",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-12",
+    "word": "大好きだ",
+    "sentence": "兄はぶどうが___です。",
+    "sentenceFurigana": "<ruby>兄<rt>あに</rt></ruby>はぶどうが___です。",
+    "sentenceTranslation": "형은 포도를 정말 좋아합니다.",
+    "blankSurface": "大好き",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-13",
+    "word": "大切だ",
+    "sentence": "外国語は反復学習が___だ。",
+    "sentenceFurigana": "<ruby>外国語<rt>がいこくご</rt></ruby>は<ruby>反復学習<rt>はんぷくがくしゅう</rt></ruby>が___だ。",
+    "sentenceTranslation": "외국어는 반복학습이 힘들다",
+    "blankSurface": "大切",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-14",
+    "word": "大変だ",
+    "sentence": "約束の時間に遅れて___だ。",
+    "sentenceFurigana": "<ruby>約束<rt>やくそく</rt></ruby>の<ruby>時間<rt>じかん</rt></ruby>に<ruby>遅<rt>おく</rt></ruby>れて___だ。",
+    "sentenceTranslation": "약속 시간에 늦어서 큰일이다.",
+    "blankSurface": "大変",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-15",
+    "word": "賑やかだ",
+    "sentence": "祭りで村全体が___だ。",
+    "sentenceFurigana": "<ruby>祭<rt>まつ</rt></ruby>りで<ruby>村全体<rt>むらぜんたい</rt></ruby>が___だ。",
+    "sentenceTranslation": "축제로 마을 전체가 떠들썩하다.",
+    "blankSurface": "賑やか",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-16",
+    "word": "暇だ",
+    "sentence": "___な週末には読書をします。。",
+    "sentenceFurigana": "___な<ruby>週末<rt>しゅうまつ</rt></ruby>には<ruby>読書<rt>どくしょ</rt></ruby>をします。。",
+    "sentenceTranslation": "한가한 주말에는 독서를 합니다.",
+    "blankSurface": "暇",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-17",
+    "word": "下手だ",
+    "sentence": "まだ英語が___です。",
+    "sentenceFurigana": "まだ<ruby>英<rt>えいご</rt></ruby>語が___です。",
+    "sentenceTranslation": "아직 영어가 서투릅니다.",
+    "blankSurface": "下手",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-18",
+    "word": "便利だ",
+    "sentence": "インターネットは___です。",
+    "sentenceFurigana": "<ruby>インタ<rt>いんた</rt></ruby>ー<ruby>ネット<rt>ねっと</rt></ruby>は___です。",
+    "sentenceTranslation": "인터넷은 편리합니다.",
+    "blankSurface": "便利",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-19",
+    "word": "有名だ",
+    "sentence": "この店のパンは___です。",
+    "sentenceFurigana": "この<ruby>店<rt>みせ</rt></ruby>の<ruby>パン<rt>ぱん</rt></ruby>は___です。",
+    "sentenceTranslation": "이 가게의 빵은 유명합니다.",
+    "blankSurface": "有名",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d13-20",
+    "word": "立派だ",
+    "sentence": "彼は___な人だ。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は___な<ruby>人<rt>ひと</rt></ruby>だ。",
+    "sentenceTranslation": "그는 훌륭한 사람이다.",
+    "blankSurface": "立派",
+    "matchMethod": "base-form",
+    "source": "능력단어13.docx"
+  },
+  {
+    "id": "d14-1",
+    "word": "会う",
+    "sentence": "友達に___てショッピングをします。",
+    "sentenceFurigana": "<ruby>友達<rt>ともだち</rt></ruby>に___て<ruby>ショッピング<rt>しょっぴんぐ</rt></ruby>をします。",
+    "sentenceTranslation": "친구를 만나서 쇼핑을 합니다.",
+    "blankSurface": "会っ",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-2",
+    "word": "開く／開く",
+    "sentence": "ドアが___ます。",
+    "sentenceFurigana": "<ruby>ドア<rt>どあ</rt></ruby>が___ます。",
+    "sentenceTranslation": "문이 열립니다.",
+    "blankSurface": "開き",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-3",
+    "word": "開ける",
+    "sentence": "窓を___てください。",
+    "sentenceFurigana": "<ruby>窓<rt>まど</rt></ruby>を___てください。",
+    "sentenceTranslation": "창문을 열어주세요.",
+    "blankSurface": "開け",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-4",
+    "word": "遊ぶ",
+    "sentence": "子供たちがプールで___でいます",
+    "sentenceFurigana": "<ruby>子供<rt>こども</rt></ruby>たちが<ruby>プ<rt>ぷ</rt></ruby>ー<ruby>ル<rt>る</rt></ruby>で___でいます",
+    "sentenceTranslation": "아이들이 수영장에서 놀고 있습니다.",
+    "blankSurface": "遊ん",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-5",
+    "word": "洗う",
+    "sentence": "手をきれいに___てください。",
+    "sentenceFurigana": "<ruby>手<rt>て</rt></ruby>をきれいに___てください。",
+    "sentenceTranslation": "손을 깨끗하게 씻으세요.",
+    "blankSurface": "洗っ",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-6",
+    "word": "有る",
+    "sentence": "机の上に手紙が___。",
+    "sentenceFurigana": "<ruby>机<rt>つくえ</rt></ruby>の<ruby>上<rt>うえ</rt></ruby>に<ruby>手紙<rt>てがみ</rt></ruby>が___。",
+    "sentenceTranslation": "책상 위에 편지가 있다.",
+    "blankSurface": "ある",
+    "matchMethod": "source-override",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-7",
+    "word": "歩く",
+    "sentence": "彼と一緒に___たい。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>と<ruby>一緒<rt>いっしょ</rt></ruby>に___たい。",
+    "sentenceTranslation": "그와 함께 걷고 싶다.",
+    "blankSurface": "歩き",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-8",
+    "word": "言う",
+    "sentence": "学校では先生の___ことをよく聞いてください。",
+    "sentenceFurigana": "<ruby>学校<rt>がっこう</rt></ruby>では<ruby>先生<rt>せんせい</rt></ruby>の___ことをよく<ruby>聞<rt>き</rt></ruby>いてください。",
+    "sentenceTranslation": "학교에서는 선생님 말을 잘 들으세요.",
+    "blankSurface": "言う",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-9",
+    "word": "行く",
+    "sentence": "毎日８時に学校へ___ます。",
+    "sentenceFurigana": "<ruby>毎日<rt>まいにち</rt></ruby>８<ruby>時<rt>じ</rt></ruby>に<ruby>学校<rt>がっこう</rt></ruby>へ___ます。",
+    "sentenceTranslation": "매일 8시에 학교에 갑니다.",
+    "blankSurface": "行き",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-10",
+    "word": "居る",
+    "sentence": "玄関前に猫が___。",
+    "sentenceFurigana": "<ruby>玄関前<rt>げんかんまえ</rt></ruby>に<ruby>猫<rt>ねこ</rt></ruby>が___。",
+    "sentenceTranslation": "현관 앞에 고양이가 있다.",
+    "blankSurface": "いる",
+    "matchMethod": "source-override",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-11",
+    "word": "入れる",
+    "sentence": "薬味を___てください。",
+    "sentenceFurigana": "<ruby>薬味<rt>やくみ</rt></ruby>を___てください。",
+    "sentenceTranslation": "양념을 넣어 주세요.",
+    "blankSurface": "入れ",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-12",
+    "word": "歌う",
+    "sentence": "彼は舞台で___ます。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>舞台<rt>ぶたい</rt></ruby>で___ます。",
+    "sentenceTranslation": "그는 무대에서 노래합니다.",
+    "blankSurface": "歌い",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-13",
+    "word": "生まれる",
+    "sentence": "彼は１１月に___ました。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は１１<ruby>月<rt>がつ</rt></ruby>に___ました。",
+    "sentenceTranslation": "그는 11월에 태어났습니다.",
+    "blankSurface": "生まれ",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-14",
+    "word": "売る",
+    "sentence": "時計は中古で___ました。",
+    "sentenceFurigana": "<ruby>時計<rt>とけい</rt></ruby>は<ruby>中古<rt>ちゅうこ</rt></ruby>で___ました。",
+    "sentenceTranslation": "시계는 중고로 팔았습니다.",
+    "blankSurface": "売り",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-15",
+    "word": "起きる",
+    "sentence": "私は毎朝、６時に___ます。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>は<ruby>毎朝<rt>まいあさ</rt></ruby>、６<ruby>時<rt>じ</rt></ruby>に___ます。",
+    "sentenceTranslation": "자는 매일아침 6시에 일어납니다.",
+    "blankSurface": "起き",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-16",
+    "word": "置く",
+    "sentence": "会社に携帯電話を___てきました",
+    "sentenceFurigana": "<ruby>会社<rt>かいしゃ</rt></ruby>に<ruby>携帯電話<rt>けいたいでんわ</rt></ruby>を___てきました",
+    "sentenceTranslation": "회사에 휴대전화를 두고 왔습니다.",
+    "blankSurface": "置い",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-17",
+    "word": "教える",
+    "sentence": "田中さんは日本語を___ています。",
+    "sentenceFurigana": "<ruby>田中<rt>たなか</rt></ruby>さんは<ruby>日本語<rt>にほんご</rt></ruby>を___ています。",
+    "sentenceTranslation": "다나카씨는 일본어를 가르치고 있습니다.",
+    "blankSurface": "教え",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-18",
+    "word": "覚える",
+    "sentence": "私は昔のことを___ています。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>は<ruby>昔<rt>むかし</rt></ruby>のことを___ています。",
+    "sentenceTranslation": "나는 예전 일을 기억하고 있습니다.",
+    "blankSurface": "覚え",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-19",
+    "word": "泳ぐ",
+    "sentence": "友達とプールで___ました。",
+    "sentenceFurigana": "<ruby>友達<rt>ともだち</rt></ruby>と<ruby>プ<rt>ぷ</rt></ruby>ー<ruby>ル<rt>る</rt></ruby>で___ました。",
+    "sentenceTranslation": "친구와 수영장에서 수영했습니다.",
+    "blankSurface": "泳ぎ",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d14-20",
+    "word": "終わる",
+    "sentence": "授業が___ました。",
+    "sentenceFurigana": "<ruby>授業<rt>じゅぎょう</rt></ruby>が___ました。",
+    "sentenceTranslation": "수업이 끝났습니다.",
+    "blankSurface": "終わり",
+    "matchMethod": "base-form",
+    "source": "능력단어14.docx"
+  },
+  {
+    "id": "d15-1",
+    "word": "買う",
+    "sentence": "本屋で英語の本を___ました。",
+    "sentenceFurigana": "<ruby>本屋<rt>ほんや</rt></ruby>で<ruby>英語<rt>えいご</rt></ruby>の<ruby>本<rt>ほん</rt></ruby>を___ました。",
+    "sentenceTranslation": "서점에서 영어책을 샀습니다.",
+    "blankSurface": "買い",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-2",
+    "word": "帰る",
+    "sentence": "留学生活を終え韓国に___て来ました。",
+    "sentenceFurigana": "<ruby>留学生活<rt>りゅうがくせいかつ</rt></ruby>を<ruby>終<rt>お</rt></ruby>え<ruby>韓国<rt>かんこく</rt></ruby>に___て<ruby>来<rt>き</rt></ruby>ました。",
+    "sentenceTranslation": "유학생활을 마치고 한국으로 돌아왔습니다.",
+    "blankSurface": "帰っ",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-3",
+    "word": "書く",
+    "sentence": "毎日日記を___ます。",
+    "sentenceFurigana": "<ruby>毎日日記<rt>まいにちにっき</rt></ruby>を___ます。",
+    "sentenceTranslation": "매일 일기를 씁니다.",
+    "blankSurface": "書き",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-4",
+    "word": "かける",
+    "sentence": "山田さんに電話を___た。",
+    "sentenceFurigana": "<ruby>山田<rt>やまだ</rt></ruby>さんに<ruby>電話<rt>でんわ</rt></ruby>を___た。",
+    "sentenceTranslation": "야마다 씨에게 전화를 걸었다.",
+    "blankSurface": "掛け",
+    "matchMethod": "source-override",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-5",
+    "word": "貸す",
+    "sentence": "友達にお金を___た。",
+    "sentenceFurigana": "<ruby>友達<rt>ともだち</rt></ruby>にお<ruby>金<rt>かね</rt></ruby>を___た。",
+    "sentenceTranslation": "친구에게 돈을 빌려주었다.",
+    "blankSurface": "貸し",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-6",
+    "word": "かぶる",
+    "sentence": "田中さんは帽子を___ています。",
+    "sentenceFurigana": "<ruby>田中<rt>たなか</rt></ruby>さんは<ruby>帽子<rt>ぼうし</rt></ruby>を___ています。",
+    "sentenceTranslation": "다나카 씨는 모자를 쓰고 있습니다.",
+    "blankSurface": "かぶっ",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-7",
+    "word": "借りる",
+    "sentence": "図書館で本を___ました。",
+    "sentenceFurigana": "<ruby>図書館<rt>としょかん</rt></ruby>で<ruby>本<rt>ほん</rt></ruby>を___ました。",
+    "sentenceTranslation": "도서관에서 책을 빌렸습니다.",
+    "blankSurface": "借り",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-8",
+    "word": "聞く",
+    "sentence": "音楽を___ています。",
+    "sentenceFurigana": "<ruby>音楽<rt>おんがく</rt></ruby>を___ています。",
+    "sentenceTranslation": "음악을 듣고 있습니다.",
+    "blankSurface": "聞い",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-9",
+    "word": "着る",
+    "sentence": "着物を___",
+    "sentenceFurigana": "<ruby>着物<rt>きもの</rt></ruby>を___",
+    "sentenceTranslation": "기모노를 입다.",
+    "blankSurface": "着る",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-10",
+    "word": "来る",
+    "sentence": "彼女が___ています。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>が___ています。",
+    "sentenceTranslation": "그녀가 오고 있습니다.",
+    "blankSurface": "来",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-11",
+    "word": "答える",
+    "sentence": "質問に___てください。",
+    "sentenceFurigana": "<ruby>質問<rt>しつもん</rt></ruby>に___てください。",
+    "sentenceTranslation": "질문에 대답해 주세요.",
+    "blankSurface": "答え",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-12",
+    "word": "困る",
+    "sentence": "___たことがまったれ相談してください。",
+    "sentenceFurigana": "___たことがまったれ<ruby>相談<rt>そうだん</rt></ruby>してください。",
+    "sentenceTranslation": "곤란한 일이 있으면 의논해 주십시오.",
+    "blankSurface": "困っ",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-13",
+    "word": "咲く",
+    "sentence": "春になると花が___ました。",
+    "sentenceFurigana": "<ruby>春<rt>はる</rt></ruby>になると<ruby>花<rt>はな</rt></ruby>が___ました。",
+    "sentenceTranslation": "봄이 되자 꽃이 피었습니다.",
+    "blankSurface": "咲き",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-14",
+    "word": "死ぬ",
+    "sentence": "飼っていたカタツムリが___だ。",
+    "sentenceFurigana": "<ruby>飼<rt>か</rt></ruby>っていた<ruby>カタツムリ<rt>かたつむり</rt></ruby>が___だ。",
+    "sentenceTranslation": "기르던 달팽이가 죽었다.",
+    "blankSurface": "死ん",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-15",
+    "word": "閉める",
+    "sentence": "冷たい風が吹いて窓を___ました。",
+    "sentenceFurigana": "<ruby>冷<rt>つめ</rt></ruby>たい<ruby>風<rt>かぜ</rt></ruby>が<ruby>吹<rt>ふ</rt></ruby>いて<ruby>窓<rt>まど</rt></ruby>を___ました。",
+    "sentenceTranslation": "찬바람이 불어서 창문을 닫았습니다.",
+    "blankSurface": "閉め",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-16",
+    "word": "知る",
+    "sentence": "すでに___ています。",
+    "sentenceFurigana": "すでに___ています。",
+    "sentenceTranslation": "이미 알고 있습니다.",
+    "blankSurface": "知っ",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-17",
+    "word": "吸う",
+    "sentence": "ここでタバコを___てはいけません。",
+    "sentenceFurigana": "ここで<ruby>タバコ<rt>たばこ</rt></ruby>を___てはいけません。",
+    "sentenceTranslation": "여기에서 담배를 피우면 안됩니다.",
+    "blankSurface": "吸っ",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-18",
+    "word": "住む",
+    "sentence": "彼は東京に___んでいます。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>東京<rt>とうきょう</rt></ruby>に___んでいます。",
+    "sentenceTranslation": "그는 도쿄에 살고 있습니다.",
+    "blankSurface": "",
+    "matchMethod": "source-override",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-19",
+    "word": "する",
+    "sentence": "夫は新聞を読んで私は料理を___。",
+    "sentenceFurigana": "<ruby>夫<rt>おっと</rt></ruby>は<ruby>新聞<rt>しんぶん</rt></ruby>を<ruby>読<rt>よ</rt></ruby>んで<ruby>私<rt>わたし</rt></ruby>は<ruby>料理<rt>りょうり</rt></ruby>を___。",
+    "sentenceTranslation": "남편은 신문을 읽고 나는 요리를 했다.",
+    "blankSurface": "する",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d15-20",
+    "word": "座る",
+    "sentence": "彼女は公園のベンチに___ています。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>は<ruby>公園<rt>こうえん</rt></ruby>の<ruby>ベンチ<rt>べんち</rt></ruby>に___ています。",
+    "sentenceTranslation": "그는 공원 벤치에 앉아 있습니다.",
+    "blankSurface": "座っ",
+    "matchMethod": "base-form",
+    "source": "능력단어15.docx"
+  },
+  {
+    "id": "d16-1",
+    "word": "立つ",
+    "sentence": "彼女が街路灯の下に___ています。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>が<ruby>街路灯<rt>がいろとう</rt></ruby>の<ruby>下<rt>した</rt></ruby>に___ています。",
+    "sentenceTranslation": "그녀는 가로등 밑에 서 있습니다.",
+    "blankSurface": "立っ",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-2",
+    "word": "頼む",
+    "sentence": "彼に___ました。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>に___ました。",
+    "sentenceTranslation": "그에게 부탁했습니다.",
+    "blankSurface": "頼み",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-3",
+    "word": "食べる",
+    "sentence": "日本でうどんを___ました。",
+    "sentenceFurigana": "<ruby>日本<rt>にほん</rt></ruby>でうどんを___ました。",
+    "sentenceTranslation": "일본에서 우동을 먹었습니다.",
+    "blankSurface": "食べ",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-4",
+    "word": "違う",
+    "sentence": "方法は___が結果は同じです。",
+    "sentenceFurigana": "<ruby>方法<rt>ほうほう</rt></ruby>は___が<ruby>結果<rt>けっか</rt></ruby>は<ruby>同<rt>おな</rt></ruby>じです。",
+    "sentenceTranslation": "방법은 다르지만 결과는 같습니다.",
+    "blankSurface": "違う",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-5",
+    "word": "使う",
+    "sentence": "道具を___た形跡があります。",
+    "sentenceFurigana": "<ruby>道具<rt>どうぐ</rt></ruby>を___た<ruby>形跡<rt>けいせき</rt></ruby>があります。",
+    "sentenceTranslation": "도구를 사용한 흔적이 있습니다.",
+    "blankSurface": "使っ",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-6",
+    "word": "疲れる",
+    "sentence": "業務が多くて___ています。",
+    "sentenceFurigana": "<ruby>業務<rt>ぎょうむ</rt></ruby>が<ruby>多<rt>おお</rt></ruby>くて___ています。",
+    "sentenceTranslation": "업무가 많아서 피곤합니다.",
+    "blankSurface": "疲れ",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-7",
+    "word": "着く",
+    "sentence": "___たらすぐ電話をください。",
+    "sentenceFurigana": "___たらすぐ<ruby>電話<rt>でんわ</rt></ruby>をください。",
+    "sentenceTranslation": "도착하면 바로 전화해 주세요.",
+    "blankSurface": "着い",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-8",
+    "word": "作る",
+    "sentence": "カレーを___ました。",
+    "sentenceFurigana": "<ruby>カレ<rt>かれ</rt></ruby>ーを___ました。",
+    "sentenceTranslation": "카레를 만들었습니다.",
+    "blankSurface": "作り",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-9",
+    "word": "勤める",
+    "sentence": "彼女は病院に___ています。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>は<ruby>病院<rt>びょういん</rt></ruby>に___ています。",
+    "sentenceTranslation": "그녀는 병원에 근무하고 있습니다.",
+    "blankSurface": "勤め",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-10",
+    "word": "出掛ける",
+    "sentence": "ご飯も食べずに___た。",
+    "sentenceFurigana": "ご<ruby>飯<rt>はん</rt></ruby>も<ruby>食<rt>た</rt></ruby>べずに___た。",
+    "sentenceTranslation": "밥도 먹지 않고 나갔다.",
+    "blankSurface": "出かけ",
+    "matchMethod": "source-override",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-11",
+    "word": "出来る",
+    "sentence": "彼女なら___。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>なら___。",
+    "sentenceTranslation": "그녀라면 할 수 있다.",
+    "blankSurface": "できる",
+    "matchMethod": "source-override",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-12",
+    "word": "出る",
+    "sentence": "朝7時に家を___ます。",
+    "sentenceFurigana": "<ruby>朝<rt>あさ</rt></ruby><ruby>7<rt>７</rt></ruby><ruby>時<rt>じ</rt></ruby>に<ruby>家<rt>いえ</rt></ruby>を___ます。",
+    "sentenceTranslation": "아침 7시에 집을 나옵니다.",
+    "blankSurface": "出",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-13",
+    "word": "飛ぶ",
+    "sentence": "鳥が空を___でいます。",
+    "sentenceFurigana": "<ruby>鳥<rt>とり</rt></ruby>が<ruby>空<rt>そら</rt></ruby>を___でいます。",
+    "sentenceTranslation": "새가 하늘을 날고 있습니다.",
+    "blankSurface": "飛ん",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-14",
+    "word": "止まる",
+    "sentence": "列車が___た。",
+    "sentenceFurigana": "<ruby>列車<rt>れっしゃ</rt></ruby>が___た。",
+    "sentenceTranslation": "열차가 멈췄다.",
+    "blankSurface": "止まっ",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-15",
+    "word": "取る",
+    "sentence": "お箸を___てください。",
+    "sentenceFurigana": "お<ruby>箸<rt>はし</rt></ruby>を___てください。",
+    "sentenceTranslation": "젓가락을 집어 주세요.",
+    "blankSurface": "取っ",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-16",
+    "word": "撮る",
+    "sentence": "旅行中に写真を___た。",
+    "sentenceFurigana": "<ruby>旅行中<rt>りょこうちゅう</rt></ruby>に<ruby>写真<rt>しゃしん</rt></ruby>を___た。",
+    "sentenceTranslation": "여행 중에 사진을 찍었다.",
+    "blankSurface": "撮っ",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-17",
+    "word": "習う",
+    "sentence": "山田さんはギターを___ています。",
+    "sentenceFurigana": "<ruby>山田<rt>やまだ</rt></ruby>さんは<ruby>ギタ<rt>ぎた</rt></ruby>ーを___ています。",
+    "sentenceTranslation": "야마다 씨는 기타를 배우고 있습니다.",
+    "blankSurface": "習っ",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-18",
+    "word": "並ぶ",
+    "sentence": "長く___でる居る",
+    "sentenceFurigana": "<ruby>長<rt>なが</rt></ruby>く___でる<ruby>居<rt>い</rt></ruby>る",
+    "sentenceTranslation": "길게 줄 서 있다..",
+    "blankSurface": "並ん",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-19",
+    "word": "並べる",
+    "sentence": "一列に___てください。",
+    "sentenceFurigana": "<ruby>一列<rt>いちれつ</rt></ruby>に___てください。",
+    "sentenceTranslation": "일렬로 나열해 주세요.",
+    "blankSurface": "並べ",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d16-20",
+    "word": "寝る",
+    "sentence": "私は毎日日記を書いて___ます。。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>は<ruby>毎日日記<rt>まいにちにっき</rt></ruby>を<ruby>書<rt>か</rt></ruby>いて___ます。。",
+    "sentenceTranslation": "나는 매일 일기를 쓰고 잡니다.",
+    "blankSurface": "寝",
+    "matchMethod": "base-form",
+    "source": "능력단어16.docx"
+  },
+  {
+    "id": "d17-1",
+    "word": "登る",
+    "sentence": "健康のために毎週山に___ています。",
+    "sentenceFurigana": "<ruby>健康<rt>けんこう</rt></ruby>のために<ruby>毎週山<rt>まいしゅうやま</rt></ruby>に___ています。",
+    "sentenceTranslation": "건강을 위해 매주 산에 오르고 있습니다.",
+    "blankSurface": "登っ",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-2",
+    "word": "飲む",
+    "sentence": "コーヒーを___でいます。",
+    "sentenceFurigana": "コー<ruby>ヒ<rt>ひ</rt></ruby>ーを___でいます。",
+    "sentenceTranslation": "커피를 마시고 있습니다.",
+    "blankSurface": "飲ん",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-3",
+    "word": "乗る",
+    "sentence": "バスに___て会社に行きます。",
+    "sentenceFurigana": "<ruby>バス<rt>ばす</rt></ruby>に___て<ruby>会社<rt>かいしゃ</rt></ruby>に<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "버스를 타고 회사에 갑니다.",
+    "blankSurface": "乗っ",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-4",
+    "word": "入る",
+    "sentence": "そっと部屋に___た。",
+    "sentenceFurigana": "そっと<ruby>部屋<rt>へや</rt></ruby>に___た。",
+    "sentenceTranslation": "몰래 방으로 들어갔다.",
+    "blankSurface": "入っ",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-5",
+    "word": "始まる",
+    "sentence": "間もなく公演が___ます。",
+    "sentenceFurigana": "<ruby>間<rt>ま</rt></ruby>もなく<ruby>公演<rt>こうえん</rt></ruby>が___ます。",
+    "sentenceTranslation": "곧 공연이 시작됩니다.",
+    "blankSurface": "始まり",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-6",
+    "word": "走る",
+    "sentence": "遅刻しそうで駅から___ました。",
+    "sentenceFurigana": "<ruby>遅刻<rt>ちこく</rt></ruby>しそうで<ruby>駅<rt>えき</rt></ruby>から___ました。",
+    "sentenceTranslation": "지각할까봐 역(에서)부터 달렸습니다.",
+    "blankSurface": "走り",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-7",
+    "word": "働く",
+    "sentence": "彼は病院で___ています。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>病院<rt>びょういん</rt></ruby>で___ています。",
+    "sentenceTranslation": "그는 병원에서 일하고 있습니다.",
+    "blankSurface": "働い",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-8",
+    "word": "話す",
+    "sentence": "発表するときはゆっくり___て下さい。",
+    "sentenceFurigana": "<ruby>発表<rt>はっぴょう</rt></ruby>するときはゆっくり___て下さい。",
+    "sentenceTranslation": "발표할 때에는 천천히 이야기해 주세요.",
+    "blankSurface": "話し",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-9",
+    "word": "晴れる",
+    "sentence": "午後は雨がやんで___だろう。",
+    "sentenceFurigana": "<ruby>午後<rt>ごご</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>がやんで___だろう。",
+    "sentenceTranslation": "오후에는 비가 그치고 맑을 것이다.",
+    "blankSurface": "晴れる",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-10",
+    "word": "引く",
+    "sentence": "重い荷物を___ていきます。",
+    "sentenceFurigana": "<ruby>重<rt>おも</rt></ruby>い<ruby>荷物<rt>にもつ</rt></ruby>を___ていきます。",
+    "sentenceTranslation": "무거운 짐을 끌고 갑니다.",
+    "blankSurface": "引い",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-11",
+    "word": "弾く",
+    "sentence": "鈴木さんはギターを___ながら歌を歌います。",
+    "sentenceFurigana": "<ruby>鈴木<rt>すずき</rt></ruby>さんは<ruby>ギタ<rt>ぎた</rt></ruby>ーを___ながら<ruby>歌<rt>うた</rt></ruby>を<ruby>歌<rt>うた</rt></ruby>います。",
+    "sentenceTranslation": "스즈키 씨는 기타를 치면서 노래를 부릅니다.",
+    "blankSurface": "弾き",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-12",
+    "word": "吹く",
+    "sentence": "冷たい風が___ています。",
+    "sentenceFurigana": "<ruby>冷<rt>つめ</rt></ruby>たい<ruby>風<rt>かぜ</rt></ruby>が___ています。",
+    "sentenceTranslation": "찬바람이 불고 있습니다.",
+    "blankSurface": "吹い",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-13",
+    "word": "降る",
+    "sentence": "朝から雨が___。",
+    "sentenceFurigana": "<ruby>朝<rt>あさ</rt></ruby>から<ruby>雨<rt>あめ</rt></ruby>が___。",
+    "sentenceTranslation": "아침부터 비가 온다.",
+    "blankSurface": "降る",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-14",
+    "word": "待つ",
+    "sentence": "公園の前で友達を___た。",
+    "sentenceFurigana": "<ruby>公園<rt>こうえん</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>で<ruby>友達<rt>ともだち</rt></ruby>を___た。",
+    "sentenceTranslation": "공원 앞에서 친구를 기다렸다.",
+    "blankSurface": "待っ",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-15",
+    "word": "見せる",
+    "sentence": "計画書を___てください。",
+    "sentenceFurigana": "<ruby>計画書<rt>けいかくしょ</rt></ruby>を___てください。",
+    "sentenceTranslation": "계획서를 보여 주세요.",
+    "blankSurface": "見せ",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-16",
+    "word": "見る",
+    "sentence": "家族写真を___ています。",
+    "sentenceFurigana": "<ruby>家族写真<rt>かぞくじゃしん</rt></ruby>を___ています。",
+    "sentenceTranslation": "가족 사진을 보고 있습니다.",
+    "blankSurface": "見",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-17",
+    "word": "呼ぶ",
+    "sentence": "名前を___でください。",
+    "sentenceFurigana": "<ruby>名前<rt>なまえ</rt></ruby>を___でください。",
+    "sentenceTranslation": "이름을 불러주세요.",
+    "blankSurface": "呼ん",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-18",
+    "word": "読む",
+    "sentence": "姉は諸説を___でいます。",
+    "sentenceFurigana": "<ruby>姉<rt>あね</rt></ruby>は<ruby>諸説<rt>しょせつ</rt></ruby>を___でいます。",
+    "sentenceTranslation": "언니는 소설을 읽고 있습니다.",
+    "blankSurface": "読ん",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-19",
+    "word": "分かる",
+    "sentence": "原因が___ない。",
+    "sentenceFurigana": "<ruby>原因<rt>げんいん</rt></ruby>が___ない。",
+    "sentenceTranslation": "원인을 알 수 없다.",
+    "blankSurface": "わから",
+    "matchMethod": "source-override",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d17-20",
+    "word": "忘れる",
+    "sentence": "恩恵を___なかった。",
+    "sentenceFurigana": "<ruby>恩恵<rt>おんけい</rt></ruby>を___なかった。",
+    "sentenceTranslation": "은혜를 잊지 않았다.",
+    "blankSurface": "忘れ",
+    "matchMethod": "base-form",
+    "source": "능력단어17.docx"
+  },
+  {
+    "id": "d18-1",
+    "word": "あまり",
+    "sentence": "勉強は___したくない。",
+    "sentenceFurigana": "<ruby>勉強<rt>べんきょう</rt></ruby>は___したくない。",
+    "sentenceTranslation": "공부는 별로 하고 싶지 않다.",
+    "blankSurface": "あまり",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-2",
+    "word": "いくつ",
+    "sentence": "百円で___ですか。",
+    "sentenceFurigana": "<ruby>百円<rt>ひゃくえん</rt></ruby>で___ですか。",
+    "sentenceTranslation": "백 엔에 몇 개입니까?.",
+    "blankSurface": "いくつ",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-3",
+    "word": "いくら",
+    "sentence": "バナナは___ですか。",
+    "sentenceFurigana": "<ruby>バナナ<rt>ばなな</rt></ruby>は___ですか。",
+    "sentenceTranslation": "바나나는 얼마입니까?",
+    "blankSurface": "いくら",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-4",
+    "word": "（もう）一度",
+    "sentence": "もう___話してください。",
+    "sentenceFurigana": "もう___<ruby>話し<rt>はなし</rt></ruby>てください。",
+    "sentenceTranslation": "한 번 더 이야기해 주세요.",
+    "blankSurface": "一度",
+    "matchMethod": "exact",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-5",
+    "word": "一番",
+    "sentence": "どんな果物が___好きですか。",
+    "sentenceFurigana": "どんな<ruby>果物<rt>くだもの</rt></ruby>が___好きですか。",
+    "sentenceTranslation": "어떤 과일을 가장 좋아합니까?",
+    "blankSurface": "一番",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-6",
+    "word": "いつ",
+    "sentence": "入学式は___ですか。",
+    "sentenceFurigana": "<ruby>入学式<rt>にゅうがくしき</rt></ruby>は___ですか。",
+    "sentenceTranslation": "입학식은 언제입니까?",
+    "blankSurface": "いつ",
+    "matchMethod": "exact",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-7",
+    "word": "一緒に",
+    "sentence": "友達と___ショッピングをしました。",
+    "sentenceFurigana": "<ruby>友達<rt>ともだち</rt></ruby>と___<ruby>ショッピング<rt>しょっぴんぐ</rt></ruby>をしました。",
+    "sentenceTranslation": "친구와 함께 쇼핑을 했습니다.",
+    "blankSurface": "一緒に",
+    "matchMethod": "exact",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-8",
+    "word": "いつも",
+    "sentence": "彼女は___優しいです。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>は___<ruby>優<rt>やさ</rt></ruby>しいです。",
+    "sentenceTranslation": "그녀는 늘 상냥합니다.",
+    "blankSurface": "いつも",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-9",
+    "word": "今",
+    "sentence": "___時間がない。",
+    "sentenceFurigana": "___<ruby>時間<rt>じかん</rt></ruby>がない。",
+    "sentenceTranslation": "지금은 시간이 없다.",
+    "blankSurface": "今",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-10",
+    "word": "いろいろ",
+    "sentence": "___な方法を考えた。",
+    "sentenceFurigana": "___な<ruby>方法<rt>ほうほう</rt></ruby>を<ruby>考<rt>かんが</rt></ruby>えた。",
+    "sentenceTranslation": "여러 가지 방법을 생각했다.",
+    "blankSurface": "いろいろ",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-11",
+    "word": "すぐ",
+    "sentence": "___連絡してください。",
+    "sentenceFurigana": "___<ruby>連絡<rt>れんらく</rt></ruby>してください。",
+    "sentenceTranslation": "바로 연락해 주세요.",
+    "blankSurface": "すぐ",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-12",
+    "word": "少し",
+    "sentence": "夕食は___食べます。",
+    "sentenceFurigana": "<ruby>夕食<rt>ゆうしょく</rt></ruby>は___<ruby>食<rt>た</rt></ruby>べます。",
+    "sentenceTranslation": "저녁(밥)은 조금 먹습니다.",
+    "blankSurface": "少し",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-13",
+    "word": "全部",
+    "sentence": "___いくらですか。",
+    "sentenceFurigana": "___いくらですか。",
+    "sentenceTranslation": "전부 얼마입니까?",
+    "blankSurface": "全部",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-14",
+    "word": "それから",
+    "sentence": "ご飯を食べた。___薬を飲んだ。",
+    "sentenceFurigana": "ご<ruby>飯<rt>はん</rt></ruby>を<ruby>食<rt>た</rt></ruby>べた。___<ruby>薬<rt>くすり</rt></ruby>を<ruby>飲<rt>の</rt></ruby>んだ。",
+    "sentenceTranslation": "밥을 먹었다. 그리고 나서 약을 먹었다.",
+    "blankSurface": "それから",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-15",
+    "word": "たいてい",
+    "sentence": "その時間は___寝ているか本を読んでいます",
+    "sentenceFurigana": "その<ruby>時間<rt>じかん</rt></ruby>は___<ruby>寝<rt>ね</rt></ruby>ているか<ruby>本<rt>ほん</rt></ruby>を<ruby>読<rt>よ</rt></ruby>んでいます",
+    "sentenceTranslation": "그 시간은 대개 자고 있거나 책을 읽고 있습니다.",
+    "blankSurface": "たいてい",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-16",
+    "word": "大変",
+    "sentence": "公園は___うるさかったです。",
+    "sentenceFurigana": "<ruby>公園<rt>こうえん</rt></ruby>は___うるさかったです。",
+    "sentenceTranslation": "공원은 매우 시끄러웠습니다.",
+    "blankSurface": "大変",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-17",
+    "word": "たくさん",
+    "sentence": "読書を___します。",
+    "sentenceFurigana": "<ruby>読書<rt>どくしょ</rt></ruby>を___します。",
+    "sentenceTranslation": "독서를 많이 합니다.",
+    "blankSurface": "たくさん",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-18",
+    "word": "だいぶ",
+    "sentence": "英語の成績が___上がった。",
+    "sentenceFurigana": "<ruby>英語<rt>えいご</rt></ruby>の<ruby>成績<rt>せいせき</rt></ruby>が___<ruby>上<rt>あ</rt></ruby>がった。",
+    "sentenceTranslation": "영어 성적이 꽤 올랐다.",
+    "blankSurface": "だいぶ",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-19",
+    "word": "たぶん",
+    "sentence": "___そうだろう。",
+    "sentenceFurigana": "___そうだろう。",
+    "sentenceTranslation": "아마 그럴 것이다.",
+    "blankSurface": "たぶん",
+    "matchMethod": "base-form",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d18-20",
+    "word": "段々",
+    "sentence": "___厚くなっています。",
+    "sentenceFurigana": "___<ruby>厚<rt>あつ</rt></ruby>くなっています。",
+    "sentenceTranslation": "점점 더워지고 있습니다.",
+    "blankSurface": "だんだん",
+    "matchMethod": "source-override",
+    "source": "능력단어18.docx"
+  },
+  {
+    "id": "d19-1",
+    "word": "ちょっと",
+    "sentence": "___時間ありますか。",
+    "sentenceFurigana": "___<ruby>時間<rt>じかん</rt></ruby>ありますか。",
+    "sentenceTranslation": "잠깐 시간 있으세요?.",
+    "blankSurface": "ちょっと",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-2",
+    "word": "次",
+    "sentence": "___の人に伝えてくだ先。",
+    "sentenceFurigana": "___の<ruby>人<rt>ひと</rt></ruby>に<ruby>伝え<rt>つたえ</rt></ruby>てくだ<ruby>先<rt>さき</rt></ruby>。",
+    "sentenceTranslation": "다음 사람에게 전해 주세요.",
+    "blankSurface": "次",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-3",
+    "word": "でも",
+    "sentence": "努力した。___、結果は思わしくなかった。",
+    "sentenceFurigana": "<ruby>努力<rt>どりょく</rt></ruby>した。___、<ruby>結果<rt>けっか</rt></ruby>は<ruby>思<rt>おも</rt></ruby>わしくなかった。",
+    "sentenceTranslation": "노력했다. 하지만 결과는 좋지 않았다.",
+    "blankSurface": "でも",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-4",
+    "word": "どう",
+    "sentence": "この服は___ですか。",
+    "sentenceFurigana": "この<ruby>服<rt>ふく</rt></ruby>は___ですか。",
+    "sentenceTranslation": "이 옷은 어떻습니까?",
+    "blankSurface": "どう",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-5",
+    "word": "どうして",
+    "sentence": "___分かってくれないの。",
+    "sentenceFurigana": "___<ruby>分<rt>わ</rt></ruby>かってくれないの。",
+    "sentenceTranslation": "왜 몰라주는 거야.",
+    "blankSurface": "どうして",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-6",
+    "word": "どうぞ",
+    "sentence": "___、よろしくお願いします。",
+    "sentenceFurigana": "___、よろしくお<ruby>願<rt>ねが</rt></ruby>いします。",
+    "sentenceTranslation": "아무쪼록(모쪼록) 잘 부탁드립니다.",
+    "blankSurface": "どうぞ",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-7",
+    "word": "どうも",
+    "sentence": "___ありがとうございます。",
+    "sentenceFurigana": "___ありがとうございます。",
+    "sentenceTranslation": "대단히 감사합니다.",
+    "blankSurface": "どうも",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-8",
+    "word": "時々",
+    "sentence": "彼に___連絡が来ます。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>に___連絡が<ruby>来<rt>き</rt></ruby>ます。",
+    "sentenceTranslation": "그에게 가끔 연락이 옵니다.",
+    "blankSurface": "時々",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-9",
+    "word": "とても",
+    "sentence": "映画は___面白かったです。",
+    "sentenceFurigana": "<ruby>映画<rt>えいが</rt></ruby>は___<ruby>面白<rt>おもしろ</rt></ruby>かったです。",
+    "sentenceTranslation": "영화는 매우 재미있었습니다.",
+    "blankSurface": "とても",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-10",
+    "word": "初めて",
+    "sentence": "___海外旅行に行きます。",
+    "sentenceFurigana": "___<ruby>海外旅行<rt>かいがいりょこう</rt></ruby>に<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "처음으로 해외여행을 갑니다.",
+    "blankSurface": "初めて",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-11",
+    "word": "本当に",
+    "sentence": "___心が痛いです。",
+    "sentenceFurigana": "___<ruby>心<rt>こころ</rt></ruby>が<ruby>痛<rt>いた</rt></ruby>いです。",
+    "sentenceTranslation": "정말로 마음이 아픕니다.",
+    "blankSurface": "本当に",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-12",
+    "word": "また",
+    "sentence": "では、___来ます。",
+    "sentenceFurigana": "では、___<ruby>来<rt>き</rt></ruby>ます。",
+    "sentenceTranslation": "그럼 또 오겠습니다.",
+    "blankSurface": "また",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-13",
+    "word": "まだ",
+    "sentence": "___連絡がありません。",
+    "sentenceFurigana": "___<ruby>連絡<rt>れんらく</rt></ruby>がありません。",
+    "sentenceTranslation": "아직 연락이 없습니다.",
+    "blankSurface": "まだ",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-14",
+    "word": "まっすぐ",
+    "sentence": "___行って右折したください。",
+    "sentenceFurigana": "___<ruby>行<rt>い</rt></ruby>って<ruby>右折<rt>うせつ</rt></ruby>したください。",
+    "sentenceTranslation": "곧장 가서 우회전하세요.",
+    "blankSurface": "まっすぐ",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-15",
+    "word": "もう",
+    "sentence": "___到着しましたか。",
+    "sentenceFurigana": "___<ruby>到着<rt>とうちゃく</rt></ruby>しましたか。",
+    "sentenceTranslation": "벌써 도착했습니까?",
+    "blankSurface": "もう",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-16",
+    "word": "勿論",
+    "sentence": "はい、___です",
+    "sentenceFurigana": "はい、___です",
+    "sentenceTranslation": "네, 물론입니다.",
+    "blankSurface": "もちろん",
+    "matchMethod": "source-override",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-17",
+    "word": "もっと",
+    "sentence": "___頑張ってください",
+    "sentenceFurigana": "___<ruby>頑張<rt>がんば</rt></ruby>ってください",
+    "sentenceTranslation": "더욱 분발해 주세요.",
+    "blankSurface": "もっと",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-18",
+    "word": "ゆっくり",
+    "sentence": "___召し上がってください。",
+    "sentenceFurigana": "___<ruby>召<rt>め</rt></ruby>し<ruby>上<rt>あ</rt></ruby>がってください。",
+    "sentenceTranslation": "천천히 드세요.",
+    "blankSurface": "ゆっくり",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-19",
+    "word": "よく",
+    "sentence": "___遊びに来てください。",
+    "sentenceFurigana": "___<ruby>遊<rt>あそ</rt></ruby>びに<ruby>来<rt>き</rt></ruby>てください。",
+    "sentenceTranslation": "자주 놀러 오세요.",
+    "blankSurface": "よく",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d19-20",
+    "word": "なぜ",
+    "sentence": "___病院に行きますか。",
+    "sentenceFurigana": "___<ruby>病院<rt>びょういん</rt></ruby>に<ruby>行<rt>い</rt></ruby>きますか。",
+    "sentenceTranslation": "왜 병원에 갑니까?",
+    "blankSurface": "なぜ",
+    "matchMethod": "base-form",
+    "source": "능력단어19.docx"
+  },
+  {
+    "id": "d20-1",
+    "word": "挨拶",
+    "sentence": "笑いながら___した。",
+    "sentenceFurigana": "<ruby>笑<rt>わら</rt></ruby>いながら___した。",
+    "sentenceTranslation": "웃으면서 인사했다",
+    "blankSurface": "あいさつ",
+    "matchMethod": "source-override",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-2",
+    "word": "間",
+    "sentence": "梅雨の___には洗濯物がよく乾かない。",
+    "sentenceFurigana": "<ruby>梅雨<rt>つゆ</rt></ruby>の___には<ruby>洗濯物<rt>せんたくもの</rt></ruby>がよく<ruby>乾<rt>かわ</rt></ruby>かない。",
+    "sentenceTranslation": "장마 동안에는 빨래가 잘 마르지 않는다.",
+    "blankSurface": "間",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-3",
+    "word": "青",
+    "sentence": "___と赤を混ぜると紫になります。",
+    "sentenceFurigana": "___と<ruby>赤<rt>あか</rt></ruby>を<ruby>混<rt>ま</rt></ruby>ぜると<ruby>紫<rt>むらさき</rt></ruby>になります。",
+    "sentenceTranslation": "파랑과 빨강을 섞으면 보라색이 됩니다.",
+    "blankSurface": "青",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-4",
+    "word": "赤",
+    "sentence": "___は目立つ色です。",
+    "sentenceFurigana": "___は<ruby>目立<rt>めだ</rt></ruby>つ<ruby>色<rt>いろ</rt></ruby>です。",
+    "sentenceTranslation": "빨강은 눈에 띄는 색입니다.",
+    "blankSurface": "赤",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-5",
+    "word": "赤ん坊",
+    "sentence": "___が泣いています。",
+    "sentenceFurigana": "___が<ruby>泣<rt>な</rt></ruby>いています。",
+    "sentenceTranslation": "갓난 아기가 울고 있습니다..",
+    "blankSurface": "赤ん坊",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-6",
+    "word": "味",
+    "sentence": "あのレストランは___もいいし、親切です。",
+    "sentenceFurigana": "あの<ruby>レストラン<rt>れすとらん</rt></ruby>は___もいいし、<ruby>親切<rt>しんせつ</rt></ruby>です。",
+    "sentenceTranslation": "저 레스토랑은 맛도 좋고, 친절합니다.",
+    "blankSurface": "味",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-7",
+    "word": "暑さ",
+    "sentence": "___には強い方ですか。",
+    "sentenceFurigana": "___には<ruby>強<rt>つよ</rt></ruby>い<ruby>方<rt>ほう</rt></ruby>ですか。",
+    "sentenceTranslation": "더위에 강한 편입니까?",
+    "blankSurface": "暑さ",
+    "matchMethod": "exact",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-8",
+    "word": "案内",
+    "sentence": "彼女に道の___をしました。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>に<ruby>道<rt>みち</rt></ruby>の___をしました。",
+    "sentenceTranslation": "그녀에게 길 안내를 했습니다.",
+    "blankSurface": "案内",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-9",
+    "word": "以下",
+    "sentence": "原価___で販売された。",
+    "sentenceFurigana": "原価___で<ruby>販売<rt>はんばい</rt></ruby>された。",
+    "sentenceTranslation": "원가 이하로 판매되었다.",
+    "blankSurface": "以下",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-10",
+    "word": "以外",
+    "sentence": "手術___に方法がない。",
+    "sentenceFurigana": "手術___に<ruby>方法<rt>ほうほう</rt></ruby>がない。",
+    "sentenceTranslation": "수술 이외에 방법이 없다.",
+    "blankSurface": "以外",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-11",
+    "word": "医学",
+    "sentence": "彼は___に関する知識が豊富です。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は___に<ruby>関<rt>かん</rt></ruby>する<ruby>知識<rt>ちしき</rt></ruby>が<ruby>豊富<rt>ほうふ</rt></ruby>です。",
+    "sentenceTranslation": "그는 의학에 관한 지식이 풍부합니다.",
+    "blankSurface": "医学",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-12",
+    "word": "意見",
+    "sentence": "他の___はありませんか。",
+    "sentenceFurigana": "<ruby>他<rt>た</rt></ruby>の___はありませんか。",
+    "sentenceTranslation": "다른 의견은 없습니까?",
+    "blankSurface": "意見",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-13",
+    "word": "石",
+    "sentence": "綺麗な___を発見しました。",
+    "sentenceFurigana": "<ruby>綺麗<rt>きれい</rt></ruby>な___を<ruby>発見<rt>はっけん</rt></ruby>しました。",
+    "sentenceTranslation": "예쁜 돌을 발견했습니다.",
+    "blankSurface": "意思",
+    "matchMethod": "source-override",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-14",
+    "word": "以上",
+    "sentence": "対象年齢は８歳___です。",
+    "sentenceFurigana": "<ruby>対象年齢<rt>たいしょうねんれい</rt></ruby>は８歳___です。",
+    "sentenceTranslation": "대상 연령은 8세 이상입니다.",
+    "blankSurface": "以上",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-15",
+    "word": "以前",
+    "sentence": "３時___に到着できますか。",
+    "sentenceFurigana": "３時___に<ruby>到着<rt>とうちゃく</rt></ruby>できますか。",
+    "sentenceTranslation": "3시 이전에 도착할 수 있습니까?",
+    "blankSurface": "以内",
+    "matchMethod": "source-override",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-16",
+    "word": "以内",
+    "sentence": "三日___に終わらせたいです。",
+    "sentenceFurigana": "三日___に<ruby>終<rt>お</rt></ruby>わらせたいです。",
+    "sentenceTranslation": "3일 이내에 끝내고 싶습니다.",
+    "blankSurface": "以内",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-17",
+    "word": "田舎",
+    "sentence": "両親は___に住んでいます。",
+    "sentenceFurigana": "<ruby>両親<rt>りょうしん</rt></ruby>は___に<ruby>住<rt>す</rt></ruby>んでいます。",
+    "sentenceTranslation": "부모님은 시골에 살고 있습니다.",
+    "blankSurface": "田舎",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-18",
+    "word": "受付",
+    "sentence": "書類は___に提出したください。",
+    "sentenceFurigana": "<ruby>書類<rt>しょるい</rt></ruby>は___に<ruby>提出<rt>ていしゅつ</rt></ruby>したください。",
+    "sentenceTranslation": "서류는 접수처에 제출해 주세요.",
+    "blankSurface": "受け付け",
+    "matchMethod": "source-override",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-19",
+    "word": "嘘",
+    "sentence": "犯人の話は___だった。",
+    "sentenceFurigana": "<ruby>犯人<rt>はんにん</rt></ruby>の<ruby>話<rt>はなし</rt></ruby>は___だった。",
+    "sentenceTranslation": "범인의 말은 거짓말이었다.",
+    "blankSurface": "噓",
+    "matchMethod": "source-override",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d20-20",
+    "word": "売り場",
+    "sentence": "ここは家具___です。",
+    "sentenceFurigana": "ここは<ruby>家具<rt>かぐ</rt></ruby>___です。",
+    "sentenceTranslation": "여기는 가구 매장입니다.",
+    "blankSurface": "売り場",
+    "matchMethod": "base-form",
+    "source": "능력단어20.docx"
+  },
+  {
+    "id": "d21-1",
+    "word": "運転",
+    "sentence": "単価さん___の練習をしています。",
+    "sentenceFurigana": "<ruby>単価<rt>たんか</rt></ruby>さん___の<ruby>練習<rt>れんしゅう</rt></ruby>をしています。",
+    "sentenceTranslation": "다나카 씨는 운전 연습을 하고 있습니다.",
+    "blankSurface": "運転",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-2",
+    "word": "運動",
+    "sentence": "私は___するのが好きです。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>は___するのが<ruby>好き<rt>すき</rt></ruby>です。",
+    "sentenceTranslation": "나는 운동하는 것을 좋아합니다.",
+    "blankSurface": "運動",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-3",
+    "word": "枝",
+    "sentence": "___を集めて燃やす。",
+    "sentenceFurigana": "___を<ruby>集め<rt>あつめ</rt></ruby>て<ruby>燃やす<rt>もやす</rt></ruby>。",
+    "sentenceTranslation": "가지를 모아서 태우다.",
+    "blankSurface": "枝",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-4",
+    "word": "お祝い",
+    "sentence": "___のプレゼントを用意した。",
+    "sentenceFurigana": "___のプレゼントを<ruby>用意<rt>ようい</rt></ruby>した。",
+    "sentenceTranslation": "축하 선물을 준비했다.",
+    "blankSurface": "お祝い",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-5",
+    "word": "おかげ",
+    "sentence": "___さまで元気です。",
+    "sentenceFurigana": "___さまで<ruby>元気<rt>げんき</rt></ruby>です。",
+    "sentenceTranslation": "덕분에 잘 지내고 있습니다.(건강합니다.)",
+    "blankSurface": "おかげ",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-6",
+    "word": "お金持ち",
+    "sentence": "___になったらビルを買う。",
+    "sentenceFurigana": "___になったら<ruby>ビル<rt>びる</rt></ruby>を<ruby>買<rt>か</rt></ruby>う。",
+    "sentenceTranslation": "부자가 되면 빌딩을 살 거야.",
+    "blankSurface": "お金持ち",
+    "matchMethod": "exact",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-7",
+    "word": "屋上",
+    "sentence": "あの家は___に庭があります。",
+    "sentenceFurigana": "あの<ruby>家<rt>いえ</rt></ruby>は___に<ruby>庭<rt>にわ</rt></ruby>があります。",
+    "sentenceTranslation": "저 집은 옥상에 정원이 있습니다.",
+    "blankSurface": "屋上",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-8",
+    "word": "贈り物",
+    "sentence": "両親の___を準備しました。",
+    "sentenceFurigana": "<ruby>両親<rt>りょうしん</rt></ruby>の___を<ruby>準備<rt>じゅんび</rt></ruby>しました。",
+    "sentenceTranslation": "부모님의 선물을 준비했습니다.",
+    "blankSurface": "贈り物",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-9",
+    "word": "押入れ",
+    "sentence": "布団は___にあります。",
+    "sentenceFurigana": "<ruby>布団<rt>ふとん</rt></ruby>は___にあります。",
+    "sentenceTranslation": "이불은 벽장에 있습니다.",
+    "blankSurface": "押し入れ",
+    "matchMethod": "source-override",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-10",
+    "word": "お宅",
+    "sentence": "山田さんの___を訪ねました。",
+    "sentenceFurigana": "<ruby>山田<rt>やまだ</rt></ruby>さんの___を<ruby>訪<rt>たず</rt></ruby>ねました。",
+    "sentenceTranslation": "야마다 씨의 댁을 방문했습니다.",
+    "blankSurface": "お宅",
+    "matchMethod": "exact",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-11",
+    "word": "夫",
+    "sentence": "___は掃除をしています。",
+    "sentenceFurigana": "___は<ruby>掃除<rt>そうじ</rt></ruby>をしています。",
+    "sentenceTranslation": "남편은 청소를 하고 있습니다.",
+    "blankSurface": "夫",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-12",
+    "word": "おつり",
+    "sentence": "___でございます。",
+    "sentenceFurigana": "___でございます。",
+    "sentenceTranslation": "거스름돈입니다.",
+    "blankSurface": "おつり",
+    "matchMethod": "exact",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-13",
+    "word": "音",
+    "sentence": "波の___が聞こえます。",
+    "sentenceFurigana": "<ruby>波<rt>なみ</rt></ruby>の___が<ruby>聞<rt>き</rt></ruby>こえます。",
+    "sentenceTranslation": "파도 소리가 들립니다.",
+    "blankSurface": "音",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-14",
+    "word": "踊り",
+    "sentence": "沖縄の伝統の___を習いました。",
+    "sentenceFurigana": "<ruby>沖縄<rt>おきなわ</rt></ruby>の<ruby>伝統<rt>でんとう</rt></ruby>の___を<ruby>習<rt>なら</rt></ruby>いました。",
+    "sentenceTranslation": "오키나와의 전통 춤을 배웠습니다.",
+    "blankSurface": "踊り",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-15",
+    "word": "お願い",
+    "sentence": "___があります。",
+    "sentenceFurigana": "___があります。",
+    "sentenceTranslation": "부탁이 있습니다.",
+    "blankSurface": "お願い",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-16",
+    "word": "お祭り",
+    "sentence": "大阪には有名な___がたくさんあります。",
+    "sentenceFurigana": "<ruby>大阪<rt>おおさか</rt></ruby>には<ruby>有名<rt>ゆうめい</rt></ruby>な___がたくさんあります。",
+    "sentenceTranslation": "오사카에는 유명한 축제가 많이 있습니다.",
+    "blankSurface": "お祭り",
+    "matchMethod": "exact",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-17",
+    "word": "お見舞い",
+    "sentence": "友達の___に行ってきた。",
+    "sentenceFurigana": "<ruby>友達<rt>ともだち</rt></ruby>の___に<ruby>行<rt>い</rt></ruby>ってきた。",
+    "sentenceTranslation": "친구의 병문안을 다녀왔다.",
+    "blankSurface": "お見舞い",
+    "matchMethod": "exact",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-18",
+    "word": "お土産",
+    "sentence": "博物館で___を販売します。",
+    "sentenceFurigana": "<ruby>博物館<rt>はくぶつかん</rt></ruby>で___を<ruby>販売<rt>はんばい</rt></ruby>します。",
+    "sentenceTranslation": "박물관에서 기념품을 판매합니다.",
+    "blankSurface": "お土産",
+    "matchMethod": "exact",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-19",
+    "word": "おもちゃ",
+    "sentence": "息子のために___を購入しました。",
+    "sentenceFurigana": "<ruby>息子<rt>むすこ</rt></ruby>のために___を<ruby>購入<rt>こうにゅう</rt></ruby>しました。",
+    "sentenceTranslation": "아들을 위해 장난감을 구입했습니다.",
+    "blankSurface": "おもちゃ",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d21-20",
+    "word": "お礼",
+    "sentence": "ぜひ___がしたいです。",
+    "sentenceFurigana": "ぜひ___がしたいです。",
+    "sentenceTranslation": "꼭 사례하고 싶습니다.",
+    "blankSurface": "お礼",
+    "matchMethod": "base-form",
+    "source": "능력단어21.docx"
+  },
+  {
+    "id": "d22-1",
+    "word": "会議",
+    "sentence": "１０時から___が始まります。",
+    "sentenceFurigana": "１０<ruby>時<rt>じ</rt></ruby>から___が<ruby>始<rt>はじ</rt></ruby>まります。",
+    "sentenceTranslation": "10시부터 회의가 시작됩니다.",
+    "blankSurface": "会議",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-2",
+    "word": "会場",
+    "sentence": "___は静かな雰囲気だった。",
+    "sentenceFurigana": "___は<ruby>静<rt>しず</rt></ruby>かな<ruby>雰囲気<rt>ふんいき</rt></ruby>だった。",
+    "sentenceTranslation": "회장은 조용한 분위기였다.",
+    "blankSurface": "会場",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-3",
+    "word": "会話",
+    "sentence": "中国語での___が可能です。",
+    "sentenceFurigana": "<ruby>中国語<rt>ちゅうごくご</rt></ruby>での___が<ruby>可能<rt>かのう</rt></ruby>です。",
+    "sentenceTranslation": "중국어로 회화가 가능합니다.",
+    "blankSurface": "会話",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-4",
+    "word": "科学",
+    "sentence": "___技術は速いスピードで発展している。",
+    "sentenceFurigana": "___技術は<ruby>速<rt>はや</rt></ruby>い<ruby>スピ<rt>すぴ</rt></ruby>ー<ruby>ド<rt>ど</rt></ruby>で<ruby>発展<rt>はってん</rt></ruby>している。",
+    "sentenceTranslation": "과학기술은 빠른 속도로 발전하고 있다.",
+    "blankSurface": "科学",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-5",
+    "word": "鏡",
+    "sentence": "___を見ながら化粧をします。",
+    "sentenceFurigana": "___を<ruby>見<rt>み</rt></ruby>ながら<ruby>化粧<rt>けしょう</rt></ruby>をします。",
+    "sentenceTranslation": "거울을 보면서 화장을 합니다.",
+    "blankSurface": "鏡",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-6",
+    "word": "火事",
+    "sentence": "化学工場で___が起こった。",
+    "sentenceFurigana": "<ruby>化学工場<rt>かがくこうじょう</rt></ruby>で___が<ruby>起<rt>お</rt></ruby>こった。",
+    "sentenceTranslation": "화학공장에서 화재가 일어났다.",
+    "blankSurface": "火事",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-7",
+    "word": "形",
+    "sentence": "満月の___をしている。",
+    "sentenceFurigana": "<ruby>満月<rt>まんげつ</rt></ruby>の___をしている。",
+    "sentenceTranslation": "보름달 모양을 하고 있다.",
+    "blankSurface": "形",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-8",
+    "word": "家庭",
+    "sentence": "彼は裕福な___に生まれました。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>裕福<rt>ゆうふく</rt></ruby>な___に<ruby>生<rt>う</rt></ruby>まれました。",
+    "sentenceTranslation": "그는 유복한 가정에서 태어났다.",
+    "blankSurface": "家庭",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-9",
+    "word": "家内",
+    "sentence": "___はコーヒーが好きです。",
+    "sentenceFurigana": "___は<ruby>コ<rt>こ</rt></ruby>ー<ruby>ヒ<rt>ひ</rt></ruby>ーが<ruby>好<rt>す</rt></ruby>きです。",
+    "sentenceTranslation": "아내는 커피를 좋아합니다.",
+    "blankSurface": "家内",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-10",
+    "word": "壁",
+    "sentence": "子供が___に落書きをしました。",
+    "sentenceFurigana": "<ruby>子供<rt>こども</rt></ruby>が___に<ruby>落書<rt>らくが</rt></ruby>きをしました。",
+    "sentenceTranslation": "아이가 벽에 낙서를 했습니다.",
+    "blankSurface": "壁",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-11",
+    "word": "関係",
+    "sentence": "その事件とは___がない。",
+    "sentenceFurigana": "その<ruby>事件<rt>じけん</rt></ruby>とは___がない。",
+    "sentenceTranslation": "그 사건과는 관계가 없다.",
+    "blankSurface": "関係",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-12",
+    "word": "看護師",
+    "sentence": "私の妹は___です。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>の<ruby>妹<rt>いもうと</rt></ruby>は___です。",
+    "sentenceTranslation": "제 여동생은 간호사입니다.",
+    "blankSurface": "看護師",
+    "matchMethod": "exact",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-13",
+    "word": "機械",
+    "sentence": "___の故障で作業が中止された。",
+    "sentenceFurigana": "___の<ruby>故障<rt>こしょう</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>が<ruby>中止<rt>ちゅうし</rt></ruby>された。",
+    "sentenceTranslation": "기계 고장으로 작업이 중지 되었다.",
+    "blankSurface": "機械",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-14",
+    "word": "機会",
+    "sentence": "___は一度きりだ。",
+    "sentenceFurigana": "___は<ruby>一度<rt>いちど</rt></ruby>きりだ。",
+    "sentenceTranslation": "기회는 한 번 뿐이다.",
+    "blankSurface": "機会",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-15",
+    "word": "技術",
+    "sentence": "新しい___が開発された。",
+    "sentenceFurigana": "<ruby>新<rt>あたら</rt></ruby>しい___が<ruby>開発<rt>かいはつ</rt></ruby>された。",
+    "sentenceTranslation": "새로운 기술이 개발되었다.",
+    "blankSurface": "技術",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-16",
+    "word": "季節",
+    "sentence": "寒い___が来ました。",
+    "sentenceFurigana": "<ruby>寒<rt>さむ</rt></ruby>い___が<ruby>来<rt>き</rt></ruby>ました。",
+    "sentenceTranslation": "추운 계절이 왔습니다.",
+    "blankSurface": "季節",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-17",
+    "word": "規則",
+    "sentence": "学校では___を守らなければならない。",
+    "sentenceFurigana": "<ruby>学校<rt>がっこう</rt></ruby>では___を<ruby>守<rt>まも</rt></ruby>らなければならない。",
+    "sentenceTranslation": "학교에서는 규칙을 지켜야 한다.",
+    "blankSurface": "規則",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-18",
+    "word": "気分",
+    "sentence": "遠足に行く___ではない。",
+    "sentenceFurigana": "<ruby>遠足<rt>えんそく</rt></ruby>に<ruby>行<rt>い</rt></ruby>く___ではない。",
+    "sentenceTranslation": "소풍 갈 기분이 아니다.",
+    "blankSurface": "気分",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-19",
+    "word": "急行",
+    "sentence": "___列車に乗って故郷へ行きます。",
+    "sentenceFurigana": "___列車に<ruby>乗<rt>の</rt></ruby>って<ruby>故郷<rt>こきょう</rt></ruby>へ<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "급행열차를 타고 고향에 갑니다.",
+    "blankSurface": "急行",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d22-20",
+    "word": "教育",
+    "sentence": "日本では小学校で道徳___をしています。",
+    "sentenceFurigana": "<ruby>日本<rt>にほん</rt></ruby>では<ruby>小学校<rt>しょうがっこう</rt></ruby>で道徳___をしています。",
+    "sentenceTranslation": "일본에서는 초등학교에서 도덕교육을 하고 있습니다.",
+    "blankSurface": "教育",
+    "matchMethod": "base-form",
+    "source": "능력단어22.docx"
+  },
+  {
+    "id": "d23-1",
+    "word": "競争",
+    "sentence": "彼は私の___相手です。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>私<rt>わたし</rt></ruby>の___相手です。",
+    "sentenceTranslation": "그는 나의 경쟁 상대입니다.",
+    "blankSurface": "競争",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-2",
+    "word": "興味",
+    "sentence": "ミュージカルに___があります。",
+    "sentenceFurigana": "<ruby>ミュ<rt>みゅ</rt></ruby>ー<ruby>ジカル<rt>じかる</rt></ruby>に___があります。",
+    "sentenceTranslation": "뮤지컬에 흥미가 있습니다.",
+    "blankSurface": "興味",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-3",
+    "word": "空気",
+    "sentence": "___清浄機を購入しました。",
+    "sentenceFurigana": "___清浄機を<ruby>購入<rt>こうにゅう</rt></ruby>しました。",
+    "sentenceTranslation": "공기청정기를 구입했습니다.",
+    "blankSurface": "空気",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-4",
+    "word": "空港",
+    "sentence": "バスに乗って___まで行きます。",
+    "sentenceFurigana": "<ruby>バス<rt>ばす</rt></ruby>に<ruby>乗<rt>の</rt></ruby>って___まで<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "버스를 타고 공항까지 갑니다.",
+    "blankSurface": "空港",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-5",
+    "word": "計画",
+    "sentence": "新年になると一年の___を立てる。",
+    "sentenceFurigana": "<ruby>新年<rt>しんねん</rt></ruby>になると<ruby>一年<rt>ひとねん</rt></ruby>の___を<ruby>立<rt>た</rt></ruby>てる。",
+    "sentenceTranslation": "새해가 되면 한 해 계획을 세운다.",
+    "blankSurface": "計画",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-6",
+    "word": "経験",
+    "sentence": "人生で最も苦い___をしました。",
+    "sentenceFurigana": "<ruby>人生<rt>じんせい</rt></ruby>で<ruby>最<rt>もっと</rt></ruby>も<ruby>苦<rt>にが</rt></ruby>い___をしました。",
+    "sentenceTranslation": "인생에서 가장 쓴 경험을 했습니다.",
+    "blankSurface": "経験",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-7",
+    "word": "経済",
+    "sentence": "___発展のため努力しています。",
+    "sentenceFurigana": "___発展のため<ruby>努力<rt>どりょく</rt></ruby>しています。",
+    "sentenceTranslation": "경제 발전을 위해 노력하고 있습니다.",
+    "blankSurface": "経済",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-8",
+    "word": "警察",
+    "sentence": "犯人は___に検挙された。",
+    "sentenceFurigana": "<ruby>犯人<rt>はんにん</rt></ruby>は___に<ruby>検挙<rt>けんきょ</rt></ruby>された。",
+    "sentenceTranslation": "범인은 경찰에게 검거되었다.",
+    "blankSurface": "警察",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-9",
+    "word": "景色",
+    "sentence": "美しい___を見ました。",
+    "sentenceFurigana": "<ruby>美<rt>うつく</rt></ruby>しい___を<ruby>見<rt>み</rt></ruby>ました。",
+    "sentenceTranslation": "아름다운 경치를 보았습니다.",
+    "blankSurface": "景色",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-10",
+    "word": "原因",
+    "sentence": "事故の___がわからなかった。",
+    "sentenceFurigana": "<ruby>事故<rt>じこ</rt></ruby>の___がわからなかった。",
+    "sentenceTranslation": "사고 원인은 알 수 없었다.",
+    "blankSurface": "原因",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-11",
+    "word": "喧嘩",
+    "sentence": "友達と___して、先生に𠮟られました",
+    "sentenceFurigana": "<ruby>友達<rt>ともだち</rt></ruby>と___して、<ruby>先生<rt>せんせい</rt></ruby>に<ruby>𠮟<rt>しか</rt></ruby>られました",
+    "sentenceTranslation": "친구와 싸워서 선생님께 혼났습니다.",
+    "blankSurface": "けんか",
+    "matchMethod": "source-override",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-12",
+    "word": "研究室",
+    "sentence": "___はこちらです。",
+    "sentenceFurigana": "___はこちらです。",
+    "sentenceTranslation": "연구실은 이쪽입니다.",
+    "blankSurface": "研究室",
+    "matchMethod": "exact",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-13",
+    "word": "見物",
+    "sentence": "時間がないので有名な所だけ___して帰ります。",
+    "sentenceFurigana": "<ruby>時間<rt>じかん</rt></ruby>がないので<ruby>有名<rt>ゆうめい</rt></ruby>な<ruby>所<rt>ところ</rt></ruby>だけ___して<ruby>帰<rt>かえ</rt></ruby>ります。",
+    "sentenceTranslation": "시간이 없어서 유명한 곳만 구경하고 가겠습니다.",
+    "blankSurface": "見物",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-14",
+    "word": "郊外",
+    "sentence": "今日は___にドライブに行きます。",
+    "sentenceFurigana": "<ruby>今日<rt>きょう</rt></ruby>は___に<ruby>ドライブ<rt>どらいぶ</rt></ruby>に<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "오늘은 교외로 드라이브 갑니다.",
+    "blankSurface": "郊外",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-15",
+    "word": "講義",
+    "sentence": "明日は午後に___があります。",
+    "sentenceFurigana": "<ruby>明日<rt>あした</rt></ruby>は<ruby>午後<rt>ごご</rt></ruby>に___があります。",
+    "sentenceTranslation": "내일은 오후에 강의가 있습니다.",
+    "blankSurface": "講義",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-16",
+    "word": "高校",
+    "sentence": "来週は___の文化祭準備期間です。",
+    "sentenceFurigana": "<ruby>来週<rt>らいしゅう</rt></ruby>は___の<ruby>文化祭準備期間<rt>ぶんかさいじゅんびきかん</rt></ruby>です。",
+    "sentenceTranslation": "다음주는 고등학교 문화제(축제) 준비기간입니다.",
+    "blankSurface": "高校",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-17",
+    "word": "工場",
+    "sentence": "化学___で火事が起こった。",
+    "sentenceFurigana": "化学___で<ruby>火事<rt>かじ</rt></ruby>が<ruby>起<rt>お</rt></ruby>こった。",
+    "sentenceTranslation": "화학공장에서 화재가 일어났다.",
+    "blankSurface": "工場",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-18",
+    "word": "交通",
+    "sentence": "___が便利です。",
+    "sentenceFurigana": "___が<ruby>便利<rt>べんり</rt></ruby>です。",
+    "sentenceTranslation": "교통이 편리합니다.",
+    "blankSurface": "交通",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-19",
+    "word": "講堂",
+    "sentence": "___に集まってください。",
+    "sentenceFurigana": "___に<ruby>集<rt>あつ</rt></ruby>まってください。",
+    "sentenceTranslation": "강당으로 모여주세요.",
+    "blankSurface": "講堂",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d23-20",
+    "word": "国際",
+    "sentence": "___空港はどこですか。",
+    "sentenceFurigana": "___<ruby>空港<rt>くうこう</rt></ruby>はどこですか。",
+    "sentenceTranslation": "국제공항은 어디입니까?",
+    "blankSurface": "国際",
+    "matchMethod": "base-form",
+    "source": "능력단어23.docx"
+  },
+  {
+    "id": "d24-1",
+    "word": "最近",
+    "sentence": "___は読書をたくさんします。",
+    "sentenceFurigana": "___は<ruby>読書<rt>どくしょ</rt></ruby>をたくさんします。",
+    "sentenceTranslation": "최근에는 독서를 많이 합니다.",
+    "blankSurface": "最近",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-2",
+    "word": "最後",
+    "sentence": "___まで最善を尽くしてください。",
+    "sentenceFurigana": "___まで<ruby>最善<rt>さいぜん</rt></ruby>を<ruby>尽<rt>つ</rt></ruby>くしてください。",
+    "sentenceTranslation": "마지막까지 최선을 다해 주십시오.",
+    "blankSurface": "最後",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-3",
+    "word": "最初",
+    "sentence": "___の目撃者はだれですか。",
+    "sentenceFurigana": "___の<ruby>目撃者<rt>もくげきしゃ</rt></ruby>はだれですか。",
+    "sentenceTranslation": "최초 목격자는 누구입니까?",
+    "blankSurface": "最初",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-4",
+    "word": "財布",
+    "sentence": "___にお金がありません。",
+    "sentenceFurigana": "___にお<ruby>金<rt>かね</rt></ruby>がありません。",
+    "sentenceTranslation": "지갑에 돈이 없습니다.",
+    "blankSurface": "財布",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-5",
+    "word": "試合",
+    "sentence": "今日はサッカーの___があります。",
+    "sentenceFurigana": "<ruby>今日<rt>きょう</rt></ruby>は<ruby>サッカ<rt>さっか</rt></ruby>ーの___があります。",
+    "sentenceTranslation": "오늘은 축구 시함이 있습니다.",
+    "blankSurface": "試合",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-6",
+    "word": "試験",
+    "sentence": "月曜日は英語の___があります。",
+    "sentenceFurigana": "<ruby>月曜日<rt>げつようび</rt></ruby>は<ruby>英語<rt>えいご</rt></ruby>の___があります。",
+    "sentenceTranslation": "월요일은 영어 시험이 있습니다.",
+    "blankSurface": "試験",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-7",
+    "word": "事故",
+    "sentence": "ここは交通___がよく発生します。",
+    "sentenceFurigana": "ここは交通___がよく<ruby>発生<rt>はっせい</rt></ruby>します。",
+    "sentenceTranslation": "여기는 교통사고가 자주 발생합니다.",
+    "blankSurface": "事故",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-8",
+    "word": "地震",
+    "sentence": "この村は___波買いが深刻です。",
+    "sentenceFurigana": "この<ruby>村<rt>むら</rt></ruby>は___波買いが<ruby>深刻<rt>しんこく</rt></ruby>です。",
+    "sentenceTranslation": "이 마을은 지진피해가 심각합니다.",
+    "blankSurface": "地震",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-9",
+    "word": "時代",
+    "sentence": "今はスマート___だ。",
+    "sentenceFurigana": "<ruby>今<rt>いま</rt></ruby>は<ruby>スマ<rt>すま</rt></ruby>ー<ruby>ト<rt>と</rt></ruby>___だ。",
+    "sentenceTranslation": "지금은 스마트 시대이다.",
+    "blankSurface": "時代",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-10",
+    "word": "失敗",
+    "sentence": "私は___を恐れない。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>は___を<ruby>恐<rt>おそ</rt></ruby>れない。",
+    "sentenceTranslation": "나는 실패를 두려워하지 않는다.",
+    "blankSurface": "失敗",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-11",
+    "word": "品物",
+    "sentence": "必要な___を買いに行きます。",
+    "sentenceFurigana": "<ruby>必要<rt>ひつよう</rt></ruby>な___を<ruby>買<rt>か</rt></ruby>いに<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "필요한 물건을 사러 갑니다.",
+    "blankSurface": "品物",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-12",
+    "word": "市民",
+    "sentence": "___の考えに耳を傾けてくれる。",
+    "sentenceFurigana": "___の<ruby>考<rt>かんが</rt></ruby>えに<ruby>耳<rt>みみ</rt></ruby>を<ruby>傾<rt>かたむ</rt></ruby>けてくれる。",
+    "sentenceTranslation": "시민의 생각에 귀를 기울여준다.",
+    "blankSurface": "市民",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-13",
+    "word": "社会",
+    "sentence": "国会では深刻な___問題を扱っている。",
+    "sentenceFurigana": "<ruby>国会<rt>こっかい</rt></ruby>では<ruby>深刻<rt>しんこく</rt></ruby>な___問題を<ruby>扱<rt>あつか</rt></ruby>っている。",
+    "sentenceTranslation": "국회에서는 심각한 사회문제를 다루고 있다.",
+    "blankSurface": "社会",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-14",
+    "word": "社長",
+    "sentence": "彼は中所企業の___です。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>中所企業<rt>ちゅうじょきぎょう</rt></ruby>の___です。",
+    "sentenceTranslation": "그는 중소기업의 사장입니다.",
+    "blankSurface": "社長",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-15",
+    "word": "習慣",
+    "sentence": "弟は早起きの___があります。",
+    "sentenceFurigana": "<ruby>弟<rt>おとうと</rt></ruby>は<ruby>早起<rt>はやお</rt></ruby>きの___があります。",
+    "sentenceTranslation": "남동생은 일찍 일어나는 습관이 있습니다.",
+    "blankSurface": "習慣",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-16",
+    "word": "住所",
+    "sentence": "お名前と___を書いてください。",
+    "sentenceFurigana": "お<ruby>名前<rt>なまえ</rt></ruby>と___を<ruby>書<rt>か</rt></ruby>いてください。",
+    "sentenceTranslation": "이름과 주소를 써 주세요.",
+    "blankSurface": "住所",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-17",
+    "word": "出席",
+    "sentence": "___チェックをします。",
+    "sentenceFurigana": "___<ruby>チェック<rt>ちぇっく</rt></ruby>をします。",
+    "sentenceTranslation": "출석체크를 하겠습니다.",
+    "blankSurface": "出席",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-18",
+    "word": "出発",
+    "sentence": "午前８時に___します。",
+    "sentenceFurigana": "<ruby>午前<rt>ごぜん</rt></ruby>８<ruby>時<rt>じ</rt></ruby>に___します。",
+    "sentenceTranslation": "오전 8시에 출발합니다.",
+    "blankSurface": "出発",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-19",
+    "word": "趣味",
+    "sentence": "私の___は音楽鑑賞です。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>の___は<ruby>音楽鑑賞<rt>おんがくかんしょう</rt></ruby>です。",
+    "sentenceTranslation": "나의 취미는 음악 감상입니다.",
+    "blankSurface": "趣味",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d24-20",
+    "word": "準備",
+    "sentence": "プールに入る前に___運動をします。。",
+    "sentenceFurigana": "<ruby>プ<rt>ぷ</rt></ruby>ー<ruby>ル<rt>る</rt></ruby>に<ruby>入<rt>はい</rt></ruby>る<ruby>前<rt>まえ</rt></ruby>に___運動をします。。",
+    "sentenceTranslation": "수영장에 들어가기 전에 준비운동을 합니다.",
+    "blankSurface": "準備",
+    "matchMethod": "base-form",
+    "source": "능력단어24.docx"
+  },
+  {
+    "id": "d25-1",
+    "word": "紹介",
+    "sentence": "田中さんを___します。",
+    "sentenceFurigana": "<ruby>田中<rt>たなか</rt></ruby>さんを___します。",
+    "sentenceTranslation": "다나카씨를 소개합니다.",
+    "blankSurface": "紹介",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-2",
+    "word": "小説",
+    "sentence": "姉は推理___が好きです。",
+    "sentenceFurigana": "<ruby>姉<rt>あね</rt></ruby>は推理___が<ruby>好<rt>す</rt></ruby>きです。",
+    "sentenceTranslation": "언니는 추리소설을 좋아합니다.",
+    "blankSurface": "小説",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-3",
+    "word": "招待",
+    "sentence": "パーティーに___された。",
+    "sentenceFurigana": "<ruby>パ<rt>ぱ</rt></ruby>ー<ruby>ティ<rt>てぃ</rt></ruby>ーに___された。",
+    "sentenceTranslation": "파티에 초대받았다.",
+    "blankSurface": "招待",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-4",
+    "word": "食事",
+    "sentence": "___の前に果物を食べました。",
+    "sentenceFurigana": "___の<ruby>前<rt>まえ</rt></ruby>に<ruby>果物<rt>くだもの</rt></ruby>を<ruby>食<rt>た</rt></ruby>べました。",
+    "sentenceTranslation": "식사 전에 과일을 먹었습니다.",
+    "blankSurface": "食事",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-5",
+    "word": "女性",
+    "sentence": "___にも権利があります。",
+    "sentenceFurigana": "___にも<ruby>権利<rt>けんり</rt></ruby>があります。",
+    "sentenceTranslation": "여성에게도 권리가 있습니다.",
+    "blankSurface": "女性",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-6",
+    "word": "人口",
+    "sentence": "___が減少しています。",
+    "sentenceFurigana": "___が<ruby>減少<rt>げんしょう</rt></ruby>しています。",
+    "sentenceTranslation": "인구가 감소하고 있습니다.",
+    "blankSurface": "人口",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-7",
+    "word": "神社",
+    "sentence": "新年になったら___に参りに行きます。",
+    "sentenceFurigana": "<ruby>新年<rt>しんねん</rt></ruby>になったら___に<ruby>参<rt>まい</rt></ruby>りに<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "새해가 되면 신사에 참배하러 갑니다.",
+    "blankSurface": "神社",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-8",
+    "word": "水泳",
+    "sentence": "山田さんは___選手です。",
+    "sentenceFurigana": "<ruby>山田<rt>やまだ</rt></ruby>さんは___選手です。",
+    "sentenceTranslation": "야마다 씨는 수영선수입니다.",
+    "blankSurface": "水泳",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-9",
+    "word": "数学",
+    "sentence": "___の成績が向上した。",
+    "sentenceFurigana": "___の<ruby>成績<rt>せいせき</rt></ruby>が<ruby>向上<rt>こうじょう</rt></ruby>した。",
+    "sentenceTranslation": "수학 성적이 향상되었다.",
+    "blankSurface": "数学",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-10",
+    "word": "砂",
+    "sentence": "強い風で___が飛ばされる。",
+    "sentenceFurigana": "<ruby>強<rt>つよ</rt></ruby>い<ruby>風<rt>かぜ</rt></ruby>で___が<ruby>飛<rt>と</rt></ruby>ばされる。",
+    "sentenceTranslation": "강한 바람으로 모래가 날린다.",
+    "blankSurface": "砂",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-11",
+    "word": "生活",
+    "sentence": "都会で___したい。",
+    "sentenceFurigana": "<ruby>都会<rt>とかい</rt></ruby>で___したい。",
+    "sentenceTranslation": "도시에서 생활하고 싶습니다.",
+    "blankSurface": "生活",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-12",
+    "word": "政治",
+    "sentence": "若者は___に関心を持つべきだ。",
+    "sentenceFurigana": "<ruby>若者<rt>わかもの</rt></ruby>は___に<ruby>関心<rt>かんしん</rt></ruby>を<ruby>持<rt>も</rt></ruby>つべきだ。",
+    "sentenceTranslation": "젊은 사람은 정치에 관심을 가져야 한다.",
+    "blankSurface": "政治",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-13",
+    "word": "西洋",
+    "sentence": "このレストランは___料理が有名です。",
+    "sentenceFurigana": "この<ruby>レストラン<rt>れすとらん</rt></ruby>は___料理が<ruby>有名<rt>ゆうめい</rt></ruby>です。",
+    "sentenceTranslation": "이 레스토랑은 서양요리가 유명합니다.",
+    "blankSurface": "西洋",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-14",
+    "word": "席",
+    "sentence": "私の___はどこですか。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>の___はどこですか。",
+    "sentenceTranslation": "제 자리는 어디입니까?",
+    "blankSurface": "席",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-15",
+    "word": "説明",
+    "sentence": "今の状況を___してください。",
+    "sentenceFurigana": "<ruby>今<rt>いま</rt></ruby>の<ruby>状況<rt>じょうきょう</rt></ruby>を___してください。",
+    "sentenceTranslation": "지금 상황을 설명해 주세요.",
+    "blankSurface": "説明",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-16",
+    "word": "先輩",
+    "sentence": "偶然、大学の___に会った。",
+    "sentenceFurigana": "<ruby>偶然<rt>ぐうぜん</rt></ruby>、<ruby>大学<rt>だいがく</rt></ruby>の___に<ruby>会<rt>あ</rt></ruby>った。",
+    "sentenceTranslation": "우연히 대학 선배를 만났다.",
+    "blankSurface": "先輩",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-17",
+    "word": "専門",
+    "sentence": "この分野には___知識が必要です。",
+    "sentenceFurigana": "この<ruby>分野<rt>ぶんや</rt></ruby>には___知識が<ruby>必要<rt>ひつよう</rt></ruby>です。",
+    "sentenceTranslation": "이 분야에는 전문지식이 필요합니다.",
+    "blankSurface": "専門",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-18",
+    "word": "相談",
+    "sentence": "明日は進路___があります。",
+    "sentenceFurigana": "<ruby>明日<rt>あした</rt></ruby>は進路___があります。",
+    "sentenceTranslation": "내일은 진로상담이 있습니다.",
+    "blankSurface": "相談",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-19",
+    "word": "卒業",
+    "sentence": "日本へ___旅行に行きます。",
+    "sentenceFurigana": "<ruby>日本<rt>にほん</rt></ruby>へ___旅行に<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "일본으로 졸업여행을 갑니다.",
+    "blankSurface": "卒業",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d25-20",
+    "word": "尊敬",
+    "sentence": "先生を___します。",
+    "sentenceFurigana": "<ruby>先生<rt>せんせい</rt></ruby>を___します。",
+    "sentenceTranslation": "선생님을 존경합니다.",
+    "blankSurface": "尊敬",
+    "matchMethod": "base-form",
+    "source": "능력단어25.docx"
+  },
+  {
+    "id": "d26-1",
+    "word": "退院",
+    "sentence": "３日後に___します。",
+    "sentenceFurigana": "<ruby>３<rt>みっ</rt></ruby><ruby>日<rt>か</rt></ruby><ruby>後<rt>ご</rt></ruby>に___します。",
+    "sentenceTranslation": "3일 후에 퇴원합니다.",
+    "blankSurface": "退院",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-2",
+    "word": "台風",
+    "sentence": "___で農作物の被害が深刻です。",
+    "sentenceFurigana": "___で<ruby>農作物<rt>のうさくもつ</rt></ruby>の<ruby>被害<rt>ひがい</rt></ruby>が<ruby>深刻<rt>しんこく</rt></ruby>です。",
+    "sentenceTranslation": "태풍으로 농작물 피해가 심각합니다.",
+    "blankSurface": "台風",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-3",
+    "word": "楽しみ",
+    "sentence": "私の唯一の___はドライブだ。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>の<ruby>唯一<rt>ゆいいつ</rt></ruby>の___は<ruby>ドライブ<rt>どらいぶ</rt></ruby>だ。",
+    "sentenceTranslation": "나의 유일한 즐거움(낙)은 드라이브이다.",
+    "blankSurface": "楽しみ",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-4",
+    "word": "男性",
+    "sentence": "___の靴売り場はどこですか。",
+    "sentenceFurigana": "___の<ruby>靴売<rt>くつう</rt></ruby>り<ruby>場<rt>ば</rt></ruby>はどこですか。",
+    "sentenceTranslation": "남성 구두 매장은 어디입니까?",
+    "blankSurface": "男性",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-5",
+    "word": "暖房",
+    "sentence": "この寒さには___器具が必要です。",
+    "sentenceFurigana": "この<ruby>寒<rt>さむ</rt></ruby>さには___器具が<ruby>必要<rt>ひつよう</rt></ruby>です。",
+    "sentenceTranslation": "이 추위에는 난방기구가 필요합니다.",
+    "blankSurface": "暖房",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-6",
+    "word": "血",
+    "sentence": "___を流しています。",
+    "sentenceFurigana": "___を<ruby>流し<rt>ながし</rt></ruby>ています。",
+    "sentenceTranslation": "피를 흘리고 있습니다.",
+    "blankSurface": "血",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-7",
+    "word": "力",
+    "sentence": "彼は___が強い。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は___が<ruby>強<rt>つよ</rt></ruby>い。",
+    "sentenceTranslation": "그는 힘이 세다.",
+    "blankSurface": "力",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-8",
+    "word": "注意",
+    "sentence": "___事項を必ず確認してください。",
+    "sentenceFurigana": "___<ruby>事項<rt>じこう</rt></ruby>を<ruby>必ず<rt>かならず</rt></ruby><ruby>確認<rt>かくにん</rt></ruby>してください。",
+    "sentenceTranslation": "주의사항을 반드시 확인해 주세요.",
+    "blankSurface": "注意",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-9",
+    "word": "注射",
+    "sentence": "私はまだ ___が怖いです。",
+    "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>はまだ ___が<ruby>怖<rt>こわ</rt></ruby>いです。",
+    "sentenceTranslation": "나는 아직 주사가 무섭습니다.",
+    "blankSurface": "注射",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-10",
+    "word": "駐車場",
+    "sentence": "無料___はどこですか。",
+    "sentenceFurigana": "<ruby>無料<rt>むりょう</rt></ruby>___はどこですか。",
+    "sentenceTranslation": "무료주차장은 어디입니까?",
+    "blankSurface": "駐車場",
+    "matchMethod": "exact",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-11",
+    "word": "地理",
+    "sentence": "この辺の ___はよく知っています。",
+    "sentenceFurigana": "この<ruby>辺<rt>へん</rt></ruby>の ___はよく<ruby>知<rt>し</rt></ruby>っています。",
+    "sentenceTranslation": "이 근방의 지리를 잘 알고 있습니다.",
+    "blankSurface": "地理",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-12",
+    "word": "都合",
+    "sentence": "___がつかず参加できません。",
+    "sentenceFurigana": "___がつかず<ruby>参加<rt>さんか</rt></ruby>できません。",
+    "sentenceTranslation": "사정이 여의치 않아 참가할 수 없습니다.",
+    "blankSurface": "都合",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-13",
+    "word": "つもり",
+    "sentence": "アクション映画を見る___です。",
+    "sentenceFurigana": "<ruby>アクション<rt>あくしょん</rt></ruby><ruby>映画<rt>えいが</rt></ruby>を<ruby>見<rt>み</rt></ruby>る___です。",
+    "sentenceTranslation": "액션 영화를 볼 생각입니다.",
+    "blankSurface": "つもり",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-14",
+    "word": "手袋",
+    "sentence": "___を紛失しました。",
+    "sentenceFurigana": "___を<ruby>紛失<rt>ふんしつ</rt></ruby>しました。",
+    "sentenceTranslation": "장갑을 분실했습니다.",
+    "blankSurface": "手袋",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-15",
+    "word": "店員",
+    "sentence": "この店の___は親切です。",
+    "sentenceFurigana": "この<ruby>店<rt>みせ</rt></ruby>の___は<ruby>親切<rt>しんせつ</rt></ruby>です。",
+    "sentenceTranslation": "이 가게의 점원은 친절합니다.",
+    "blankSurface": "店員",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-16",
+    "word": "天気予報",
+    "sentence": "___を確認してください。",
+    "sentenceFurigana": "___を<ruby>確認<rt>かくにん</rt></ruby>してください。",
+    "sentenceTranslation": "일기예보를 확인해 주세요.",
+    "blankSurface": "天気予報",
+    "matchMethod": "exact",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-17",
+    "word": "道具",
+    "sentence": "___を使うと便利です。",
+    "sentenceFurigana": "___を<ruby>使<rt>つか</rt></ruby>うと<ruby>便利<rt>べんり</rt></ruby>です。",
+    "sentenceTranslation": "도구를 사용하면 편리합니다.",
+    "blankSurface": "道具",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-18",
+    "word": "動物園",
+    "sentence": "子供たちは___が好きです。",
+    "sentenceFurigana": "<ruby>子供<rt>こども</rt></ruby>たちは___が<ruby>好<rt>す</rt></ruby>きです。",
+    "sentenceTranslation": "아이들은 동물원을 좋아합니다.",
+    "blankSurface": "動物園",
+    "matchMethod": "exact",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-19",
+    "word": "途中",
+    "sentence": "食事の ___で電話がかかってきた。",
+    "sentenceFurigana": "<ruby>食事<rt>しょくじ</rt></ruby>の ___で<ruby>電話<rt>でんわ</rt></ruby>がかかってきた。",
+    "sentenceTranslation": "식사 도중에 전화가 걸려 왔다.",
+    "blankSurface": "途中",
+    "matchMethod": "base-form",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d26-20",
+    "word": "泥棒",
+    "sentence": "警察は現場で___を逮捕しました。",
+    "sentenceFurigana": "<ruby>警察<rt>けいさつ</rt></ruby>は<ruby>現場<rt>げんば</rt></ruby>で___を<ruby>逮捕<rt>たいほ</rt></ruby>しました。",
+    "sentenceTranslation": "경찰은 현장에서 도둑을 체포했습니다.",
+    "blankSurface": "どろぼう",
+    "matchMethod": "source-override",
+    "source": "능력단어26.docx"
+  },
+  {
+    "id": "d27-1",
+    "word": "匂い",
+    "sentence": "おいしそうな___がする。",
+    "sentenceFurigana": "おいしそうな___がする。",
+    "sentenceTranslation": "맛있는 냄새가 난다.",
+    "blankSurface": "匂い",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-2",
+    "word": "日記",
+    "sentence": "日課を___に記録します。",
+    "sentenceFurigana": "<ruby>日課<rt>にっか</rt></ruby>を___に<ruby>記録<rt>きろく</rt></ruby>します。",
+    "sentenceTranslation": "일과를 일기에 기록합니다.",
+    "blankSurface": "日記",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-3",
+    "word": "入院",
+    "sentence": "交通事故で病院に___しました。",
+    "sentenceFurigana": "<ruby>交通事故<rt>こうつうじこ</rt></ruby>で<ruby>病院<rt>びょういん</rt></ruby>に___しました。",
+    "sentenceTranslation": "교통사고로 병원에 입원했습니다.",
+    "blankSurface": "入院",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-4",
+    "word": "入学",
+    "sentence": "___試験に合格しました。",
+    "sentenceFurigana": "___<ruby>試験<rt>しけん</rt></ruby>に<ruby>合格<rt>ごうかく</rt></ruby>しました。",
+    "sentenceTranslation": "입학시험에 합격하였습니다.",
+    "blankSurface": "入学",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-5",
+    "word": "人形",
+    "sentence": "おもちゃ屋で___を買いました。",
+    "sentenceFurigana": "おもちゃ<ruby>屋<rt>や</rt></ruby>で___を<ruby>買<rt>か</rt></ruby>いました。",
+    "sentenceTranslation": "장난감 가게에서 인형을 샀습니다.",
+    "blankSurface": "人形",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-6",
+    "word": "値段",
+    "sentence": "___も安いし、品もいいです。",
+    "sentenceFurigana": "___も<ruby>安<rt>やす</rt></ruby>いし、<ruby>品<rt>しな</rt></ruby>もいいです。",
+    "sentenceTranslation": "가격도 싸고, 물건도 좋습니다.",
+    "blankSurface": "値段",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-7",
+    "word": "熱",
+    "sentence": "___が出て出勤できなかった。",
+    "sentenceFurigana": "___が<ruby>出<rt>で</rt></ruby>て<ruby>出勤<rt>しゅっきん</rt></ruby>できなかった。",
+    "sentenceTranslation": "열이 나서 출근할 수 없었다.",
+    "blankSurface": "熱",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-8",
+    "word": "寝坊",
+    "sentence": "___して遅刻しました。",
+    "sentenceFurigana": "___して<ruby>遅刻<rt>ちこく</rt></ruby>しました。",
+    "sentenceTranslation": "늦잠을 자서 지각했습니다.",
+    "blankSurface": "寝坊",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-9",
+    "word": "喉",
+    "sentence": "___が腫れて病院に行きました。",
+    "sentenceFurigana": "___が<ruby>腫れ<rt>はれ</rt></ruby>て<ruby>病院<rt>びょういん</rt></ruby>に<ruby>行き<rt>いき</rt></ruby>ました。",
+    "sentenceTranslation": "목이 부어서 병원에 갔습니다.",
+    "blankSurface": "喉",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-10",
+    "word": "乗り物",
+    "sentence": "よく利用する___は新幹線、モノレール、地下鉄です。",
+    "sentenceFurigana": "よく<ruby>利用<rt>りよう</rt></ruby>する___は<ruby>新幹線<rt>しんかんせん</rt></ruby>、<ruby>モノレ<rt>ものれ</rt></ruby>ー<ruby>ル<rt>る</rt></ruby>、<ruby>地下鉄<rt>ちかてつ</rt></ruby>です。",
+    "sentenceTranslation": "자주 이용하는 교통수단은 신칸센, 모노레일, 지하철입니다.",
+    "blankSurface": "乗り物",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-11",
+    "word": "葉",
+    "sentence": "___が枯れている。",
+    "sentenceFurigana": "___が<ruby>枯<rt>か</rt></ruby>れている。",
+    "sentenceTranslation": "잎이 마르고 있다.",
+    "blankSurface": "葉",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-12",
+    "word": "場合",
+    "sentence": "___によっては日程の変更も可能です。",
+    "sentenceFurigana": "___によっては<ruby>日程<rt>にってい</rt></ruby>の<ruby>変更<rt>へんこう</rt></ruby>も<ruby>可能<rt>かのう</rt></ruby>です。",
+    "sentenceTranslation": "경우에 따라서는 일정 변경도 가능합니다.",
+    "blankSurface": "場合",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-13",
+    "word": "歯医者",
+    "sentence": "彼の職業は___だ。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>の<ruby>職業<rt>しょくぎょう</rt></ruby>は___だ。",
+    "sentenceTranslation": "그의 직업은 치과 의사다.",
+    "blankSurface": "歯医者",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-14",
+    "word": "場所",
+    "sentence": "約束の___に着きました。",
+    "sentenceFurigana": "<ruby>約束<rt>やくそく</rt></ruby>の___に<ruby>着<rt>つ</rt></ruby>きました。",
+    "sentenceTranslation": "약속 장소에 도착했습니다.",
+    "blankSurface": "場所",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-15",
+    "word": "発音",
+    "sentence": "彼女は___がいいです。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>は___がいいです。",
+    "sentenceTranslation": "그녀는 발음이 좋습니다.",
+    "blankSurface": "発音",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-16",
+    "word": "花見",
+    "sentence": "春になると___に行きます。",
+    "sentenceFurigana": "<ruby>春<rt>はる</rt></ruby>になると___に<ruby>行<rt>い</rt></ruby>きます。",
+    "sentenceTranslation": "봄이 되면 꽃구경을 갑니다.",
+    "blankSurface": "花見",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-17",
+    "word": "林",
+    "sentence": "___の中に湖があります。",
+    "sentenceFurigana": "___の<ruby>中<rt>なか</rt></ruby>に<ruby>湖<rt>みずうみ</rt></ruby>があります。",
+    "sentenceTranslation": "숲속에 호수가 있습니다.",
+    "blankSurface": "林",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-18",
+    "word": "番組",
+    "sentence": "鈴木さんは人気___に出演する予定です。",
+    "sentenceFurigana": "<ruby>鈴木<rt>すずき</rt></ruby>さんは人気___に<ruby>出演<rt>しゅつえん</rt></ruby>する<ruby>予定<rt>よてい</rt></ruby>です。",
+    "sentenceTranslation": "스즈키 씨는 인기 프로그램에 출연할 예정입니다.",
+    "blankSurface": "番組",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-19",
+    "word": "反対",
+    "sentence": "彼は___の意見を主張しています。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は___の<ruby>意見<rt>いけん</rt></ruby>を<ruby>主張<rt>しゅちょう</rt></ruby>しています。",
+    "sentenceTranslation": "그는 반대 의견을 주장하고 있습니다.",
+    "blankSurface": "反対",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d27-20",
+    "word": "日",
+    "sentence": "冬は___が早く暮れる。",
+    "sentenceFurigana": "<ruby>冬<rt>ふゆ</rt></ruby>は___が<ruby>早<rt>はや</rt></ruby>く<ruby>暮<rt>く</rt></ruby>れる。",
+    "sentenceTranslation": "겨울은 해가 빨리 진다.",
+    "blankSurface": "日",
+    "matchMethod": "base-form",
+    "source": "능력단어27.docx"
+  },
+  {
+    "id": "d28-1",
+    "word": "火",
+    "sentence": "___を使うときは十分気を付けましょう。",
+    "sentenceFurigana": "___を<ruby>使<rt>つか</rt></ruby>うときは<ruby>十分気<rt>じゅうぶんき</rt></ruby>を<ruby>付<rt>つ</rt></ruby>けましょう。",
+    "sentenceTranslation": "불을 사용할 때는 충분히 조심합시다.",
+    "blankSurface": "火",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-2",
+    "word": "光",
+    "sentence": "カーテンの間から___が見えます。",
+    "sentenceFurigana": "カーテンの<ruby>間<rt>あいだ</rt></ruby>から___が<ruby>見え<rt>みえ</rt></ruby>ます。",
+    "sentenceTranslation": "커튼 사이로 빛이 보입니다.",
+    "blankSurface": "光",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-3",
+    "word": "引き出し",
+    "sentence": "重要な書類は___に保管します。",
+    "sentenceFurigana": "<ruby>重要<rt>じゅうよう</rt></ruby>な<ruby>書類<rt>しょるい</rt></ruby>は___に<ruby>保管<rt>ほかん</rt></ruby>します。",
+    "sentenceTranslation": "중요한 서류는 서랍에 보관합니다.",
+    "blankSurface": "引き出し",
+    "matchMethod": "exact",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-4",
+    "word": "ひげ",
+    "sentence": "しばらく___を剃ってなかった。",
+    "sentenceFurigana": "しばらく___を<ruby>剃<rt>そ</rt></ruby>ってなかった。",
+    "sentenceTranslation": "오랫동안 수염을 깎지 않았습니다.",
+    "blankSurface": "ひげ",
+    "matchMethod": "exact",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-5",
+    "word": "美術館",
+    "sentence": "___の隣に動物園があります。",
+    "sentenceFurigana": "___の<ruby>隣<rt>となり</rt></ruby>に<ruby>動物園<rt>どうぶつえん</rt></ruby>があります。",
+    "sentenceTranslation": "미술관 옆에 동물원이 있습니다.",
+    "blankSurface": "美術館",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-6",
+    "word": "引っ越し",
+    "sentence": "去年___しました。",
+    "sentenceFurigana": "<ruby>去年<rt>きょねん</rt></ruby>___しました。",
+    "sentenceTranslation": "작년 이사했습니다.",
+    "blankSurface": "引っ越し",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-7",
+    "word": "美容院",
+    "sentence": "週末には___に人が多い。",
+    "sentenceFurigana": "<ruby>週末<rt>しゅうまつ</rt></ruby>には___に<ruby>人<rt>ひと</rt></ruby>が<ruby>多<rt>おお</rt></ruby>い。",
+    "sentenceTranslation": "주말에는 미용실에 사람이 많다.",
+    "blankSurface": "美容院",
+    "matchMethod": "exact",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-8",
+    "word": "昼間",
+    "sentence": "___には太陽が熱いです。",
+    "sentenceFurigana": "___には<ruby>太陽<rt>たいよう</rt></ruby>が<ruby>熱<rt>あつ</rt></ruby>いです。",
+    "sentenceTranslation": "낮에는 해가 뜨겁습니다.",
+    "blankSurface": "昼間",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-9",
+    "word": "復習",
+    "sentence": "授業の時間に習った内容は毎日___します。",
+    "sentenceFurigana": "<ruby>授業<rt>じゅぎょう</rt></ruby>の<ruby>時間<rt>じかん</rt></ruby>に<ruby>習<rt>なら</rt></ruby>った<ruby>内容<rt>ないよう</rt></ruby>は毎日___します。",
+    "sentenceTranslation": "수업시간에 배운 내용은 매일 복습합니다.",
+    "blankSurface": "復習",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-10",
+    "word": "布団",
+    "sentence": "夏は薄い___をかけて寝ます。",
+    "sentenceFurigana": "<ruby>夏<rt>なつ</rt></ruby>は<ruby>薄<rt>うす</rt></ruby>い___をかけて<ruby>寝<rt>ね</rt></ruby>ます。",
+    "sentenceTranslation": "여름은 얇은 이불을 덮고 잡니다.",
+    "blankSurface": "布団",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-11",
+    "word": "船",
+    "sentence": "___に乗ると酔う 。",
+    "sentenceFurigana": "___に<ruby>乗<rt>の</rt></ruby>ると<ruby>酔<rt>よ</rt></ruby>う 。",
+    "sentenceTranslation": "배를 타면 멀미를 한다.",
+    "blankSurface": "船",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-12",
+    "word": "文化",
+    "sentence": "日本の伝統___を研究しています。",
+    "sentenceFurigana": "<ruby>日本<rt>にほん</rt></ruby>の伝統___を<ruby>研究<rt>けんきゅう</rt></ruby>しています。",
+    "sentenceTranslation": "일본의 전통문화를 연구하고 있습니다.",
+    "blankSurface": "文化",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-13",
+    "word": "文章",
+    "sentence": "短い___から学びます。",
+    "sentenceFurigana": "<ruby>短<rt>みじか</rt></ruby>い___から<ruby>学<rt>まな</rt></ruby>びます。",
+    "sentenceTranslation": "짧은 문장부터 배웁니다.",
+    "blankSurface": "文章",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-14",
+    "word": "文法",
+    "sentence": "月曜日は___の授業があります。",
+    "sentenceFurigana": "<ruby>月曜日<rt>げつようび</rt></ruby>は___の<ruby>授業<rt>じゅぎょう</rt></ruby>があります。",
+    "sentenceTranslation": "월요일은 문법 수업이 있습니다.",
+    "blankSurface": "文法",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-15",
+    "word": "返事",
+    "sentence": "彼の___を待っています。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>の___を<ruby>待<rt>ま</rt></ruby>っています。",
+    "sentenceTranslation": "그의 대답을 기다리고 있습니다.",
+    "blankSurface": "返事",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-16",
+    "word": "貿易",
+    "sentence": "ここが___センターです。",
+    "sentenceFurigana": "ここが___<ruby>センタ<rt>せんた</rt></ruby>ーです。",
+    "sentenceTranslation": "여기가 무역센터입니다.",
+    "blankSurface": "貿易",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-17",
+    "word": "放送",
+    "sentence": "教育___番組が編成された。",
+    "sentenceFurigana": "教育___番組が<ruby>編成<rt>へんせい</rt></ruby>された。",
+    "sentenceTranslation": "교육방송 프로그램이 편성되었다.",
+    "blankSurface": "放送",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-18",
+    "word": "法律",
+    "sentence": "___相談を受けたいです。",
+    "sentenceFurigana": "___相談を<ruby>受<rt>う</rt></ruby>けたいです。",
+    "sentenceTranslation": "법률상담을 받고 싶습니다.",
+    "blankSurface": "法律",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-19",
+    "word": "星",
+    "sentence": "___が輝いています。",
+    "sentenceFurigana": "___が<ruby>輝<rt>かがや</rt></ruby>いています。",
+    "sentenceTranslation": "별이 반짝이고 있습니다.",
+    "blankSurface": "星",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d28-20",
+    "word": "翻訳",
+    "sentence": "たまには___の仕事をしています。",
+    "sentenceFurigana": "たまには___の<ruby>仕事<rt>しごと</rt></ruby>をしています。",
+    "sentenceTranslation": "가끔은 번역일도 하고 있습니다.",
+    "blankSurface": "翻訳",
+    "matchMethod": "base-form",
+    "source": "능력단어28.docx"
+  },
+  {
+    "id": "d29-1",
+    "word": "漫画",
+    "sentence": "弟は___が好きです。",
+    "sentenceFurigana": "<ruby>弟<rt>おとうと</rt></ruby>は___が<ruby>好<rt>す</rt></ruby>きです。",
+    "sentenceTranslation": "남동생은 만화를 좋아합니다.",
+    "blankSurface": "漫画",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-2",
+    "word": "真ん中",
+    "sentence": "公園の___に桜の木があります。",
+    "sentenceFurigana": "<ruby>公園<rt>こうえん</rt></ruby>の___に<ruby>桜<rt>さくら</rt></ruby>の<ruby>木<rt>き</rt></ruby>があります。",
+    "sentenceTranslation": "공원 한가운데 벚나무가 있습니다.",
+    "blankSurface": "真ん中",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-3",
+    "word": "湖",
+    "sentence": "この辺に美しい___があります。",
+    "sentenceFurigana": "この<ruby>辺<rt>へん</rt></ruby>に<ruby>美<rt>うつく</rt></ruby>しい___があります。",
+    "sentenceTranslation": "이 근처에 아름다운 호수가 있습니다.",
+    "blankSurface": "湖",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-4",
+    "word": "昔",
+    "sentence": "___から伝わる話だ。",
+    "sentenceFurigana": "___から<ruby>伝<rt>つた</rt></ruby>わる<ruby>話<rt>はなし</rt></ruby>だ。",
+    "sentenceTranslation": "옛날부터 전해 내려오는 이야기다.",
+    "blankSurface": "昔",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-5",
+    "word": "虫",
+    "sentence": "___の音が聞こえます。",
+    "sentenceFurigana": "___の<ruby>音<rt>おと</rt></ruby>が<ruby>聞<rt>き</rt></ruby>こえます。",
+    "sentenceTranslation": "벌레 소리가 들립니다.",
+    "blankSurface": "虫",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-6",
+    "word": "息子",
+    "sentence": "___はサッカーが好きです。",
+    "sentenceFurigana": "___は<ruby>サッカ<rt>さっか</rt></ruby>ーが<ruby>好<rt>す</rt></ruby>きです。",
+    "sentenceTranslation": "아들은 축구를 좋아합니다.",
+    "blankSurface": "息子",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-7",
+    "word": "約束",
+    "sentence": "明日は友達と___があります。",
+    "sentenceFurigana": "<ruby>明日<rt>あした</rt></ruby>は<ruby>友達<rt>ともだち</rt></ruby>と___があります。",
+    "sentenceTranslation": "내일은 친구와 약속이 있습니다.",
+    "blankSurface": "約束",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-8",
+    "word": "湯",
+    "sentence": "お___で足を洗った。",
+    "sentenceFurigana": "お___で<ruby>足<rt>あし</rt></ruby>を<ruby>洗<rt>あら</rt></ruby>った。",
+    "sentenceTranslation": "더운물로 발을 씻었다.",
+    "blankSurface": "湯",
+    "matchMethod": "exact",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-9",
+    "word": "輸出",
+    "sentence": "この商品は___が禁止された。",
+    "sentenceFurigana": "この<ruby>商品<rt>しょうひん</rt></ruby>は___が<ruby>禁止<rt>きんし</rt></ruby>された。",
+    "sentenceTranslation": "이 상품은 수출이 금지되었다.",
+    "blankSurface": "輸出",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-10",
+    "word": "輸入",
+    "sentence": "___ビールはどこにありますか。",
+    "sentenceFurigana": "___<ruby>ビ<rt>び</rt></ruby>ー<ruby>ル<rt>る</rt></ruby>はどこにありますか。",
+    "sentenceTranslation": "수입 맥주는 어디에 있습니까?",
+    "blankSurface": "輸入",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-11",
+    "word": "指",
+    "sentence": "___に感覚がない。",
+    "sentenceFurigana": "___に<ruby>感覚<rt>かんかく</rt></ruby>がない。",
+    "sentenceTranslation": "손가락에 감각이 없다.",
+    "blankSurface": "指",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-12",
+    "word": "指輪",
+    "sentence": "結婚___をなくしました。",
+    "sentenceFurigana": "<ruby>結婚<rt>けっこん</rt></ruby>___をなくしました。",
+    "sentenceTranslation": "결혼 반지를 잃어버렸습니다.",
+    "blankSurface": "指輪",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-13",
+    "word": "夢",
+    "sentence": "___が実現した。",
+    "sentenceFurigana": "___が<ruby>実現<rt>じつげん</rt></ruby>した。",
+    "sentenceTranslation": "꿈이 실현되었다.",
+    "blankSurface": "夢",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-14",
+    "word": "予習",
+    "sentence": "授業の前に必ず___をしなければなりません",
+    "sentenceFurigana": "<ruby>授業<rt>じゅぎょう</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>に<ruby>必<rt>かなら</rt></ruby>ず___をしなければなりません",
+    "sentenceTranslation": "수업 전에 반드시 예습을 해야 합니다.",
+    "blankSurface": "予習",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-15",
+    "word": "予定",
+    "sentence": "今年は休む___です。",
+    "sentenceFurigana": "<ruby>今年<rt>ことし</rt></ruby>は<ruby>休<rt>やす</rt></ruby>む___です。",
+    "sentenceTranslation": "올해는 쉴 예정입니다.",
+    "blankSurface": "予定",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-16",
+    "word": "予約",
+    "sentence": "ホテルは先週___しました。",
+    "sentenceFurigana": "<ruby>ホテル<rt>ほてる</rt></ruby>は先週___しました。",
+    "sentenceTranslation": "호텔은 지난주에 예약했습니다.",
+    "blankSurface": "予約",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-17",
+    "word": "理由",
+    "sentence": "反対意見には___があります。",
+    "sentenceFurigana": "<ruby>反対意見<rt>はんたいいけん</rt></ruby>には___があります。",
+    "sentenceTranslation": "반대 의견에는 이유가 있습니다.",
+    "blankSurface": "理由",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-18",
+    "word": "歴史",
+    "sentence": "彼女は___を教えています。",
+    "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>は___を<ruby>教<rt>おし</rt></ruby>えています。",
+    "sentenceTranslation": "그녀는 역사를 가르치고 있습니다.",
+    "blankSurface": "歴史",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-19",
+    "word": "練習",
+    "sentence": "ピアノの___をしています。",
+    "sentenceFurigana": "<ruby>ピアノ<rt>ぴあの</rt></ruby>の___をしています。",
+    "sentenceTranslation": "피아노 연습을 하고 있습니다.",
+    "blankSurface": "練習",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d29-20",
+    "word": "忘れ物",
+    "sentence": "___保管センターはあちらです。",
+    "sentenceFurigana": "___保管<ruby>センタ<rt>せんた</rt></ruby>ーはあちらです。",
+    "sentenceTranslation": "분실물 보관 센터는 저쪽입니다.",
+    "blankSurface": "忘れ物",
+    "matchMethod": "base-form",
+    "source": "능력단어29.docx"
+  },
+  {
+    "id": "d30-1",
+    "word": "浅い",
+    "sentence": "水遊びは___ところでだけしてください。",
+    "sentenceFurigana": "<ruby>水遊<rt>みずあそ</rt></ruby>びは___ところでだけしてください。",
+    "sentenceTranslation": "물놀이는 얕은 곳에서만 하세요.",
+    "blankSurface": "浅い",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-2",
+    "word": "厚い",
+    "sentence": "肉を___切りました。",
+    "sentenceFurigana": "<ruby>肉<rt>にく</rt></ruby>を___<ruby>切<rt>き</rt></ruby>りました。",
+    "sentenceTranslation": "고기를 두껍게 썰었습니다.",
+    "blankSurface": "厚く",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-3",
+    "word": "美しい",
+    "sentence": "自然は___です。",
+    "sentenceFurigana": "<ruby>自然<rt>しぜん</rt></ruby>は___です。",
+    "sentenceTranslation": "자연은 아름답습니다.",
+    "blankSurface": "美しい",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-4",
+    "word": "うまい",
+    "sentence": "彼は料理が___です。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>料理<rt>りょうり</rt></ruby>が___です。",
+    "sentenceTranslation": "그는 요리를 잘합니다.",
+    "blankSurface": "うまい",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-5",
+    "word": "うるさい",
+    "sentence": "ここはいつも人が多くて___です。",
+    "sentenceFurigana": "ここはいつも<ruby>人<rt>ひと</rt></ruby>が<ruby>多<rt>おお</rt></ruby>くて___です。",
+    "sentenceTranslation": "여기는 항상 사람이 많고 시끄럽습니다.",
+    "blankSurface": "うるさい",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-6",
+    "word": "嬉しい",
+    "sentence": "合格して___です。",
+    "sentenceFurigana": "<ruby>合格<rt>ごうかく</rt></ruby>して___です。",
+    "sentenceTranslation": "합격해서 기쁩니다.",
+    "blankSurface": "嬉しい",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-7",
+    "word": "重い",
+    "sentence": "彼の罪は___です。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>の<ruby>罪<rt>つみ</rt></ruby>は___です。",
+    "sentenceTranslation": "그의 죄는 무겁습니다.",
+    "blankSurface": "重い",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-8",
+    "word": "軽い",
+    "sentence": "朝は___運動をします。",
+    "sentenceFurigana": "<ruby>朝<rt>あさ</rt></ruby>は___<ruby>運動<rt>うんどう</rt></ruby>をします。",
+    "sentenceTranslation": "아침은 가벼운 운동을 합니다.",
+    "blankSurface": "軽い",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-9",
+    "word": "固い",
+    "sentence": "___食べ物は噛めません。",
+    "sentenceFurigana": "___<ruby>食べ物<rt>たべもの</rt></ruby>は<ruby>噛め<rt>かめ</rt></ruby>ません。",
+    "sentenceTranslation": "딱딱한 음식은 씹을 수 없습니다.",
+    "blankSurface": "固い",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-10",
+    "word": "構わない",
+    "sentence": "もうどうなっても___。",
+    "sentenceFurigana": "もうどうなっても___。",
+    "sentenceTranslation": "이제 어떻게 되든 상관없다.",
+    "blankSurface": "構わない",
+    "matchMethod": "exact",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-11",
+    "word": "厳しい",
+    "sentence": "水泳大会の規定は___です。",
+    "sentenceFurigana": "<ruby>水泳大会<rt>すいえいたいかい</rt></ruby>の<ruby>規定<rt>きてい</rt></ruby>は___です。",
+    "sentenceTranslation": "수영대회의 규정은 엄격합니다.",
+    "blankSurface": "厳しい",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-12",
+    "word": "怖い",
+    "sentence": "___映画は見ません。",
+    "sentenceFurigana": "___<ruby>映画<rt>えいが</rt></ruby>は<ruby>見<rt>み</rt></ruby>ません。",
+    "sentenceTranslation": "무서운 영화는 안봅니다.",
+    "blankSurface": "怖い",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-13",
+    "word": "寂しい",
+    "sentence": "___て酒を飲んだ。",
+    "sentenceFurigana": "___て<ruby>酒<rt>さけ</rt></ruby>を<ruby>飲<rt>の</rt></ruby>んだ。",
+    "sentenceTranslation": "외로워서 술을 마셨다.",
+    "blankSurface": "寂しく",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-14",
+    "word": "凄い",
+    "sentence": "___ですね。",
+    "sentenceFurigana": "___ですね。",
+    "sentenceTranslation": "대단하네요.",
+    "blankSurface": "すごい",
+    "matchMethod": "source-override",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-15",
+    "word": "素晴らしい",
+    "sentence": "___作品を発見した。",
+    "sentenceFurigana": "___<ruby>作品<rt>さくひん</rt></ruby>を<ruby>発見<rt>はっけん</rt></ruby>した。",
+    "sentenceTranslation": "훌륭한 작품을 발견했다.",
+    "blankSurface": "素晴らしい",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-16",
+    "word": "ぬるい",
+    "sentence": "お茶が冷えて___なった。",
+    "sentenceFurigana": "お<ruby>茶<rt>ちゃ</rt></ruby>が<ruby>冷<rt>ひ</rt></ruby>えて___なった。",
+    "sentenceTranslation": "차가 식어서 미지근해졌다.",
+    "blankSurface": "ぬるく",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-17",
+    "word": "眠い",
+    "sentence": "たくさん寝たのにまだ___です。",
+    "sentenceFurigana": "たくさん<ruby>寝<rt>ね</rt></ruby>たのにまだ___です。",
+    "sentenceTranslation": "많이 잤는데도 아직 졸려요.",
+    "blankSurface": "眠い",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-18",
+    "word": "恥ずかしい",
+    "sentence": "___行動はしませんでした。",
+    "sentenceFurigana": "___<ruby>行動<rt>こうどう</rt></ruby>はしませんでした。",
+    "sentenceTranslation": "부끄러운 행동은 하지 않았습니다.",
+    "blankSurface": "恥ずかしい",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-19",
+    "word": "酷い",
+    "sentence": "悪臭が___です。",
+    "sentenceFurigana": "<ruby>悪臭<rt>あくしゅう</rt></ruby>が___です。",
+    "sentenceTranslation": "악취가 심합니다.",
+    "blankSurface": "ひどい",
+    "matchMethod": "source-override",
+    "source": "능력단어30.docx"
+  },
+  {
+    "id": "d30-20",
+    "word": "深い",
+    "sentence": "この湖は水深が___です。",
+    "sentenceFurigana": "この<ruby>湖<rt>みずうみ</rt></ruby>は<ruby>水深<rt>すいしん</rt></ruby>が___です。",
+    "sentenceTranslation": "이 호수는 수심이 깊습니다.",
+    "blankSurface": "深い",
+    "matchMethod": "base-form",
+    "source": "능력단어30.docx"
+  }
+]

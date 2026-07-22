@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17324d">
+  <title>한자 읽기 퀴즈</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="brand" aria-label="앱 제목">
+      <button id="home-button" class="brand-mark" type="button" aria-label="처음 화면으로 이동">読</button>
+      <div>
+        <p class="eyebrow">JLPT N5 · N4 · N3 · N2</p>
+        <h1>한자 읽기 퀴즈</h1>
+      </div>
+    </header>
+
+    <section id="start-screen" class="screen is-active" aria-labelledby="start-title">
+      <div class="paper-card start-card">
+        <p id="session-kicker" class="session-kicker">다음 학습</p>
+        <h2 id="start-title"><span id="start-selection-label">N5·N4 · 한자→읽기</span><br><span id="next-session-number">1</span>회차를 시작할까요?</h2>
+        <p class="lead">난이도와 학습 방향을 선택하세요. 어느 모드에서든 틀린 단어는 몇 문제 뒤에 다시 나옵니다.</p>
+
+        <section class="mode-records" aria-labelledby="mode-records-title">
+          <h3 id="mode-records-title">N5·N4 학습 모드별 기록</h3>
+          <div class="mode-records-grid">
+            <article id="record-kanji-reading" class="mode-record is-selected">
+              <strong>한자 → 읽기</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="kanji-reading-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="kanji-reading-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="kanji-reading-total-accuracy">—</dd></div>
+              </dl>
+            </article>
+            <article id="record-kanji-kana" class="mode-record">
+              <strong>한자 → 히라가나 조합</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="kanji-kana-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="kanji-kana-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="kanji-kana-total-accuracy">—</dd></div>
+              </dl>
+            </article>
+            <article id="record-reading-kanji" class="mode-record">
+              <strong>읽기 → 한자</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="reading-kanji-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="reading-kanji-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="reading-kanji-total-accuracy">—</dd></div>
+              </dl>
+            </article>
+            <article id="record-sentence-kanji" class="mode-record">
+              <strong>문장 빈칸 → 한자</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="sentence-kanji-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="sentence-kanji-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="sentence-kanji-total-accuracy">—</dd></div>
+              </dl>
+            </article>
+          </div>
+        </section>
+
+        <fieldset class="mode-picker difficulty-picker">
+          <legend>난이도 선택</legend>
+          <label class="mode-option" for="difficulty-basic">
+            <input id="difficulty-basic" name="quiz-difficulty" type="radio" value="n5n4" checked>
+            <span class="mode-copy">
+              <strong>N5 · N4</strong>
+              <small>기초 한자 단어 480개</small>
+            </span>
+          </label>
+          <label class="mode-option" for="difficulty-n3">
+            <input id="difficulty-n3" name="quiz-difficulty" type="radio" value="n3">
+            <span class="mode-copy">
+              <strong>N3</strong>
+              <small>제공 PDF 한자 어휘 1,323개 · 문장 예문 500개</small>
+            </span>
+          </label>
+          <label class="mode-option" for="difficulty-n2">
+            <input id="difficulty-n2" name="quiz-difficulty" type="radio" value="n2">
+            <span class="mode-copy">
+              <strong>N2</strong>
+              <small>제공 PDF 선별 한자 단어 100개</small>
+            </span>
+          </label>
+        </fieldset>
+
+        <fieldset class="mode-picker">
+          <legend>학습 모드 선택</legend>
+          <label class="mode-option" for="mode-kanji-reading">
+            <input id="mode-kanji-reading" name="quiz-mode" type="radio" value="kanji-to-reading" checked>
+            <span class="mode-copy">
+              <strong>한자 → 읽기</strong>
+              <small>한자를 보고 읽는 법 고르기</small>
+            </span>
+          </label>
+          <label class="mode-option" for="mode-reading-kanji">
+            <input id="mode-reading-kanji" name="quiz-mode" type="radio" value="reading-to-kanji">
+            <span class="mode-copy">
+              <strong>읽기 → 한자</strong>
+              <small>읽는 법을 보고 알맞은 단어 고르기</small>
+            </span>
+          </label>
+          <label class="mode-option is-wide" for="mode-kanji-kana">
+            <input id="mode-kanji-kana" name="quiz-mode" type="radio" value="kanji-to-kana">
+            <span class="mode-copy">
+              <strong>한자 → 히라가나 조합</strong>
+              <small>9개의 히라가나를 순서대로 눌러 한자의 읽기 완성하기</small>
+            </span>
+          </label>
+          <label class="mode-option is-wide" for="mode-sentence-kanji">
+            <input id="mode-sentence-kanji" name="quiz-mode" type="radio" value="sentence-to-kanji">
+            <span class="mode-copy">
+              <strong>문장 빈칸 → 한자</strong>
+              <small>선택한 난이도의 예문 빈칸에 알맞은 한자 단어 고르기</small>
+            </span>
+          </label>
+        </fieldset>
+
+        <div class="exam-mode-panel">
+          <div>
+            <strong>시험 모드</strong>
+            <small>100문제 고정 · 객관식 단어 7초 · 히라가나 조합 10초 · 문장 13초</small>
+          </div>
+          <label class="switch" for="exam-mode">
+            <input id="exam-mode" type="checkbox">
+            <span class="switch-track" aria-hidden="true"><span></span></span>
+            <span id="exam-mode-state" class="switch-state">OFF</span>
+          </label>
+        </div>
+        <p id="exam-mode-note" class="exam-mode-note" hidden>맞힌 문제는 이 난이도·학습 모드의 다음 3회차 동안 시험에 나오지 않습니다.</p>
+
+        <fieldset id="choice-count-picker" class="mode-picker choice-count-picker">
+          <legend>선택지 수</legend>
+          <label class="mode-option" for="choice-count-4">
+            <input id="choice-count-4" name="choice-count" type="radio" value="4" checked>
+            <span class="mode-copy">
+              <strong>4개</strong>
+              <small>기본</small>
+            </span>
+          </label>
+          <label class="mode-option" for="choice-count-6">
+            <input id="choice-count-6" name="choice-count" type="radio" value="6">
+            <span class="mode-copy">
+              <strong>6개</strong>
+              <small>도전</small>
+            </span>
+          </label>
+          <label class="mode-option" for="choice-count-8">
+            <input id="choice-count-8" name="choice-count" type="radio" value="8">
+            <span class="mode-copy">
+              <strong>8개</strong>
+              <small>집중</small>
+            </span>
+          </label>
+        </fieldset>
+
+        <div id="general-question-count-panel" class="question-count-picker">
+          <label for="general-question-count">일반 문제 수</label>
+          <input id="general-question-count" type="number" min="10" max="480" step="1" value="480" inputmode="numeric">
+          <small id="general-question-count-hint">10~480개 사이에서 선택 · N5·N4 단어에서 출제</small>
+        </div>
+
+        <div id="question-count-panel" class="question-count-picker" hidden>
+          <label for="sentence-question-count">문장 문제 수</label>
+          <input id="sentence-question-count" type="number" min="10" max="480" step="1" value="20" inputmode="numeric">
+          <small id="sentence-question-count-hint">10~480개 사이에서 선택 · 능력단어 Word 예문에서 출제</small>
+        </div>
+
+        <button id="start-button" class="primary-button" type="button">학습 시작</button>
+        <p class="helper">선택지 4·6·8개 · 문제 수 선택 · 오답 자동 재출제 · 무오답 3회 간격 반복 · 기록 자동 저장</p>
+        <p class="source-note">N3 추가 예문: <a href="https://tatoeba.org/ko/" target="_blank" rel="noreferrer">Tatoeba · CC BY 2.0 FR</a></p>
+
+        <div id="history-panel" class="history-panel" hidden>
+          <h3>최근 기록</h3>
+          <ol id="history-list" class="history-list"></ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz-screen" class="screen" aria-labelledby="quiz-word">
+      <div class="quiz-topbar">
+        <div>
+          <span id="quiz-session-label" class="eyebrow">1회차</span>
+          <span id="quiz-progress-text" class="progress-copy">1 / —</span>
+        </div>
+        <div class="live-score" aria-label="현재 정답률">
+          정답률 <strong id="live-accuracy">—</strong>
+        </div>
+        <div id="exam-timer" class="exam-timer" aria-live="polite" hidden>
+          남은 시간 <strong id="exam-time-left">7</strong>초
+        </div>
+      </div>
+      <div class="progress-track" aria-hidden="true">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+      <div class="paper-card quiz-card">
+        <p id="quiz-prompt" class="prompt">이 단어를 어떻게 읽을까요?</p>
+        <h2 id="quiz-word" lang="ja">日本語</h2>
+        <p id="day-label" class="day-label">7일차</p>
+        <p id="exam-mistake-badge" class="exam-mistake-badge" hidden></p>
+
+        <div id="answer-grid" class="answer-grid" aria-label="읽기 선택지"></div>
+        <div id="kana-composer" class="kana-composer" hidden>
+          <div id="kana-answer" class="kana-answer" lang="ja" aria-live="polite">히라가나를 선택하세요</div>
+          <div id="kana-grid" class="kana-grid" aria-label="히라가나 9개"></div>
+          <div class="kana-actions">
+            <button id="kana-backspace" class="secondary-button" type="button">한 글자 지우기</button>
+            <button id="kana-clear" class="secondary-button" type="button">전체 지우기</button>
+            <button id="kana-submit" class="kana-submit" type="button" disabled>정답 제출</button>
+          </div>
+        </div>
+
+        <div id="feedback" class="feedback" aria-live="polite" hidden>
+          <div id="feedback-icon" class="feedback-icon" aria-hidden="true"></div>
+          <div>
+            <strong id="feedback-title"></strong>
+            <p id="feedback-selected" class="feedback-selected" hidden></p>
+            <p id="feedback-reading"></p>
+            <p id="feedback-meaning"></p>
+            <p id="feedback-translation" class="feedback-translation" hidden></p>
+            <a id="feedback-source" class="feedback-source" target="_blank" rel="noreferrer" hidden></a>
+            <p id="retry-note" class="retry-note" hidden>이 단어는 잠시 뒤 다시 나옵니다.</p>
+          </div>
+        </div>
+
+        <button id="next-button" class="primary-button" type="button" hidden>다음 단어</button>
+      </div>
+      <p id="keyboard-hint" class="keyboard-hint">숫자키 1–4 또는 숫자패드로 선택 · Enter로 다음</p>
+    </section>
+
+    <section id="result-screen" class="screen" aria-labelledby="result-title">
+      <div class="paper-card result-card">
+        <div class="result-seal" aria-hidden="true">完</div>
+        <p class="session-kicker">회차 완료</p>
+        <h2 id="result-title"><span id="result-session-number">1</span>회차 학습을 마쳤어요</h2>
+        <p id="result-message" class="lead"></p>
+
+        <div class="result-score" aria-label="이번 회차 정답률">
+          <span>이번 정답률</span>
+          <strong id="result-accuracy">0%</strong>
+        </div>
+        <dl class="result-details">
+          <div><dt>정답</dt><dd id="result-correct">0</dd></div>
+          <div><dt>오답</dt><dd id="result-wrong">0</dd></div>
+          <div><dt>완료 단어</dt><dd id="result-mastered">0</dd></div>
+        </dl>
+
+        <button id="return-button" class="primary-button" type="button">기록 화면으로</button>
+      </div>
+    </section>
+
+    <p id="app-error" class="app-error" role="alert" hidden></p>
+  </main>
+
+  <script src="vocab-data.js"></script>
+  <script src="n3-vocab-data.js"></script>
+  <script src="n2-vocab-data.js"></script>
+  <script src="quiz-engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

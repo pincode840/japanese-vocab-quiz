@@ -26,6 +26,38 @@ assert.equal(data.find((item) => item.id === "d25-10")?.meaning, "모래");
 assert.equal(data.find((item) => item.id === "d28-4")?.meaning, "수염");
 assert.equal(data.find((item) => item.id === "d29-18")?.meaning, "역사");
 assert.equal(data.find((item) => item.id === "d9-3")?.reading, "まいとし／まいねん");
+[
+  ["d8-15", "sentence", "この___にはレストランがない。"],
+  ["d8-18", "sentence", "このコーヒーは___のコーヒーより高いです。"],
+  ["d9-17", "sentence", "彼女の___は美しいです。"],
+  ["d9-18", "sentence", "___屋で眼鏡を買いました。"],
+  ["d10-7", "sentence", "___が１０センチ積もりました。"],
+  ["d13-13", "sentenceTranslation", "외국어는 반복 학습이 중요하다."],
+  ["d15-12", "sentence", "___たことがあったら相談してください。"],
+  ["d16-18", "sentence", "長く___でいる。"],
+  ["d17-16", "sentenceFurigana", "<ruby>家族写真<rt>かぞくしゃしん</rt></ruby>を___ています。"],
+  ["d17-18", "sentence", "姉は小説を___でいます。"],
+  ["d18-20", "sentence", "___暑くなっています。"],
+  ["d19-2", "sentence", "___の人に伝えてください。"],
+  ["d19-14", "sentence", "___行って右折してください。"],
+  ["d20-18", "sentence", "書類は___に提出してください。"],
+  ["d21-1", "sentence", "田中さんは___の練習をしています。"],
+  ["d23-5", "sentenceFurigana", "<ruby>新年<rt>しんねん</rt></ruby>になると<ruby>一年<rt>いちねん</rt></ruby>の___を<ruby>立<rt>た</rt></ruby>てる。"],
+  ["d24-8", "sentence", "この村は___被害が深刻です。"],
+  ["d24-14", "sentence", "彼は中小企業の___です。"],
+  ["d24-14", "reading", "しゃちょう"],
+  ["d26-2", "reading", "たいふう"],
+].forEach(([id, field, expected]) => {
+  assert.equal(data.find((item) => item.id === id)?.[field], expected, `${id} ${field} 오타가 없어야 합니다.`);
+});
+assert.ok(
+  data.every(
+    (item) => !/[。！？][。！？]|[?.!]\.|\s+[。！？]/.test(
+      `${item.sentence} ${item.sentenceFurigana} ${item.sentenceTranslation}`,
+    ),
+  ),
+  "N5·N4 예문과 해석에 중복되거나 잘못 배치된 문장부호가 없어야 합니다.",
+);
 assert.ok(
   data.every(
     (item) => item.word

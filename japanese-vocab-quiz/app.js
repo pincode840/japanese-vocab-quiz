@@ -24,13 +24,15 @@
     n5n4: normalizeData(window.VOCAB_DATA, "basic"),
     n3: normalizeData(window.N3_VOCAB_DATA, "n3"),
     n2: normalizeData(window.N2_VOCAB_DATA, "n2"),
+    katakana: normalizeData(window.KATAKANA_VOCAB_DATA, "katakana"),
   };
-  const difficultyLabels = { n5n4: "N5·N4", n3: "N3", n2: "N2" };
+  const difficultyLabels = { n5n4: "N5·N4", n3: "N3", n2: "N2", katakana: "카타카나" };
   const modeLabels = {
     "kanji-to-reading": "한자→읽기",
     "kanji-to-kana": "한자→히라가나 조합",
     "reading-to-kanji": "읽기→한자",
     "sentence-to-kanji": "문장 빈칸→한자",
+    "katakana-to-meaning": "카타카나→뜻",
   };
   const HIRAGANA_POOL = [...new Set(
     "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん"
@@ -64,8 +66,14 @@
     sentenceKanjiSessions: document.getElementById("sentence-kanji-sessions"),
     sentenceKanjiLastAccuracy: document.getElementById("sentence-kanji-last-accuracy"),
     sentenceKanjiTotalAccuracy: document.getElementById("sentence-kanji-total-accuracy"),
+    recordKatakanaMeaning: document.getElementById("record-katakana-meaning"),
+    katakanaMeaningSessions: document.getElementById("katakana-meaning-sessions"),
+    katakanaMeaningLastAccuracy: document.getElementById("katakana-meaning-last-accuracy"),
+    katakanaMeaningTotalAccuracy: document.getElementById("katakana-meaning-total-accuracy"),
     historyPanel: document.getElementById("history-panel"),
     historyList: document.getElementById("history-list"),
+    difficultyPicker: document.getElementById("difficulty-picker"),
+    katakanaModeNote: document.getElementById("katakana-mode-note"),
     difficultyBasic: document.getElementById("difficulty-basic"),
     difficultyN3: document.getElementById("difficulty-n3"),
     difficultyN2: document.getElementById("difficulty-n2"),
@@ -73,6 +81,7 @@
     modeKanjiKana: document.getElementById("mode-kanji-kana"),
     modeReadingKanji: document.getElementById("mode-reading-kanji"),
     modeSentenceKanji: document.getElementById("mode-sentence-kanji"),
+    modeKatakanaMeaning: document.getElementById("mode-katakana-meaning"),
     examMode: document.getElementById("exam-mode"),
     examModeState: document.getElementById("exam-mode-state"),
     examModeNote: document.getElementById("exam-mode-note"),
@@ -150,6 +159,12 @@
       lastAccuracy: elements.sentenceKanjiLastAccuracy,
       totalAccuracy: elements.sentenceKanjiTotalAccuracy,
     },
+    "katakana-to-meaning": {
+      card: elements.recordKatakanaMeaning,
+      sessions: elements.katakanaMeaningSessions,
+      lastAccuracy: elements.katakanaMeaningLastAccuracy,
+      totalAccuracy: elements.katakanaMeaningTotalAccuracy,
+    },
   };
 
   let progress = loadProgress();
@@ -176,6 +191,7 @@
   }
 
   function datasetForMode(difficulty, mode) {
+    if (mode === "katakana-to-meaning") return datasets.katakana;
     const quizData = datasets[difficulty] || [];
     if (mode === "sentence-to-kanji") return quizData.filter(hasCompleteSentence);
     const generalData = difficulty === "n3"
@@ -185,12 +201,14 @@
   }
 
   function selectedDifficulty() {
+    if (elements.modeKatakanaMeaning.checked) return "katakana";
     if (elements.difficultyN3.checked) return "n3";
     if (elements.difficultyN2.checked) return "n2";
     return "n5n4";
   }
 
   function selectedMode() {
+    if (elements.modeKatakanaMeaning.checked) return "katakana-to-meaning";
     if (elements.modeSentenceKanji.checked) return "sentence-to-kanji";
     if (elements.modeKanjiKana.checked) return "kanji-to-kana";
     if (elements.modeReadingKanji.checked) return "reading-to-kanji";
@@ -455,11 +473,17 @@
     const selectedStat = statsFor(difficulty, selectedLearningMode);
     elements.startSelectionLabel.textContent = `${difficultyLabels[difficulty]} · ${modeLabels[selectedLearningMode]}`;
     elements.nextSessionNumber.textContent = selectedStat.completedSessions + 1;
-    elements.modeRecordsTitle.textContent = `${difficultyLabels[difficulty]} 학습 모드별 기록`;
+    elements.modeRecordsTitle.textContent = difficulty === "katakana"
+      ? "카타카나 모드 기록"
+      : `${difficultyLabels[difficulty]} 학습 모드별 기록`;
 
     Object.entries(modeRecordElements).forEach(([mode, recordElements]) => {
       const stat = statsFor(difficulty, mode);
       const cumulative = engine.accuracy(stat.totalCorrect, stat.totalAttempts);
+      const validRecord = difficulty === "katakana"
+        ? mode === "katakana-to-meaning"
+        : mode !== "katakana-to-meaning";
+      recordElements.card.hidden = !validRecord;
       recordElements.sessions.textContent = `${stat.completedSessions}회`;
       recordElements.lastAccuracy.textContent = formatAccuracy(stat.lastAccuracy);
       recordElements.totalAccuracy.textContent = formatAccuracy(cumulative);
@@ -580,7 +604,9 @@
 
   function buildChoices(correctItem) {
     const quizData = datasetForMode(session.difficulty, session.mode);
-    return session.mode === "reading-to-kanji" || session.mode === "sentence-to-kanji"
+    return session.mode === "katakana-to-meaning"
+      ? engine.buildChoicesByMeaning(quizData, correctItem, session.choiceCount)
+      : session.mode === "reading-to-kanji" || session.mode === "sentence-to-kanji"
       ? engine.buildChoicesByWord(quizData, correctItem, session.choiceCount)
       : engine.buildChoices(quizData, correctItem, session.choiceCount);
   }
@@ -643,11 +669,14 @@
     const choices = isKanjiToKana ? [] : buildChoices(item);
     const isReadingToKanji = session.mode === "reading-to-kanji";
     const isSentenceToKanji = session.mode === "sentence-to-kanji";
+    const isKatakanaToMeaning = session.mode === "katakana-to-meaning";
 
     elements.quizPrompt.textContent = isKanjiToKana
       ? "히라가나를 순서대로 눌러 한자의 읽기를 완성하세요."
       : isSentenceToKanji
       ? "문장의 빈칸에 알맞은 한자 단어는 무엇일까요?"
+      : isKatakanaToMeaning
+        ? "이 카타카나 단어의 뜻은 무엇일까요?"
       : isReadingToKanji
         ? "이 읽기에 알맞은 단어는 무엇일까요?"
         : "이 단어를 어떻게 읽을까요?";
@@ -663,6 +692,8 @@
       elements.dayLabel.textContent = isSentenceToKanji
         ? `${item.day}일차 · 문장 빈칸`
         : `${item.day}일차`;
+    } else if (session.difficulty === "katakana") {
+      elements.dayLabel.textContent = "카타카나 · 기초 단어 100개";
     } else {
       const source = isSentenceToKanji ? item.sentenceSource || item.source : item.source;
       const sentenceLabel = isSentenceToKanji ? " · 문장 빈칸" : "";
@@ -682,7 +713,9 @@
       button.type = "button";
       button.className = "answer-button";
       button.dataset.itemId = choice.id;
-      const answerText = isReadingToKanji || isSentenceToKanji
+      const answerText = isKatakanaToMeaning
+        ? choice.meaning
+        : isReadingToKanji || isSentenceToKanji
         ? choice.word
         : normalizedReading(choice.reading);
       button.setAttribute("aria-label", `${index + 1}번, ${answerText}`);
@@ -690,7 +723,7 @@
       number.className = "answer-number";
       number.textContent = index + 1;
       const reading = document.createElement("span");
-      reading.lang = "ja";
+      reading.lang = isKatakanaToMeaning ? "ko" : "ja";
       reading.textContent = answerText;
       button.append(number, reading);
       button.addEventListener("click", () => answerQuestion(choice.id));
@@ -748,12 +781,15 @@
       isKanjiToKana ? correctKanaAnswers.includes(constructedAnswer) : selectedId === session.current.id
     );
     const isSentenceToKanji = session.mode === "sentence-to-kanji";
+    const isKatakanaToMeaning = session.mode === "katakana-to-meaning";
     const selectedItem = timedOut || isKanjiToKana ? null : findItem(selectedId);
     const selectedReading = selectedItem ? normalizedReading(selectedItem.reading) : "";
     const selectedAnswer = timedOut
       ? "시간 초과"
       : isKanjiToKana
         ? constructedAnswer
+      : isKatakanaToMeaning
+        ? `${selectedItem.meaning} · ${selectedItem.word}（${selectedReading}）`
       : session.mode === "kanji-to-reading"
         ? `${selectedReading} · ${selectedItem.word} · ${selectedItem.meaning}`
         : `${selectedItem.word}（${selectedReading}） · ${selectedItem.meaning}`;
@@ -822,10 +858,14 @@
       ? `정답  ${session.current.word}（${normalizedReading(session.current.reading)}）`
       : isKanjiToKana
         ? `정답 읽기  ${correctKanaAnswers.join(" / ")}`
+      : isKatakanaToMeaning
+        ? `정답 뜻  ${session.current.meaning}`
       : session.mode === "reading-to-kanji"
         ? `정답  ${session.current.word}`
         : `읽기  ${normalizedReading(session.current.reading)}`;
-    elements.feedbackMeaning.textContent = `뜻  ${session.current.meaning}`;
+    elements.feedbackMeaning.textContent = isKatakanaToMeaning
+      ? `단어  ${session.current.word}（${normalizedReading(session.current.reading)}）`
+      : `뜻  ${session.current.meaning}`;
     elements.feedbackTranslation.hidden = !(isSentenceToKanji && !isCorrect);
     elements.feedbackTranslation.textContent = isSentenceToKanji && !isCorrect
       ? `문장 해석  ${session.current.sentenceTranslation}`
@@ -982,10 +1022,13 @@
   function syncModeControls() {
     const sentenceMode = elements.modeSentenceKanji.checked;
     const kanaMode = elements.modeKanjiKana.checked;
+    const katakanaMode = elements.modeKatakanaMeaning.checked;
     const examMode = elements.examMode.checked;
     elements.questionCountPanel.hidden = !sentenceMode;
     elements.generalQuestionCountPanel.hidden = sentenceMode;
     elements.choiceCountPicker.hidden = kanaMode;
+    elements.difficultyPicker.hidden = katakanaMode;
+    elements.katakanaModeNote.hidden = !katakanaMode;
     elements.difficultyBasic.disabled = false;
 
     const difficulty = selectedDifficulty();
@@ -1009,12 +1052,16 @@
       elements.sentenceQuestionCount.value = String(EXAM_QUESTION_COUNT);
     }
 
-    const generalMaximum = datasetForMode(difficulty, "kanji-to-reading").length;
+    const generalMaximum = datasetForMode(
+      difficulty,
+      katakanaMode ? "katakana-to-meaning" : "kanji-to-reading",
+    ).length;
     const sentenceMaximum = datasetForMode(difficulty, "sentence-to-kanji").length;
     const generalSources = {
       n5n4: "N5·N4 단어",
       n3: "N3 PDF 한자 어휘",
       n2: "N2 단어",
+      katakana: "카타카나 기초 단어 100개",
     };
     const sentenceSources = {
       n5n4: "능력단어 Word 예문",
@@ -1060,14 +1107,16 @@
     const invalidCoreData = datasets.n5n4.length !== 480
       || datasets.n2.length !== 100
       || datasets.n3.length < 500
+      || datasets.katakana.length !== 100
       || Object.values(datasets).some((quizData) => quizData.some(
         (item) => !item.word || !item.reading || !item.meaning,
       ));
-    const invalidSentenceData = Object.keys(datasets).some((difficulty) => {
+    const jlptDifficulties = ["n5n4", "n3", "n2"];
+    const invalidSentenceData = jlptDifficulties.some((difficulty) => {
       const sentenceData = datasetForMode(difficulty, "sentence-to-kanji");
       return sentenceData.length < 4 || sentenceData.some((item) => !hasCompleteSentence(item));
     });
-    const invalidKanaData = Object.keys(datasets).some(
+    const invalidKanaData = jlptDifficulties.some(
       (difficulty) => datasetForMode(difficulty, "kanji-to-kana").length < EXAM_QUESTION_COUNT,
     );
     if (Object.values(datasets).some((quizData) => quizData.length < 4)
@@ -1090,6 +1139,7 @@
     elements.modeKanjiKana.addEventListener("change", syncModeControls);
     elements.modeReadingKanji.addEventListener("change", syncModeControls);
     elements.modeSentenceKanji.addEventListener("change", syncModeControls);
+    elements.modeKatakanaMeaning.addEventListener("change", syncModeControls);
     elements.examMode.addEventListener("change", syncModeControls);
     elements.difficultyBasic.addEventListener("change", syncModeControls);
     elements.difficultyN3.addEventListener("change", syncModeControls);

@@ -243,16 +243,14 @@ assert.deepEqual(
   [],
 );
 assert.equal(cleanStreaks[reviewKey], 1);
-engine.updateCleanReview(cleanStreaks, practiceCooldowns, [reviewKey], [], 2);
-assert.equal(cleanStreaks[reviewKey], 2);
 assert.deepEqual(
-  engine.updateCleanReview(cleanStreaks, practiceCooldowns, [reviewKey], [], 3),
+  engine.updateCleanReview(cleanStreaks, practiceCooldowns, [reviewKey], [], 2),
   [reviewKey],
-  "3회 연속 무오답이면 복습 대기 상태가 되어야 합니다.",
+  "2회 연속 무오답이면 복습 대기 상태가 되어야 합니다.",
 );
 assert.equal(cleanStreaks[reviewKey], 0);
-assert.equal(practiceCooldowns[reviewKey], 7);
-for (const practiceRound of [4, 5, 6]) {
+assert.equal(practiceCooldowns[reviewKey], 5);
+for (const practiceRound of [3, 4]) {
   assert.equal(
     engine.isReviewEligible(practiceCooldowns, reviewKey, practiceRound),
     false,
@@ -260,12 +258,12 @@ for (const practiceRound of [4, 5, 6]) {
   );
 }
 assert.equal(
-  engine.isReviewEligible(practiceCooldowns, reviewKey, 7),
+  engine.isReviewEligible(practiceCooldowns, reviewKey, 5),
   true,
-  "3회차가 지난 뒤에는 단어가 다시 나와야 합니다.",
+  "2회차가 지난 뒤에는 단어가 다시 나와야 합니다.",
 );
-cleanStreaks[reviewKey] = 2;
-engine.updateCleanReview(cleanStreaks, practiceCooldowns, [reviewKey], [reviewKey], 8);
+cleanStreaks[reviewKey] = 1;
+engine.updateCleanReview(cleanStreaks, practiceCooldowns, [reviewKey], [reviewKey], 6);
 assert.equal(cleanStreaks[reviewKey], 0, "한 번이라도 틀리면 무오답 연속 횟수가 초기화되어야 합니다.");
 
 console.log("quiz logic tests passed");

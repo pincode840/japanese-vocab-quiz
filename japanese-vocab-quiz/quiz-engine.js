@@ -128,8 +128,8 @@
     itemKeys,
     mistakenKeys,
     practiceRound,
-    requiredCleanAnswers = 3,
-    cooldownRounds = 3,
+    requiredCleanAnswers = 2,
+    cooldownRounds = 2,
   ) {
     const mistakes = new Set(mistakenKeys || []);
     const protectedKeys = [];

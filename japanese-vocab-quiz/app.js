@@ -2,8 +2,8 @@
   "use strict";
 
   const RETRY_DELAY = 3;
-  const PRACTICE_CLEAN_STREAK_REQUIRED = 3;
-  const PRACTICE_COOLDOWN_ROUNDS = 3;
+  const PRACTICE_CLEAN_STREAK_REQUIRED = 2;
+  const PRACTICE_COOLDOWN_ROUNDS = 2;
   const EXAM_QUESTION_COUNT = 100;
   const WORD_TIME_LIMIT = 7;
   const KANA_TIME_LIMIT = 10;
@@ -968,7 +968,7 @@
         ? "한 번도 틀리지 않고 모두 맞혔습니다. 완벽해요!"
         : `오답 ${session.wrong}번도 다시 풀어 모두 익혔습니다.`;
     elements.resultMessage.textContent = newlyProtectedCount > 0
-      ? `${baseResultMessage} ${newlyProtectedCount}개 단어는 다음 3회차 동안 쉬고 다시 나옵니다.`
+      ? `${baseResultMessage} ${newlyProtectedCount}개 단어는 다음 2회차 동안 쉬고 다시 나옵니다.`
       : baseResultMessage;
     showScreen("result");
     elements.returnButton.focus();
@@ -1097,7 +1097,7 @@
       elements.startButton.disabled = practiceWordMode && practiceEligibleCount === 0;
       elements.examModeNote.hidden = coolingCount === 0;
       elements.examModeNote.textContent = coolingCount > 0
-        ? `무오답 3회 완료 단어 ${coolingCount}개는 복습 대기 중입니다. 현재 ${practiceEligibleCount}개 출제 가능하며, 다른 단어 연습 3회차가 지나면 다시 나옵니다.`
+        ? `무오답 2회 완료 단어 ${coolingCount}개는 복습 대기 중입니다. 현재 ${practiceEligibleCount}개 출제 가능하며, 다른 단어 연습 2회차가 지나면 다시 나옵니다.`
         : "맞힌 문제는 이 난이도·학습 모드의 다음 3회차 동안 시험에서 제외됩니다.";
     }
     renderStartScreen();

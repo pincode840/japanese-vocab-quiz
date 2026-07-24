@@ -58,10 +58,18 @@
                 <div><dt>누적 정답률</dt><dd id="sentence-kanji-total-accuracy">—</dd></div>
               </dl>
             </article>
+            <article id="record-katakana-meaning" class="mode-record" hidden>
+              <strong>카타카나 → 뜻</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="katakana-meaning-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="katakana-meaning-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="katakana-meaning-total-accuracy">—</dd></div>
+              </dl>
+            </article>
           </div>
         </section>
 
-        <fieldset class="mode-picker difficulty-picker">
+        <fieldset id="difficulty-picker" class="mode-picker difficulty-picker">
           <legend>난이도 선택</legend>
           <label class="mode-option" for="difficulty-basic">
             <input id="difficulty-basic" name="quiz-difficulty" type="radio" value="n5n4" checked>
@@ -85,6 +93,7 @@
             </span>
           </label>
         </fieldset>
+        <p id="katakana-mode-note" class="exam-mode-note is-practice-note" hidden>카타카나 모드는 JLPT 난이도와 별도로 정리한 기초 외래어 100개에서 출제됩니다.</p>
 
         <fieldset class="mode-picker">
           <legend>학습 모드 선택</legend>
@@ -114,6 +123,13 @@
             <span class="mode-copy">
               <strong>문장 빈칸 → 한자</strong>
               <small>선택한 난이도의 예문 빈칸에 알맞은 한자 단어 고르기</small>
+            </span>
+          </label>
+          <label class="mode-option is-wide" for="mode-katakana-meaning">
+            <input id="mode-katakana-meaning" name="quiz-mode" type="radio" value="katakana-to-meaning">
+            <span class="mode-copy">
+              <strong>카타카나 → 뜻</strong>
+              <small>카타카나 단어 100개를 보고 알맞은 한국어 뜻 고르기</small>
             </span>
           </label>
         </fieldset>
@@ -258,6 +274,7 @@
   <script src="vocab-data.js"></script>
   <script src="n3-vocab-data.js"></script>
   <script src="n2-vocab-data.js"></script>
+  <script src="katakana-vocab-data.js"></script>
   <script src="quiz-engine.js"></script>
   <script src="app.js"></script>
 </body>

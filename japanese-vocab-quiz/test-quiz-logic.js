@@ -4,11 +4,13 @@ const assert = require("node:assert/strict");
 require("./vocab-data.js");
 require("./n3-vocab-data.js");
 require("./n2-vocab-data.js");
+require("./katakana-vocab-data.js");
 const engine = require("./quiz-engine.js");
 
 const data = globalThis.VOCAB_DATA;
 const n3Data = globalThis.N3_VOCAB_DATA;
 const n2Data = globalThis.N2_VOCAB_DATA;
+const katakanaData = globalThis.KATAKANA_VOCAB_DATA;
 assert.equal(data.length, 480, "480개 단어가 있어야 합니다.");
 assert.equal(new Set(data.map((item) => item.id)).size, 480, "단어 ID는 중복되면 안 됩니다.");
 assert.equal(
@@ -90,6 +92,26 @@ assert.ok(
   ),
   "모든 N2 단어에 읽기, 뜻, PDF 분류, 후리가나와 문장 해석이 있어야 합니다.",
 );
+
+assert.equal(katakanaData.length, 100, "카타카나 기초 단어는 100개여야 합니다.");
+assert.equal(new Set(katakanaData.map((item) => item.id)).size, 100, "카타카나 단어 ID는 중복되면 안 됩니다.");
+assert.equal(new Set(katakanaData.map((item) => item.word)).size, 100, "카타카나 단어는 중복되면 안 됩니다.");
+assert.equal(new Set(katakanaData.map((item) => item.meaning)).size, 100, "카타카나 뜻 선택지는 중복되면 안 됩니다.");
+assert.ok(
+  katakanaData.every((item) => item.level === "카타카나"
+    && /^[ァ-ヶー]+$/.test(item.word)
+    && /^[ぁ-ゖー]+$/.test(item.reading)
+    && item.word.replace(/[ァ-ヶ]/g, (character) => String.fromCharCode(character.charCodeAt(0) - 0x60)) === item.reading
+    && item.meaning
+    && item.source),
+  "모든 카타카나 단어에 올바른 표기, 히라가나 읽기, 뜻과 출처가 있어야 합니다.",
+);
+for (const choiceCount of [4, 6, 8]) {
+  const choices = engine.buildChoicesByMeaning(katakanaData, katakanaData[0], choiceCount, () => 0.42);
+  assert.equal(choices.length, choiceCount, `카타카나 뜻 선택지는 ${choiceCount}개여야 합니다.`);
+  assert.ok(choices.some((choice) => choice.id === katakanaData[0].id));
+  assert.equal(new Set(choices.map((choice) => choice.meaning)).size, choiceCount);
+}
 
 assert.equal(n3Data.length, 1330, "N3 PDF 어휘와 실전 예문 항목은 1,330개여야 합니다.");
 assert.equal(new Set(n3Data.map((item) => item.id)).size, 1330, "N3 단어 ID는 중복되면 안 됩니다.");

@@ -85,6 +85,22 @@
     return shuffle(choices, settings.random);
   }
 
+  function buildChoicesByMeaning(data, correctItem, choiceCountOrRandom = 4, random = Math.random) {
+    const settings = resolveChoiceSettings(choiceCountOrRandom, random, data.length);
+    const pool = shuffle(data.filter((item) => item.id !== correctItem.id), settings.random);
+    const choices = [correctItem];
+    const usedMeanings = new Set([correctItem.meaning]);
+
+    for (const candidate of pool) {
+      if (!usedMeanings.has(candidate.meaning)) {
+        choices.push(candidate);
+        usedMeanings.add(candidate.meaning);
+      }
+      if (choices.length === settings.choiceCount) break;
+    }
+    return shuffle(choices, settings.random);
+  }
+
   function selectSessionItems(data, progress, sessionSize, random = Math.random) {
     const seen = new Set(progress.seenIds || []);
     const scored = data.map((item) => ({
@@ -163,6 +179,7 @@
     shuffle,
     buildChoices,
     buildChoicesByWord,
+    buildChoicesByMeaning,
     selectSessionItems,
     insertRetry,
     isReviewEligible,

@@ -4,6 +4,7 @@ const assert = require("node:assert/strict");
 require("./vocab-data.js");
 require("./n3-vocab-data.js");
 require("./n2-vocab-data.js");
+require("./katakana-vocab-data.js");
 globalThis.QuizEngine = require("./quiz-engine.js");
 
 class ClassList {
@@ -70,9 +71,11 @@ const ids = [
   "record-kanji-kana", "kanji-kana-sessions", "kanji-kana-last-accuracy", "kanji-kana-total-accuracy",
   "record-reading-kanji", "reading-kanji-sessions", "reading-kanji-last-accuracy", "reading-kanji-total-accuracy",
   "record-sentence-kanji", "sentence-kanji-sessions", "sentence-kanji-last-accuracy", "sentence-kanji-total-accuracy",
+  "record-katakana-meaning", "katakana-meaning-sessions", "katakana-meaning-last-accuracy", "katakana-meaning-total-accuracy",
   "history-panel", "history-list", "start-button",
+  "difficulty-picker", "katakana-mode-note",
   "difficulty-basic", "difficulty-n3", "difficulty-n2", "mode-kanji-reading", "mode-kanji-kana", "mode-reading-kanji",
-  "mode-sentence-kanji", "exam-mode", "exam-mode-state", "exam-mode-note", "choice-count-4", "choice-count-6", "choice-count-8", "choice-count-picker",
+  "mode-sentence-kanji", "mode-katakana-meaning", "exam-mode", "exam-mode-state", "exam-mode-note", "choice-count-4", "choice-count-6", "choice-count-8", "choice-count-picker",
   "general-question-count-panel", "general-question-count",
   "general-question-count-hint", "question-count-panel", "sentence-question-count",
   "sentence-question-count-hint",
@@ -94,6 +97,8 @@ elements.get("general-question-count").max = "480";
 elements.get("sentence-question-count").value = "20";
 elements.get("sentence-question-count").max = "480";
 elements.get("question-count-panel").hidden = true;
+elements.get("katakana-mode-note").hidden = true;
+elements.get("record-katakana-meaning").hidden = true;
 elements.get("exam-mode-note").hidden = true;
 elements.get("exam-timer").hidden = true;
 elements.get("exam-mistake-badge").hidden = true;
@@ -172,6 +177,17 @@ function correctButtonForCurrentWord() {
   );
   assert.ok(item, `현재 단어 ${word}를 데이터에서 찾을 수 있어야 합니다.`);
   return buttons.find((button) => button.dataset.itemId === item.id);
+}
+
+function correctButtonForCurrentKatakana() {
+  const word = elements.get("quiz-word").textContent;
+  const item = globalThis.KATAKANA_VOCAB_DATA.find((candidate) => candidate.word === word);
+  assert.ok(item, `현재 카타카나 단어 ${word}를 데이터에서 찾을 수 있어야 합니다.`);
+  const button = elements.get("answer-grid").querySelectorAll("button").find(
+    (candidate) => candidate.dataset.itemId === item.id,
+  );
+  assert.ok(button, `${word} 정답 뜻이 선택지에 있어야 합니다.`);
+  return button;
 }
 
 function correctButtonForCurrentSentence() {
@@ -678,5 +694,52 @@ assert.match(elements.get("quiz-session-label").textContent, /히라가나 9개/
 elements.get("home-button").click();
 elements.get("exam-mode").checked = false;
 elements.get("exam-mode").dispatch("change");
+
+elements.get("mode-kanji-kana").checked = false;
+elements.get("mode-katakana-meaning").checked = true;
+elements.get("choice-count-4").checked = false;
+elements.get("choice-count-8").checked = true;
+elements.get("mode-katakana-meaning").dispatch("change");
+assert.equal(elements.get("difficulty-picker").hidden, true, "카타카나 모드에서는 JLPT 난이도 선택을 숨겨야 합니다.");
+assert.equal(elements.get("katakana-mode-note").hidden, false);
+assert.equal(elements.get("start-selection-label").textContent, "카타카나 · 카타카나→뜻");
+assert.equal(elements.get("record-katakana-meaning").hidden, false);
+assert.equal(elements.get("record-katakana-meaning").classList.contains("is-selected"), true);
+assert.equal(elements.get("record-kanji-reading").hidden, true);
+assert.equal(elements.get("general-question-count").max, "100");
+assert.match(elements.get("general-question-count-hint").textContent, /카타카나 기초 단어 100개/);
+elements.get("general-question-count").value = "10";
+elements.get("start-button").click();
+assert.equal(elements.get("quiz-prompt").textContent, "이 카타카나 단어의 뜻은 무엇일까요?");
+assert.match(elements.get("quiz-word").textContent, /^[ァ-ヶー]+$/);
+assert.equal(elements.get("answer-grid").querySelectorAll("button").length, 8);
+const firstKatakanaCorrect = correctButtonForCurrentKatakana();
+const firstKatakanaCorrectIndex = elements.get("answer-grid").querySelectorAll("button").indexOf(firstKatakanaCorrect);
+const katakanaNumberEvent = pressKey(String(firstKatakanaCorrectIndex + 1), `Digit${firstKatakanaCorrectIndex + 1}`);
+assert.equal(katakanaNumberEvent.defaultPrevented, true);
+assert.equal(elements.get("feedback-title").textContent, "정답이에요");
+assert.match(elements.get("feedback-reading").textContent, /^정답 뜻/);
+assert.match(elements.get("feedback-meaning").textContent, /^단어/);
+
+guard = 0;
+while (!elements.get("result-screen").classList.contains("is-active") && guard < 20) {
+  elements.get("next-button").click();
+  if (elements.get("result-screen").classList.contains("is-active")) break;
+  correctButtonForCurrentKatakana().click();
+  guard += 1;
+}
+assert.ok(elements.get("result-screen").classList.contains("is-active"));
+assert.equal(elements.get("result-mastered").textContent, 10);
+elements.get("return-button").click();
+assert.equal(elements.get("katakana-meaning-sessions").textContent, "1회");
+assert.notEqual(elements.get("katakana-meaning-total-accuracy").textContent, "—");
+
+elements.get("exam-mode").checked = true;
+elements.get("exam-mode").dispatch("change");
+assert.equal(elements.get("start-button").disabled, false);
+elements.get("start-button").click();
+assert.equal(elements.get("quiz-progress-text").textContent, "1 / 100");
+assert.equal(elements.get("exam-time-left").textContent, 7, "카타카나 시험 제한시간은 7초여야 합니다.");
+assert.match(elements.get("quiz-session-label").textContent, /카타카나→뜻/);
 
 console.log("app interaction flow tests passed");

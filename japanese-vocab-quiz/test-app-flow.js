@@ -471,6 +471,15 @@ while (!elements.get("result-screen").classList.contains("is-active") && guard <
 }
 assert.ok(elements.get("result-screen").classList.contains("is-active"));
 assert.equal(elements.get("result-mastered").textContent, 10);
+const secondCleanProgress = JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1"));
+const n5PracticeCooldowns = Object.entries(secondCleanProgress.practiceCooldowns).filter(
+  ([key]) => key.startsWith("n5n4:kanji-to-reading:"),
+);
+assert.ok(n5PracticeCooldowns.length > 0, "2회 연속 무오답 단어는 복습 대기 상태가 되어야 합니다.");
+assert.ok(
+  n5PracticeCooldowns.every(([, eligibleRound]) => eligibleRound === 6),
+  "2회 연속 무오답 단어는 다음 2번의 단어 연습 회차 동안 쉬어야 합니다.",
+);
 
 elements.get("return-button").click();
 elements.get("mode-kanji-reading").checked = false;

@@ -66,7 +66,11 @@ class MiniElement {
 }
 
 const ids = [
-  "start-screen", "quiz-screen", "result-screen", "home-button", "start-selection-label", "next-session-number",
+  "start-screen", "quiz-screen", "result-screen", "home-button",
+  "mistake-menu-button", "mistake-menu-layer", "mistake-menu-backdrop", "mistake-menu-close",
+  "mistake-menu-summary", "mistake-menu-list", "mistake-menu-empty",
+  "mistake-tab-basic", "mistake-tab-n3", "mistake-tab-n2", "mistake-tab-katakana",
+  "start-selection-label", "next-session-number",
   "mode-records-title", "record-kanji-reading", "kanji-reading-sessions", "kanji-reading-last-accuracy", "kanji-reading-total-accuracy",
   "record-kanji-kana", "kanji-kana-sessions", "kanji-kana-last-accuracy", "kanji-kana-total-accuracy",
   "record-reading-kanji", "reading-kanji-sessions", "reading-kanji-last-accuracy", "reading-kanji-total-accuracy",
@@ -87,8 +91,14 @@ const ids = [
   "result-accuracy", "result-correct", "result-wrong", "result-mastered", "return-button", "keyboard-hint", "app-error",
 ];
 const elements = new Map(ids.map((id) => [id, new MiniElement("div", id)]));
-for (const id of ["home-button", "start-button", "next-button", "return-button", "kana-backspace", "kana-clear", "kana-submit"]) elements.get(id).tagName = "BUTTON";
+for (const id of [
+  "home-button", "mistake-menu-button", "mistake-menu-backdrop", "mistake-menu-close",
+  "mistake-tab-basic", "mistake-tab-n3", "mistake-tab-n2", "mistake-tab-katakana",
+  "start-button", "next-button", "return-button", "kana-backspace", "kana-clear", "kana-submit",
+]) elements.get(id).tagName = "BUTTON";
 elements.get("start-screen").classList.add("is-active");
+elements.get("mistake-menu-layer").hidden = true;
+elements.get("mistake-menu-empty").hidden = true;
 elements.get("difficulty-basic").checked = true;
 elements.get("mode-kanji-reading").checked = true;
 elements.get("choice-count-4").checked = true;
@@ -238,6 +248,29 @@ function enterCurrentKanaReading() {
   return reading;
 }
 
+elements.get("mistake-menu-button").click();
+assert.equal(elements.get("mistake-menu-layer").hidden, false, "우측 상단 버튼으로 오답 기록 메뉴가 열려야 합니다.");
+assert.equal(elements.get("mistake-menu-button")["aria-expanded"], "true");
+assert.equal(
+  elements.get("mistake-menu-summary").textContent,
+  "N5·N4 · 오답 단어 2개 · 누적 3회",
+  "기존에 저장된 오답 이력을 난이도별 누적 기록으로 이어야 합니다.",
+);
+assert.equal(elements.get("mistake-menu-list").children.length, 2);
+assert.match(
+  elements.get("mistake-menu-list").children[0].children[3].textContent,
+  /한자→읽기 2회/,
+  "단어별 학습 모드 오답 횟수를 보여줘야 합니다.",
+);
+elements.get("mistake-tab-n2").click();
+assert.equal(elements.get("mistake-menu-summary").textContent, "N2 · 누적 오답 0회");
+assert.equal(elements.get("mistake-menu-empty").hidden, false, "오답이 없는 난이도에는 빈 상태를 보여줘야 합니다.");
+elements.get("mistake-tab-basic").click();
+const closeMenuEvent = pressKey("Escape", "Escape");
+assert.equal(closeMenuEvent.defaultPrevented, true);
+assert.equal(elements.get("mistake-menu-layer").hidden, true, "Escape 키로 오답 기록 메뉴를 닫을 수 있어야 합니다.");
+assert.equal(elements.get("mistake-menu-button")["aria-expanded"], "false");
+
 assert.equal(elements.get("general-question-count-panel").hidden, false, "일반 모드에는 문제 수 선택이 보여야 합니다.");
 assert.equal(elements.get("general-question-count").value, "480");
 assert.match(elements.get("general-question-count-hint").textContent, /10~480/);
@@ -255,6 +288,12 @@ const wrongFirstItem = globalThis.VOCAB_DATA.find(
 );
 const numberEvent = pressKey(String(wrongFirstIndex + 1), `Digit${wrongFirstIndex + 1}`);
 assert.equal(numberEvent.defaultPrevented, true, "숫자키 입력 시 브라우저 기본 동작을 막아야 합니다.");
+const firstWrongSavedProgress = JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1"));
+assert.equal(
+  firstWrongSavedProgress.wrongAnswerCounts[`n5n4:kanji-to-reading:${firstItemId}`],
+  firstItemId === legacyKanjiReadingId ? 3 : 1,
+  "일반 연습 오답은 회차가 끝나기 전에도 누적 기록으로 저장되어야 합니다.",
+);
 assert.equal(elements.get("retry-note").hidden, false, "오답은 다시 나온다는 안내가 보여야 합니다.");
 assert.equal(
   elements.get("feedback-selected").textContent,
@@ -399,10 +438,17 @@ assert.match(elements.get("quiz-word").textContent, /＿＿＿/);
 assert.ok(elements.get("quiz-word").classList.contains("is-sentence"));
 const missedSentence = elements.get("quiz-word").textContent;
 const sentenceCorrect = correctButtonForCurrentSentence();
+const missedSentenceItemId = sentenceCorrect.dataset.itemId;
 const sentenceWrongs = elements.get("answer-grid").querySelectorAll("button").filter(
   (button) => button !== sentenceCorrect,
 );
 sentenceWrongs[0].click();
+assert.equal(
+  JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1"))
+    .wrongAnswerCounts[`n5n4:sentence-to-kanji:${missedSentenceItemId}`],
+  1,
+  "문장 문제의 첫 번째 오답도 누적해야 합니다.",
+);
 const firstWrongSentenceItem = globalThis.VOCAB_DATA.find(
   (item) => item.id === sentenceWrongs[0].dataset.itemId,
 );
@@ -418,6 +464,12 @@ assert.equal(sentenceWrongs[0].disabled, true);
 assert.equal(sentenceCorrect.classList.contains("is-correct"), false, "첫 오답에는 정답을 공개하지 않아야 합니다.");
 
 sentenceWrongs[1].click();
+assert.equal(
+  JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1"))
+    .wrongAnswerCounts[`n5n4:sentence-to-kanji:${missedSentenceItemId}`],
+  2,
+  "문장 문제의 두 번째 오답도 누적해야 합니다.",
+);
 const secondWrongSentenceItem = globalThis.VOCAB_DATA.find(
   (item) => item.id === sentenceWrongs[1].dataset.itemId,
 );
@@ -562,10 +614,20 @@ assert.equal(elements.get("quiz-progress-text").textContent, "1 / 100");
 assert.equal(elements.get("exam-timer").hidden, false);
 assert.equal(elements.get("exam-time-left").textContent, 7, "단어 시험 제한시간은 7초여야 합니다.");
 const timedOutExamWord = elements.get("quiz-word").textContent;
+const timedOutExamItemId = correctButtonForCurrentWord().dataset.itemId;
+const timedOutExamKey = `n3:kanji-to-reading:${timedOutExamItemId}`;
+const wrongCountBeforeTimeout = Number(
+  JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1")).wrongAnswerCounts[timedOutExamKey],
+) || 0;
 tickTimers(1);
 assert.equal(elements.get("exam-time-left").textContent, 6);
 elapseWithoutTimerCallbacks(6000);
 runTimerCallbacks();
+assert.equal(
+  JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1")).wrongAnswerCounts[timedOutExamKey],
+  wrongCountBeforeTimeout + 1,
+  "시험 시간 초과도 누적 오답으로 기록해야 합니다.",
+);
 assert.match(elements.get("feedback-title").textContent, /시간이 초과/);
 assert.equal(elements.get("feedback-selected").textContent, "선택한 답  시간 초과");
 assert.match(elements.get("exam-mistake-badge").textContent, /1회 틀렸습니다/);

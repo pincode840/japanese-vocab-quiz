@@ -15,7 +15,36 @@
         <p class="eyebrow">JLPT N5 · N4 · N3 · N2</p>
         <h1>한자 읽기 퀴즈</h1>
       </div>
+      <button id="mistake-menu-button" class="mistake-menu-button" type="button" aria-expanded="false" aria-controls="mistake-menu">
+        <span aria-hidden="true">☰</span>
+        <span>오답 기록</span>
+      </button>
     </header>
+
+    <div id="mistake-menu-layer" class="mistake-menu-layer" hidden>
+      <button id="mistake-menu-backdrop" class="mistake-menu-backdrop" type="button" tabindex="-1" aria-label="오답 기록 메뉴 닫기"></button>
+      <aside id="mistake-menu" class="mistake-menu" role="dialog" aria-modal="true" aria-labelledby="mistake-menu-title">
+        <div class="mistake-menu-header">
+          <div>
+            <p class="session-kicker">나의 학습 기록</p>
+            <h2 id="mistake-menu-title">누적 오답 단어</h2>
+          </div>
+          <button id="mistake-menu-close" class="mistake-menu-close" type="button" aria-label="오답 기록 메뉴 닫기">×</button>
+        </div>
+
+        <div class="mistake-difficulty-tabs" role="tablist" aria-label="오답 기록 난이도">
+          <button id="mistake-tab-basic" type="button" role="tab" aria-selected="true">N5·N4</button>
+          <button id="mistake-tab-n3" type="button" role="tab" aria-selected="false">N3</button>
+          <button id="mistake-tab-n2" type="button" role="tab" aria-selected="false">N2</button>
+          <button id="mistake-tab-katakana" type="button" role="tab" aria-selected="false">카타카나</button>
+        </div>
+
+        <p id="mistake-menu-summary" class="mistake-menu-summary"></p>
+        <p class="mistake-menu-note">이 브라우저에 저장된 일반 연습과 시험의 누적 오답 기록입니다.</p>
+        <ol id="mistake-menu-list" class="mistake-menu-list"></ol>
+        <p id="mistake-menu-empty" class="mistake-menu-empty" hidden>아직 틀린 단어가 없습니다.</p>
+      </aside>
+    </div>
 
     <section id="start-screen" class="screen is-active" aria-labelledby="start-title">
       <div class="paper-card start-card">

@@ -47,6 +47,17 @@
 
   const elements = {
     homeButton: document.getElementById("home-button"),
+    mistakeMenuButton: document.getElementById("mistake-menu-button"),
+    mistakeMenuLayer: document.getElementById("mistake-menu-layer"),
+    mistakeMenuBackdrop: document.getElementById("mistake-menu-backdrop"),
+    mistakeMenuClose: document.getElementById("mistake-menu-close"),
+    mistakeMenuSummary: document.getElementById("mistake-menu-summary"),
+    mistakeMenuList: document.getElementById("mistake-menu-list"),
+    mistakeMenuEmpty: document.getElementById("mistake-menu-empty"),
+    mistakeTabBasic: document.getElementById("mistake-tab-basic"),
+    mistakeTabN3: document.getElementById("mistake-tab-n3"),
+    mistakeTabN2: document.getElementById("mistake-tab-n2"),
+    mistakeTabKatakana: document.getElementById("mistake-tab-katakana"),
     startSelectionLabel: document.getElementById("start-selection-label"),
     nextSessionNumber: document.getElementById("next-session-number"),
     modeRecordsTitle: document.getElementById("mode-records-title"),
@@ -170,6 +181,7 @@
   let progress = loadProgress();
   let session = null;
   let examTimerId = null;
+  let selectedMistakeDifficulty = "n5n4";
 
   function hasCompleteSentence(item) {
     return item.sentence?.split("___").length === 2
@@ -288,6 +300,8 @@
       lastAccuracy: null,
       history: [],
       mistakeCounts: {},
+      wrongAnswerCountsVersion: 1,
+      wrongAnswerCounts: {},
       practiceSessionCount: 0,
       practiceCleanStreaks: {},
       practiceCooldowns: {},
@@ -342,6 +356,29 @@
       normalized.examCooldowns = saved.examCooldowns && typeof saved.examCooldowns === "object"
         ? saved.examCooldowns
         : {};
+      if (Number(saved.wrongAnswerCountsVersion) >= 1
+        && saved.wrongAnswerCounts
+        && typeof saved.wrongAnswerCounts === "object") {
+        normalized.wrongAnswerCounts = Object.fromEntries(
+          Object.entries(saved.wrongAnswerCounts)
+            .map(([key, count]) => [key, Math.max(0, Number(count) || 0)])
+            .filter(([, count]) => count > 0),
+        );
+      } else {
+        const knownKeys = new Set([
+          ...Object.keys(normalized.mistakeCounts),
+          ...Object.keys(normalized.examMistakeCounts),
+        ]);
+        normalized.wrongAnswerCounts = {};
+        knownKeys.forEach((key) => {
+          const knownCount = Math.max(
+            Number(normalized.mistakeCounts[key]) || 0,
+            Number(normalized.examMistakeCounts[key]) || 0,
+          );
+          if (knownCount > 0) normalized.wrongAnswerCounts[key] = knownCount;
+        });
+      }
+      normalized.wrongAnswerCountsVersion = 1;
       return normalized;
     } catch (_error) {
       return defaultProgress();
@@ -368,6 +405,11 @@
 
   function itemProgressKey(difficulty, mode, itemId) {
     return `${difficulty}:${mode}:${itemId}`;
+  }
+
+  function recordWrongAnswer(key) {
+    progress.wrongAnswerCounts[key] = (Number(progress.wrongAnswerCounts[key]) || 0) + 1;
+    if (!elements.mistakeMenuLayer.hidden) renderMistakeMenu();
   }
 
   function examEligibleItems(difficulty, mode, sessionNumber) {
@@ -511,6 +553,107 @@
       row.append(label, score, date);
       elements.historyList.append(row);
     });
+  }
+
+  function mistakeModesForDifficulty(difficulty) {
+    return difficulty === "katakana"
+      ? ["katakana-to-meaning"]
+      : ["kanji-to-reading", "kanji-to-kana", "reading-to-kanji", "sentence-to-kanji"];
+  }
+
+  function mistakeEntriesForDifficulty(difficulty) {
+    const modes = mistakeModesForDifficulty(difficulty);
+    const grouped = new Map();
+    (datasets[difficulty] || []).forEach((item) => {
+      const signature = `${item.word}\u0000${normalizedReading(item.reading)}\u0000${item.meaning}`;
+      const entry = grouped.get(signature) || {
+        item,
+        modeCounts: Object.fromEntries(modes.map((mode) => [mode, 0])),
+      };
+      modes.forEach((mode) => {
+        entry.modeCounts[mode] += Number(
+          progress.wrongAnswerCounts[itemProgressKey(difficulty, mode, item.id)],
+        ) || 0;
+      });
+      grouped.set(signature, entry);
+    });
+    return [...grouped.values()].map(({ item, modeCounts }) => {
+      const breakdown = modes.map((mode) => ({
+        mode,
+        count: modeCounts[mode],
+      })).filter(({ count }) => count > 0);
+      return { item, breakdown, total: breakdown.reduce((sum, entry) => sum + entry.count, 0) };
+    }).filter(({ total }) => total > 0)
+      .sort((a, b) => b.total - a.total
+        || a.item.word.localeCompare(b.item.word, "ja"));
+  }
+
+  function renderMistakeMenu() {
+    const entries = mistakeEntriesForDifficulty(selectedMistakeDifficulty);
+    const totalMistakes = entries.reduce((sum, entry) => sum + entry.total, 0);
+    const tabs = {
+      n5n4: elements.mistakeTabBasic,
+      n3: elements.mistakeTabN3,
+      n2: elements.mistakeTabN2,
+      katakana: elements.mistakeTabKatakana,
+    };
+    Object.entries(tabs).forEach(([difficulty, button]) => {
+      button.setAttribute("aria-selected", String(difficulty === selectedMistakeDifficulty));
+    });
+
+    elements.mistakeMenuSummary.textContent = entries.length
+      ? `${difficultyLabels[selectedMistakeDifficulty]} · 오답 단어 ${entries.length}개 · 누적 ${totalMistakes}회`
+      : `${difficultyLabels[selectedMistakeDifficulty]} · 누적 오답 0회`;
+    elements.mistakeMenuList.replaceChildren();
+    elements.mistakeMenuEmpty.hidden = entries.length > 0;
+
+    entries.forEach(({ item, breakdown, total }) => {
+      const row = document.createElement("li");
+      const wordGroup = document.createElement("div");
+      const word = document.createElement("strong");
+      const reading = document.createElement("span");
+      const count = document.createElement("span");
+      const meaning = document.createElement("p");
+      const modeBreakdown = document.createElement("p");
+
+      wordGroup.className = "mistake-word";
+      word.lang = "ja";
+      word.textContent = item.word;
+      reading.lang = "ja";
+      reading.textContent = normalizedReading(item.reading);
+      count.className = "mistake-count";
+      count.textContent = `${total}회`;
+      meaning.className = "mistake-meaning";
+      meaning.textContent = `뜻 · ${item.meaning}`;
+      modeBreakdown.className = "mistake-mode-breakdown";
+      modeBreakdown.textContent = breakdown
+        .map(({ mode, count: modeCount }) => `${modeLabels[mode]} ${modeCount}회`)
+        .join(" · ");
+
+      wordGroup.append(word, reading);
+      row.append(wordGroup, count, meaning, modeBreakdown);
+      elements.mistakeMenuList.append(row);
+    });
+  }
+
+  function selectMistakeDifficulty(difficulty) {
+    selectedMistakeDifficulty = difficulty;
+    renderMistakeMenu();
+  }
+
+  function openMistakeMenu() {
+    selectedMistakeDifficulty = selectedDifficulty();
+    renderMistakeMenu();
+    elements.mistakeMenuLayer.hidden = false;
+    elements.mistakeMenuButton.setAttribute("aria-expanded", "true");
+    elements.mistakeMenuClose.focus();
+  }
+
+  function closeMistakeMenu() {
+    if (elements.mistakeMenuLayer.hidden) return;
+    elements.mistakeMenuLayer.hidden = true;
+    elements.mistakeMenuButton.setAttribute("aria-expanded", "false");
+    elements.mistakeMenuButton.focus();
   }
 
   function selectSessionItems(mode, difficulty, sessionSize, sourceItems = null) {
@@ -670,6 +813,14 @@
     const isReadingToKanji = session.mode === "reading-to-kanji";
     const isSentenceToKanji = session.mode === "sentence-to-kanji";
     const isKatakanaToMeaning = session.mode === "katakana-to-meaning";
+    elements.answerGrid.setAttribute(
+      "aria-label",
+      isKatakanaToMeaning
+        ? "한국어 뜻 선택지"
+        : isReadingToKanji || isSentenceToKanji
+          ? "한자 단어 선택지"
+          : "읽기 선택지",
+    );
 
     elements.quizPrompt.textContent = isKanjiToKana
       ? "히라가나를 순서대로 눌러 한자의 읽기를 완성하세요."
@@ -801,6 +952,8 @@
       session.currentMisses = 1;
       session.wrong += 1;
       progress.mistakeCounts[key] = (progress.mistakeCounts[key] || 0) + 1;
+      recordWrongAnswer(key);
+      saveProgress();
       selectedButton.disabled = true;
       selectedButton.classList.add("is-wrong");
 
@@ -885,13 +1038,13 @@
         session.mistakenIds.add(session.current.id);
       }
       progress.mistakeCounts[key] = (progress.mistakeCounts[key] || 0) + 1;
+      recordWrongAnswer(key);
       if (session.examMode) {
         progress.examMistakeCounts[key] = (progress.examMistakeCounts[key] || 0) + 1;
         const examMistakeCount = progress.examMistakeCounts[key];
         elements.examMistakeBadge.hidden = false;
         elements.examMistakeBadge.textContent = `⚠ 이 문제는 시험에서 ${examMistakeCount}회 틀렸습니다`;
         elements.retryNote.textContent = `시험 누적 오답 ${examMistakeCount}회가 기록되었습니다.`;
-        saveProgress();
       } else {
         engine.insertRetry(session.queue, session.current.id, RETRY_DELAY);
         elements.retryNote.textContent = isSentenceToKanji
@@ -900,6 +1053,7 @@
       }
       elements.retryNote.hidden = false;
     }
+    saveProgress();
 
     if (session.examMode) session.completedQuestions += 1;
 
@@ -985,6 +1139,13 @@
   }
 
   function handleKeyboard(event) {
+    if (!elements.mistakeMenuLayer.hidden) {
+      if (event.key === "Escape") {
+        event.preventDefault?.();
+        closeMistakeMenu();
+      }
+      return;
+    }
     if (!screens.quiz.classList.contains("is-active") || !session) return;
     const numberKey = /^[1-9]$/.test(event.key)
       ? Number(event.key)
@@ -1130,6 +1291,13 @@
     syncModeControls();
     elements.startButton.addEventListener("click", startSession);
     elements.homeButton.addEventListener("click", returnToStart);
+    elements.mistakeMenuButton.addEventListener("click", openMistakeMenu);
+    elements.mistakeMenuClose.addEventListener("click", closeMistakeMenu);
+    elements.mistakeMenuBackdrop.addEventListener("click", closeMistakeMenu);
+    elements.mistakeTabBasic.addEventListener("click", () => selectMistakeDifficulty("n5n4"));
+    elements.mistakeTabN3.addEventListener("click", () => selectMistakeDifficulty("n3"));
+    elements.mistakeTabN2.addEventListener("click", () => selectMistakeDifficulty("n2"));
+    elements.mistakeTabKatakana.addEventListener("click", () => selectMistakeDifficulty("katakana"));
     elements.nextButton.addEventListener("click", showNextQuestion);
     elements.returnButton.addEventListener("click", returnToStart);
     elements.kanaBackspace.addEventListener("click", removeLastKana);

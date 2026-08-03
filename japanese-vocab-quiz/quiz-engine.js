@@ -5,6 +5,23 @@
 }(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
+  const missingSentenceFurigana = [
+    ["清浄機", "せいじょうき"], ["対象年齢", "たいしょうねんれい"],
+    ["記念", "きねん"], ["試験", "しけん"], ["日本", "にほん"],
+    ["下さい", "ください"], ["連絡", "れんらく"], ["原価", "げんか"],
+    ["手術", "しゅじゅつ"], ["三日", "みっか"], ["技術", "ぎじゅつ"],
+    ["列車", "れっしゃ"], ["道徳", "どうとく"], ["相手", "あいて"],
+    ["発展", "はってん"], ["化学", "かがく"], ["交通", "こうつう"],
+    ["問題", "もんだい"], ["運動", "うんどう"], ["推理", "すいり"],
+    ["選手", "せんしゅ"], ["料理", "りょうり"], ["知識", "ちしき"],
+    ["進路", "しんろ"], ["旅行", "りょこう"], ["器具", "きぐ"],
+    ["人気", "にんき"], ["毎日", "まいにち"], ["伝統", "でんとう"],
+    ["教育", "きょういく"], ["番組", "ばんぐみ"], ["相談", "そうだん"],
+    ["先週", "せんしゅう"], ["保管", "ほかん"], ["隕石", "いんせき"],
+    ["酒", "さけ"], ["所", "ところ"], ["好き", "すき"],
+    ["歳", "さい"], ["時", "じ"],
+  ];
+
   function accuracy(correct, attempts) {
     return attempts ? Math.round((correct / attempts) * 100) : null;
   }
@@ -23,6 +40,57 @@
           .replace(/[^ぁ-ゖー]/g, ""))
         .filter(Boolean),
     )];
+  }
+
+  function toHiragana(text) {
+    return String(text || "").replace(
+      /[ァ-ヶ]/g,
+      (character) => String.fromCharCode(character.charCodeAt(0) - 0x60),
+    );
+  }
+
+  function sentenceSurfaceReading(item) {
+    const reading = kanaReadings(item?.reading)[0] || normalizedReading(item?.reading || "");
+    const word = String(item?.word || "");
+    const surface = String(item?.sentenceSurface || word);
+    if (!word || surface === word) return reading;
+
+    let commonLength = 0;
+    while (
+      commonLength < word.length
+      && commonLength < surface.length
+      && word[commonLength] === surface[commonLength]
+    ) {
+      commonLength += 1;
+    }
+
+    const wordSuffix = toHiragana(word.slice(commonLength));
+    const surfaceSuffix = toHiragana(surface.slice(commonLength));
+    return wordSuffix && !/[一-龯々]/.test(wordSuffix) && reading.endsWith(wordSuffix)
+      ? `${reading.slice(0, -wordSuffix.length)}${surfaceSuffix}`
+      : reading;
+  }
+
+  function sentenceReading(item) {
+    if (item?.sentenceReading) return toHiragana(item.sentenceReading).replace(/\s+/g, " ").trim();
+    const annotatedSentence = String(item?.sentenceFurigana || item?.sentence || "").replace(
+      "___",
+      sentenceSurfaceReading(item),
+    );
+    let reading = toHiragana(
+      annotatedSentence
+        .replace(/<ruby\b[^>]*>[\s\S]*?<rt\b[^>]*>([\s\S]*?)<\/rt>[\s\S]*?<\/ruby>/gi, "$1")
+        .replace(/<[^>]+>/g, ""),
+    );
+    missingSentenceFurigana.forEach(([kanji, hiragana]) => {
+      reading = reading.replaceAll(kanji, hiragana);
+    });
+    return reading
+      .replace("えいご語", "えいご")
+      .replace("へただです", "へたです")
+      .replace("はなすてください", "はなしてください")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 
   function shuffle(items, random = Math.random) {
@@ -176,6 +244,9 @@
     accuracy,
     normalizedReading,
     kanaReadings,
+    toHiragana,
+    sentenceSurfaceReading,
+    sentenceReading,
     shuffle,
     buildChoices,
     buildChoicesByWord,

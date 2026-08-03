@@ -130,6 +130,7 @@
     feedbackSelected: document.getElementById("feedback-selected"),
     feedbackReading: document.getElementById("feedback-reading"),
     feedbackMeaning: document.getElementById("feedback-meaning"),
+    feedbackSentenceReading: document.getElementById("feedback-sentence-reading"),
     feedbackTranslation: document.getElementById("feedback-translation"),
     feedbackSource: document.getElementById("feedback-source"),
     retryNote: document.getElementById("retry-note"),
@@ -905,6 +906,8 @@
     elements.feedback.className = "feedback";
     elements.feedbackSelected.hidden = true;
     elements.feedbackSelected.textContent = "";
+    elements.feedbackSentenceReading.hidden = true;
+    elements.feedbackSentenceReading.textContent = "";
     elements.feedbackTranslation.hidden = true;
     elements.feedbackTranslation.textContent = "";
     elements.feedbackSource.hidden = !item.sentenceAttribution;
@@ -970,6 +973,7 @@
       elements.feedbackSelected.textContent = `선택한 답  ${selectedAnswer}`;
       elements.feedbackReading.textContent = "힌트  문장에 후리가나를 표시했어요.";
       elements.feedbackMeaning.textContent = "후리가나를 참고해서 다시 선택하세요.";
+      elements.feedbackSentenceReading.hidden = true;
       elements.feedbackTranslation.hidden = true;
       elements.retryNote.hidden = true;
       elements.nextButton.hidden = true;
@@ -1019,8 +1023,13 @@
     elements.feedbackMeaning.textContent = isKatakanaToMeaning
       ? `단어  ${session.current.word}（${normalizedReading(session.current.reading)}）`
       : `뜻  ${session.current.meaning}`;
-    elements.feedbackTranslation.hidden = !(isSentenceToKanji && !isCorrect);
-    elements.feedbackTranslation.textContent = isSentenceToKanji && !isCorrect
+    const showSentenceExplanation = isSentenceToKanji && !isCorrect;
+    elements.feedbackSentenceReading.hidden = !showSentenceExplanation;
+    elements.feedbackSentenceReading.textContent = showSentenceExplanation
+      ? `문장 읽기  ${engine.sentenceReading(session.current)}`
+      : "";
+    elements.feedbackTranslation.hidden = !showSentenceExplanation;
+    elements.feedbackTranslation.textContent = showSentenceExplanation
       ? `문장 해석  ${session.current.sentenceTranslation}`
       : "";
 

@@ -1120,10 +1120,16 @@ button:focus-visible {
   display: none;
 }
 
-.feedback .feedback-translation {
+.feedback .feedback-sentence-reading {
   margin-top: 9px;
   padding-top: 9px;
   border-top: 1px solid rgba(23, 50, 77, 0.16);
+  font-weight: 700;
+  word-break: keep-all;
+}
+
+.feedback .feedback-translation {
+  margin-top: 4px;
   font-weight: 700;
 }
 
@@ -1578,6 +1584,7 @@ button:focus-visible {
             <p id="feedback-selected" class="feedback-selected" hidden></p>
             <p id="feedback-reading"></p>
             <p id="feedback-meaning"></p>
+            <p id="feedback-sentence-reading" class="feedback-sentence-reading" hidden></p>
             <p id="feedback-translation" class="feedback-translation" hidden></p>
             <a id="feedback-source" class="feedback-source" target="_blank" rel="noreferrer" hidden></a>
             <p id="retry-note" class="retry-note" hidden>이 단어는 잠시 뒤 다시 나옵니다.</p>
@@ -1738,6 +1745,23 @@ globalThis.KATAKANA_VOCAB_DATA = [
 }(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
+  const missingSentenceFurigana = [
+    ["清浄機", "せいじょうき"], ["対象年齢", "たいしょうねんれい"],
+    ["記念", "きねん"], ["試験", "しけん"], ["日本", "にほん"],
+    ["下さい", "ください"], ["連絡", "れんらく"], ["原価", "げんか"],
+    ["手術", "しゅじゅつ"], ["三日", "みっか"], ["技術", "ぎじゅつ"],
+    ["列車", "れっしゃ"], ["道徳", "どうとく"], ["相手", "あいて"],
+    ["発展", "はってん"], ["化学", "かがく"], ["交通", "こうつう"],
+    ["問題", "もんだい"], ["運動", "うんどう"], ["推理", "すいり"],
+    ["選手", "せんしゅ"], ["料理", "りょうり"], ["知識", "ちしき"],
+    ["進路", "しんろ"], ["旅行", "りょこう"], ["器具", "きぐ"],
+    ["人気", "にんき"], ["毎日", "まいにち"], ["伝統", "でんとう"],
+    ["教育", "きょういく"], ["番組", "ばんぐみ"], ["相談", "そうだん"],
+    ["先週", "せんしゅう"], ["保管", "ほかん"], ["隕石", "いんせき"],
+    ["酒", "さけ"], ["所", "ところ"], ["好き", "すき"],
+    ["歳", "さい"], ["時", "じ"],
+  ];
+
   function accuracy(correct, attempts) {
     return attempts ? Math.round((correct / attempts) * 100) : null;
   }
@@ -1756,6 +1780,57 @@ globalThis.KATAKANA_VOCAB_DATA = [
           .replace(/[^ぁ-ゖー]/g, ""))
         .filter(Boolean),
     )];
+  }
+
+  function toHiragana(text) {
+    return String(text || "").replace(
+      /[ァ-ヶ]/g,
+      (character) => String.fromCharCode(character.charCodeAt(0) - 0x60),
+    );
+  }
+
+  function sentenceSurfaceReading(item) {
+    const reading = kanaReadings(item?.reading)[0] || normalizedReading(item?.reading || "");
+    const word = String(item?.word || "");
+    const surface = String(item?.sentenceSurface || word);
+    if (!word || surface === word) return reading;
+
+    let commonLength = 0;
+    while (
+      commonLength < word.length
+      && commonLength < surface.length
+      && word[commonLength] === surface[commonLength]
+    ) {
+      commonLength += 1;
+    }
+
+    const wordSuffix = toHiragana(word.slice(commonLength));
+    const surfaceSuffix = toHiragana(surface.slice(commonLength));
+    return wordSuffix && !/[一-龯々]/.test(wordSuffix) && reading.endsWith(wordSuffix)
+      ? `${reading.slice(0, -wordSuffix.length)}${surfaceSuffix}`
+      : reading;
+  }
+
+  function sentenceReading(item) {
+    if (item?.sentenceReading) return toHiragana(item.sentenceReading).replace(/\s+/g, " ").trim();
+    const annotatedSentence = String(item?.sentenceFurigana || item?.sentence || "").replace(
+      "___",
+      sentenceSurfaceReading(item),
+    );
+    let reading = toHiragana(
+      annotatedSentence
+        .replace(/<ruby\b[^>]*>[\s\S]*?<rt\b[^>]*>([\s\S]*?)<\/rt>[\s\S]*?<\/ruby>/gi, "$1")
+        .replace(/<[^>]+>/g, ""),
+    );
+    missingSentenceFurigana.forEach(([kanji, hiragana]) => {
+      reading = reading.replaceAll(kanji, hiragana);
+    });
+    return reading
+      .replace("えいご語", "えいご")
+      .replace("へただです", "へたです")
+      .replace("はなすてください", "はなしてください")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 
   function shuffle(items, random = Math.random) {
@@ -1909,6 +1984,9 @@ globalThis.KATAKANA_VOCAB_DATA = [
     accuracy,
     normalizedReading,
     kanaReadings,
+    toHiragana,
+    sentenceSurfaceReading,
+    sentenceReading,
     shuffle,
     buildChoices,
     buildChoicesByWord,
@@ -2055,6 +2133,7 @@ globalThis.KATAKANA_VOCAB_DATA = [
     feedbackSelected: document.getElementById("feedback-selected"),
     feedbackReading: document.getElementById("feedback-reading"),
     feedbackMeaning: document.getElementById("feedback-meaning"),
+    feedbackSentenceReading: document.getElementById("feedback-sentence-reading"),
     feedbackTranslation: document.getElementById("feedback-translation"),
     feedbackSource: document.getElementById("feedback-source"),
     retryNote: document.getElementById("retry-note"),
@@ -2830,6 +2909,8 @@ globalThis.KATAKANA_VOCAB_DATA = [
     elements.feedback.className = "feedback";
     elements.feedbackSelected.hidden = true;
     elements.feedbackSelected.textContent = "";
+    elements.feedbackSentenceReading.hidden = true;
+    elements.feedbackSentenceReading.textContent = "";
     elements.feedbackTranslation.hidden = true;
     elements.feedbackTranslation.textContent = "";
     elements.feedbackSource.hidden = !item.sentenceAttribution;
@@ -2895,6 +2976,7 @@ globalThis.KATAKANA_VOCAB_DATA = [
       elements.feedbackSelected.textContent = `선택한 답  ${selectedAnswer}`;
       elements.feedbackReading.textContent = "힌트  문장에 후리가나를 표시했어요.";
       elements.feedbackMeaning.textContent = "후리가나를 참고해서 다시 선택하세요.";
+      elements.feedbackSentenceReading.hidden = true;
       elements.feedbackTranslation.hidden = true;
       elements.retryNote.hidden = true;
       elements.nextButton.hidden = true;
@@ -2944,8 +3026,13 @@ globalThis.KATAKANA_VOCAB_DATA = [
     elements.feedbackMeaning.textContent = isKatakanaToMeaning
       ? `단어  ${session.current.word}（${normalizedReading(session.current.reading)}）`
       : `뜻  ${session.current.meaning}`;
-    elements.feedbackTranslation.hidden = !(isSentenceToKanji && !isCorrect);
-    elements.feedbackTranslation.textContent = isSentenceToKanji && !isCorrect
+    const showSentenceExplanation = isSentenceToKanji && !isCorrect;
+    elements.feedbackSentenceReading.hidden = !showSentenceExplanation;
+    elements.feedbackSentenceReading.textContent = showSentenceExplanation
+      ? `문장 읽기  ${engine.sentenceReading(session.current)}`
+      : "";
+    elements.feedbackTranslation.hidden = !showSentenceExplanation;
+    elements.feedbackTranslation.textContent = showSentenceExplanation
       ? `문장 해석  ${session.current.sentenceTranslation}`
       : "";
 

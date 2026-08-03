@@ -87,7 +87,7 @@ const ids = [
   "live-accuracy", "exam-timer", "exam-time-left", "progress-bar", "quiz-prompt", "quiz-word",
   "day-label", "exam-mistake-badge", "answer-grid", "kana-composer", "kana-answer", "kana-grid", "kana-backspace", "kana-clear", "kana-submit",
   "feedback", "feedback-icon", "feedback-title", "feedback-selected", "feedback-reading",
-  "feedback-meaning", "feedback-translation", "feedback-source", "retry-note", "next-button", "result-session-number", "result-message",
+  "feedback-meaning", "feedback-sentence-reading", "feedback-translation", "feedback-source", "retry-note", "next-button", "result-session-number", "result-message",
   "result-accuracy", "result-correct", "result-wrong", "result-mastered", "return-button", "keyboard-hint", "app-error",
 ];
 const elements = new Map(ids.map((id) => [id, new MiniElement("div", id)]));
@@ -459,6 +459,7 @@ assert.equal(
   `선택한 답  ${firstWrongSentenceItem.word}（${globalThis.QuizEngine.normalizedReading(firstWrongSentenceItem.reading)}） · ${firstWrongSentenceItem.meaning}`,
 );
 assert.equal(elements.get("feedback-translation").hidden, true, "첫 오답에는 문장 해석을 숨겨야 합니다.");
+assert.equal(elements.get("feedback-sentence-reading").hidden, true, "첫 오답에는 문장 전체 읽기를 숨겨야 합니다.");
 assert.equal(elements.get("next-button").hidden, true, "첫 오답 후에는 같은 문제에 다시 답해야 합니다.");
 assert.equal(sentenceWrongs[0].disabled, true);
 assert.equal(sentenceCorrect.classList.contains("is-correct"), false, "첫 오답에는 정답을 공개하지 않아야 합니다.");
@@ -480,6 +481,9 @@ assert.equal(
 assert.match(elements.get("feedback-reading").textContent, /^정답.+（.+）$/);
 assert.match(elements.get("feedback-meaning").textContent, /^뜻/);
 assert.equal(elements.get("feedback-translation").hidden, false, "두 번째 오답에는 문장 해석을 보여야 합니다.");
+assert.equal(elements.get("feedback-sentence-reading").hidden, false, "두 번째 오답에는 문장 전체 읽기를 보여야 합니다.");
+assert.match(elements.get("feedback-sentence-reading").textContent, /^문장 읽기\s{2}.+/);
+assert.doesNotMatch(elements.get("feedback-sentence-reading").textContent, /<\/?(?:ruby|rt)>/i);
 assert.match(elements.get("feedback-translation").textContent, /^문장 해석/);
 assert.equal(elements.get("retry-note").hidden, false, "두 번 틀린 문장은 다시 나온다고 안내해야 합니다.");
 
@@ -683,6 +687,7 @@ const examSentenceWrong = elements.get("answer-grid").querySelectorAll("button")
 );
 examSentenceWrong.click();
 assert.match(elements.get("feedback-title").textContent, /오답이에요/);
+assert.equal(elements.get("feedback-sentence-reading").hidden, false, "시험 문장 오답도 즉시 문장 전체 읽기를 보여줘야 합니다.");
 assert.equal(elements.get("feedback-translation").hidden, false, "시험 문장 오답은 즉시 문장 해석을 보여줘야 합니다.");
 assert.equal(elements.get("next-button").hidden, false, "시험 오답은 재시도 없이 다음 문제로 넘어가야 합니다.");
 assert.equal(elements.get("quiz-progress-text").textContent, "2 / 100");

@@ -212,6 +212,23 @@ assert.deepEqual(
   "복수 읽기는 각각 올바른 히라가나 정답으로 분리해야 합니다.",
 );
 assert.deepEqual(engine.kanaReadings("もう いちど"), ["もういちど"]);
+assert.equal(
+  engine.sentenceReading(data.find((item) => item.id === "d24-8")),
+  "このむらはじしんひがいがしんこくです。",
+  "문장 빈칸 정답과 기존 후리가나를 합쳐 문장 전체 읽기를 만들어야 합니다.",
+);
+assert.equal(
+  engine.sentenceSurfaceReading(n3Data.find((item) => item.id === "n3-0249")),
+  "わらっ",
+  "활용된 문장 표면형에 맞춰 정답 읽기도 활용해야 합니다.",
+);
+const allSentenceReadings = [...data, ...n3Data, ...n2Data]
+  .filter((item) => item.sentenceFurigana)
+  .map((item) => engine.sentenceReading(item));
+assert.ok(
+  allSentenceReadings.every((reading) => reading && !/[一-龯々]|<\/?(?:ruby|rt)>/i.test(reading)),
+  "모든 문장 읽기는 후리가나 태그나 한자가 남지 않은 읽기여야 합니다.",
+);
 
 const migratedCounts = engine.migrateScopedCounts(
   {

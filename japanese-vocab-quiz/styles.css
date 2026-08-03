@@ -1112,10 +1112,16 @@ button:focus-visible {
   display: none;
 }
 
-.feedback .feedback-translation {
+.feedback .feedback-sentence-reading {
   margin-top: 9px;
   padding-top: 9px;
   border-top: 1px solid rgba(23, 50, 77, 0.16);
+  font-weight: 700;
+  word-break: keep-all;
+}
+
+.feedback .feedback-translation {
+  margin-top: 4px;
   font-weight: 700;
 }
 

@@ -596,6 +596,10 @@ assert.match(elements.get("quiz-session-label").textContent, /6지선다/);
 assert.match(elements.get("keyboard-hint").textContent, /1–6/);
 correctButtonForCurrentSentence().click();
 assert.equal(elements.get("feedback-title").textContent, "정답이에요");
+assert.equal(elements.get("feedback-sentence-reading").hidden, false, "문장 정답에도 전체 히라가나 읽기를 보여줘야 합니다.");
+assert.match(elements.get("feedback-sentence-reading").textContent, /^문장 읽기\s{2}.+/);
+assert.doesNotMatch(elements.get("feedback-sentence-reading").textContent, /[一-龯々]|<\/?(?:ruby|rt)>/i);
+assert.equal(elements.get("feedback-translation").hidden, true, "문장 정답에는 기존처럼 해석을 숨겨야 합니다.");
 
 elements.get("home-button").click();
 elements.get("mode-sentence-kanji").checked = false;

@@ -1023,13 +1023,14 @@
     elements.feedbackMeaning.textContent = isKatakanaToMeaning
       ? `단어  ${session.current.word}（${normalizedReading(session.current.reading)}）`
       : `뜻  ${session.current.meaning}`;
-    const showSentenceExplanation = isSentenceToKanji && !isCorrect;
-    elements.feedbackSentenceReading.hidden = !showSentenceExplanation;
-    elements.feedbackSentenceReading.textContent = showSentenceExplanation
+    const showSentenceReading = isSentenceToKanji;
+    const showSentenceTranslation = isSentenceToKanji && !isCorrect;
+    elements.feedbackSentenceReading.hidden = !showSentenceReading;
+    elements.feedbackSentenceReading.textContent = showSentenceReading
       ? `문장 읽기  ${engine.sentenceReading(session.current)}`
       : "";
-    elements.feedbackTranslation.hidden = !showSentenceExplanation;
-    elements.feedbackTranslation.textContent = showSentenceExplanation
+    elements.feedbackTranslation.hidden = !showSentenceTranslation;
+    elements.feedbackTranslation.textContent = showSentenceTranslation
       ? `문장 해석  ${session.current.sentenceTranslation}`
       : "";
 

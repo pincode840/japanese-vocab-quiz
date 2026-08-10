@@ -18,5 +18,6 @@
 !/japanese-vocab-quiz/n3-vocab-data.js
 !/japanese-vocab-quiz/n2-vocab-data.js
 !/japanese-vocab-quiz/katakana-vocab-data.js
+!/japanese-vocab-quiz/reading-data.js
 !/japanese-vocab-quiz/test-quiz-logic.js
 !/japanese-vocab-quiz/test-app-flow.js

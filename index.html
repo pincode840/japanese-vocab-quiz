@@ -60,13 +60,20 @@ button:focus-visible {
   margin: 0 0 24px 4px;
 }
 
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+}
+
 .mistake-menu-button {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   white-space: nowrap;
   min-height: 40px;
-  margin-left: auto;
+  margin-left: 0;
   padding: 8px 13px;
   color: var(--ink);
   background: rgba(255, 253, 248, 0.86);
@@ -82,6 +89,88 @@ button:focus-visible {
 .mistake-menu-button:hover {
   border-color: rgba(169, 51, 43, 0.45);
   color: var(--accent);
+}
+
+.feature-switch-button {
+  color: var(--accent-dark);
+  border-color: rgba(169, 51, 43, 0.3);
+}
+
+.feature-switch-layer {
+  position: fixed;
+  z-index: 1100;
+  inset: 0;
+  display: grid;
+  padding: 20px;
+  place-items: center;
+}
+
+.feature-switch-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: rgba(16, 29, 44, 0.48);
+  border: 0;
+}
+
+.feature-switch-menu {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 520px);
+  padding: 26px;
+  background: var(--paper);
+  border: 1px solid rgba(117, 102, 80, 0.22);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+
+.feature-switch-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.feature-switch-heading h2 {
+  margin: 5px 0 0;
+  font-size: 26px;
+  letter-spacing: -0.04em;
+}
+
+.feature-switch-options {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.feature-option {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  padding: 17px 18px;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.feature-option:hover,
+.feature-option.is-selected {
+  border-color: var(--accent);
+  background: rgba(201, 71, 59, 0.06);
+}
+
+.feature-option strong {
+  font-size: 17px;
+}
+
+.feature-option small {
+  color: var(--ink-soft);
+  line-height: 1.45;
 }
 
 .mistake-menu-layer {
@@ -712,6 +801,146 @@ button:focus-visible {
   font-size: 12px;
 }
 
+.reading-start-card .lead {
+  max-width: 590px;
+}
+
+.reading-record-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.reading-difficulty-picker {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.reading-source-details {
+  position: relative;
+  z-index: 1;
+  margin-top: 22px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  text-align: left;
+}
+
+.reading-source-details summary {
+  color: var(--ink);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.reading-source-details p {
+  margin: 9px 0;
+  line-height: 1.6;
+}
+
+.reading-source-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.reading-source-links a {
+  padding: 6px 9px;
+  color: var(--accent-dark);
+  background: rgba(201, 71, 59, 0.07);
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.reading-quiz-card {
+  padding-top: clamp(34px, 6vw, 54px);
+  text-align: left;
+}
+
+.reading-meta-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+
+.reading-exam-badge,
+.reading-type-badge {
+  display: inline-flex;
+  min-height: 28px;
+  padding: 5px 10px;
+  align-items: center;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.reading-exam-badge {
+  color: #fff;
+  background: var(--accent);
+}
+
+.reading-type-badge {
+  color: var(--ink-soft);
+  background: var(--paper-deep);
+}
+
+.reading-passage {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 24px;
+  padding: 21px 22px;
+  background: rgba(245, 239, 226, 0.58);
+  border-left: 4px solid var(--accent);
+  border-radius: 4px 14px 14px 4px;
+  font-size: clamp(17px, 3vw, 20px);
+  font-weight: 600;
+  line-height: 2;
+  letter-spacing: 0.02em;
+}
+
+.reading-passage ruby,
+.reading-question ruby,
+.reading-answer-grid ruby {
+  ruby-align: center;
+}
+
+.reading-passage rt,
+.reading-question rt,
+.reading-answer-grid rt {
+  color: var(--accent-dark);
+  font-size: 0.53em;
+  font-weight: 700;
+}
+
+.reading-question {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 18px;
+  font-size: clamp(18px, 4vw, 24px);
+  line-height: 1.65;
+  letter-spacing: -0.025em;
+}
+
+.reading-answer-grid {
+  grid-template-columns: 1fr;
+}
+
+.reading-answer-grid .answer-button {
+  min-height: 58px;
+  text-align: left;
+  line-height: 1.6;
+}
+
+.reading-feedback #reading-feedback-explanation {
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(23, 50, 77, 0.16);
+  font-weight: 700;
+}
+
+#reading-next-button {
+  margin-top: 14px;
+}
+
 .source-note {
   position: relative;
   z-index: 1;
@@ -1240,7 +1469,17 @@ button:focus-visible {
   }
 
   .brand {
+    flex-wrap: wrap;
     margin-bottom: 16px;
+  }
+
+  .brand > div:not(.header-actions) {
+    flex: 1;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 
   .mistake-menu-button {
@@ -1252,6 +1491,14 @@ button:focus-visible {
   .mistake-menu {
     width: min(100%, 430px);
     padding: 22px 18px 30px;
+  }
+
+  .feature-switch-layer {
+    padding: 12px;
+  }
+
+  .feature-switch-menu {
+    padding: 22px 18px;
   }
 
   .start-card,
@@ -1268,6 +1515,10 @@ button:focus-visible {
   }
 
   .mode-records-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reading-difficulty-picker {
     grid-template-columns: 1fr;
   }
 
@@ -1331,14 +1582,43 @@ button:focus-visible {
     <header class="brand" aria-label="앱 제목">
       <button id="home-button" class="brand-mark" type="button" aria-label="처음 화면으로 이동">読</button>
       <div>
-        <p class="eyebrow">JLPT N5 · N4 · N3 · N2</p>
-        <h1>한자 읽기 퀴즈</h1>
+        <p id="brand-eyebrow" class="eyebrow">JLPT N5 · N4 · N3 · N2</p>
+        <h1 id="brand-title">한자 읽기 퀴즈</h1>
       </div>
-      <button id="mistake-menu-button" class="mistake-menu-button" type="button" aria-expanded="false" aria-controls="mistake-menu">
-        <span aria-hidden="true">☰</span>
-        <span>오답 기록</span>
-      </button>
+      <div class="header-actions">
+        <button id="feature-switch-button" class="mistake-menu-button feature-switch-button" type="button" aria-expanded="false" aria-controls="feature-switch-menu">
+          <span aria-hidden="true">⇄</span>
+          <span>기능 변경</span>
+        </button>
+        <button id="mistake-menu-button" class="mistake-menu-button" type="button" aria-expanded="false" aria-controls="mistake-menu">
+          <span aria-hidden="true">☰</span>
+          <span>오답 기록</span>
+        </button>
+      </div>
     </header>
+
+    <div id="feature-switch-layer" class="feature-switch-layer" hidden>
+      <button id="feature-switch-backdrop" class="feature-switch-backdrop" type="button" tabindex="-1" aria-label="기능 변경 메뉴 닫기"></button>
+      <section id="feature-switch-menu" class="feature-switch-menu" role="dialog" aria-modal="true" aria-labelledby="feature-switch-title">
+        <div class="feature-switch-heading">
+          <div>
+            <p class="session-kicker">학습 기능</p>
+            <h2 id="feature-switch-title">무엇을 연습할까요?</h2>
+          </div>
+          <button id="feature-switch-close" class="mistake-menu-close" type="button" aria-label="기능 변경 메뉴 닫기">×</button>
+        </div>
+        <div class="feature-switch-options">
+          <button id="feature-vocab-button" class="feature-option is-selected" type="button" aria-pressed="true">
+            <strong>단어·문장 연습</strong>
+            <small>한자 읽기, 히라가나 조합, 문장 빈칸, 카타카나</small>
+          </button>
+          <button id="feature-reading-button" class="feature-option" type="button" aria-pressed="false">
+            <strong>독해 연습</strong>
+            <small>JPT·JLPT·J.TEST·BJT 유형의 신규 실전 문제</small>
+          </button>
+        </div>
+      </section>
+    </div>
 
     <div id="mistake-menu-layer" class="mistake-menu-layer" hidden>
       <button id="mistake-menu-backdrop" class="mistake-menu-backdrop" type="button" tabindex="-1" aria-label="오답 기록 메뉴 닫기"></button>
@@ -1617,6 +1897,125 @@ button:focus-visible {
       </div>
     </section>
 
+    <section id="reading-start-screen" class="screen" aria-labelledby="reading-start-title">
+      <div class="paper-card start-card reading-start-card">
+        <p class="session-kicker">독해 시험</p>
+        <h2 id="reading-start-title">공식 시험 유형으로<br>독해를 연습해 보세요</h2>
+        <p class="lead">JPT·JLPT·J.TEST·BJT의 출제 형식과 난이도를 분석해 새로 작성한 문제입니다. 지문 원문을 복제하지 않아 공개 앱에서도 안전하게 학습할 수 있습니다.</p>
+
+        <section class="mode-records" aria-labelledby="reading-records-title">
+          <h3 id="reading-records-title">독해 난이도별 기록</h3>
+          <div class="mode-records-grid reading-record-grid">
+            <article id="reading-record-furigana" class="mode-record is-selected">
+              <strong>후리가나 표시</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="reading-furigana-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="reading-furigana-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="reading-furigana-total-accuracy">—</dd></div>
+              </dl>
+            </article>
+            <article id="reading-record-standard" class="mode-record">
+              <strong>후리가나 없음</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="reading-standard-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="reading-standard-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="reading-standard-total-accuracy">—</dd></div>
+              </dl>
+            </article>
+          </div>
+        </section>
+
+        <fieldset class="mode-picker reading-difficulty-picker">
+          <legend>독해 난이도 선택</legend>
+          <label class="mode-option" for="reading-difficulty-furigana">
+            <input id="reading-difficulty-furigana" name="reading-difficulty" type="radio" value="furigana" checked>
+            <span class="mode-copy">
+              <strong>후리가나 표시</strong>
+              <small>지문·질문·선택지의 한자 읽기를 함께 표시</small>
+            </span>
+          </label>
+          <label class="mode-option" for="reading-difficulty-standard">
+            <input id="reading-difficulty-standard" name="reading-difficulty" type="radio" value="standard">
+            <span class="mode-copy">
+              <strong>후리가나 없음</strong>
+              <small>실제 시험처럼 일본어 원문만 표시</small>
+            </span>
+          </label>
+        </fieldset>
+
+        <div class="question-count-picker">
+          <label for="reading-question-count">독해 문제 수</label>
+          <input id="reading-question-count" type="number" min="10" max="32" step="1" value="20" inputmode="numeric">
+          <small>10~32문제 · 네 시험 유형이 고르게 출제됩니다.</small>
+        </div>
+
+        <button id="reading-start-button" class="primary-button" type="button">독해 시험 시작</button>
+        <p class="helper">숫자키 1~4로 답 선택 · Enter로 다음 문제 · 기록은 현재 브라우저에 저장</p>
+        <details class="reading-source-details">
+          <summary>공식 출제 형식 참고 자료</summary>
+          <p>문제의 구조만 참고했으며 지문·질문·선택지는 모두 새로 작성했습니다.</p>
+          <div class="reading-source-links">
+            <a href="https://www.jlpt.jp/samples/forlearners.html" target="_blank" rel="noreferrer">JLPT 공식 예제</a>
+            <a href="https://m.jpt.co.kr/content/common/realQuestion.php" target="_blank" rel="noreferrer">JPT 공식 실제기출</a>
+            <a href="https://j-test.jp/newjtest" target="_blank" rel="noreferrer">J.TEST 공식 문제</a>
+            <a href="https://www.kanken.or.jp/bjt/english/sample/sample03.html" target="_blank" rel="noreferrer">BJT 공식 독해 예제</a>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="reading-quiz-screen" class="screen" aria-labelledby="reading-question">
+      <div class="quiz-topbar">
+        <div>
+          <span id="reading-session-label" class="eyebrow">독해 1회차</span>
+          <span id="reading-progress-text" class="progress-copy">1 / 20</span>
+        </div>
+        <div class="live-score" aria-label="현재 정답률">정답률 <strong id="reading-live-accuracy">—</strong></div>
+      </div>
+      <div class="progress-track" aria-hidden="true"><div id="reading-progress-bar" class="progress-bar"></div></div>
+
+      <div class="paper-card quiz-card reading-quiz-card">
+        <div class="reading-meta-row">
+          <span id="reading-exam-badge" class="reading-exam-badge">JLPT형</span>
+          <span id="reading-type-badge" class="reading-type-badge">단문 이해</span>
+        </div>
+        <article id="reading-passage" class="reading-passage" lang="ja"></article>
+        <h2 id="reading-question" class="reading-question" lang="ja"></h2>
+        <div id="reading-answer-grid" class="answer-grid reading-answer-grid" aria-label="독해 정답 선택지"></div>
+
+        <div id="reading-feedback" class="feedback reading-feedback" aria-live="polite" hidden>
+          <div id="reading-feedback-icon" class="feedback-icon" aria-hidden="true"></div>
+          <div>
+            <strong id="reading-feedback-title"></strong>
+            <p id="reading-feedback-selected" class="feedback-selected" hidden></p>
+            <p id="reading-feedback-answer"></p>
+            <p id="reading-feedback-explanation"></p>
+          </div>
+        </div>
+        <button id="reading-next-button" class="primary-button" type="button" hidden>다음 문제</button>
+      </div>
+      <p class="keyboard-hint">숫자키 1~4로 선택 · Enter로 다음</p>
+    </section>
+
+    <section id="reading-result-screen" class="screen" aria-labelledby="reading-result-title">
+      <div class="paper-card result-card">
+        <div class="result-seal" aria-hidden="true">読</div>
+        <p class="session-kicker">독해 시험 완료</p>
+        <h2 id="reading-result-title"><span id="reading-result-session-number">1</span>회차를 마쳤어요</h2>
+        <p id="reading-result-message" class="lead"></p>
+        <div class="result-score" aria-label="이번 독해 정답률">
+          <span>이번 정답률</span>
+          <strong id="reading-result-accuracy">0%</strong>
+        </div>
+        <dl class="result-details">
+          <div><dt>정답</dt><dd id="reading-result-correct">0</dd></div>
+          <div><dt>오답</dt><dd id="reading-result-wrong">0</dd></div>
+          <div><dt>완료 문제</dt><dd id="reading-result-total">0</dd></div>
+        </dl>
+        <button id="reading-return-button" class="primary-button" type="button">독해 시작 화면으로</button>
+      </div>
+    </section>
+
     <p id="app-error" class="app-error" role="alert" hidden></p>
   </main>
 
@@ -1735,6 +2134,240 @@ globalThis.KATAKANA_VOCAB_DATA = [
   { id: "katakana-099", level: "카타카나", word: "マナー", reading: "まなー", meaning: "예절", source: "앱 예문 및 제공 자료" },
   { id: "katakana-100", level: "카타카나", word: "サービス", reading: "さーびす", meaning: "서비스", source: "앱 예문 및 제공 자료" },
 ];
+
+  </script>
+  <script>
+(function (root) {
+  "use strict";
+
+  const make = (exam, number, type, passage, question, choices, answer, explanation, readings) => ({
+    id: `reading-${exam.toLowerCase().replace(".", "")}-${String(number).padStart(2, "0")}`,
+    exam,
+    type,
+    passage,
+    question,
+    choices,
+    answer,
+    explanation,
+    readings,
+    origin: "original",
+  });
+
+  root.READING_COMMON_READINGS = {
+    返したい: "かえしたい", 図書館: "としょかん",
+    木曜三時: "もくようさんじ", 金曜三時: "きんようさんじ", 金曜午前: "きんようごぜん",
+    毎朝八時: "まいあさはちじ", 出せる: "だせる", 出せない: "だせない", 火曜: "かよう", 金曜: "きんよう", 出す: "だす",
+    体育館用: "たいいくかんよう", 開始: "かいし", 十時: "じゅうじ", 行う: "おこなう",
+    発送された後: "はっそうされたあと", 住所: "じゅうしょ", 変えたい: "かえたい", 変える: "かえる", 連絡する: "れんらくする",
+    快速: "かいそく", 乗り換える: "のりかえる", 工事: "こうじ", 読んで: "よんで", 感想を書く: "かんそうをかく",
+    四十五字: "よんじゅうごじ", 要約を書く: "ようやくをかく", コピー機: "コピーき", お使い: "おつかい", 急いで: "いそいで",
+    出張する: "しゅっちょうする", 付きません: "つきません", 付く: "つく", 買う: "かう", 多く付く: "おおくつく",
+    取り置いて: "とりおいて", 水曜日: "すいようび", 貯水槽: "ちょすいそう", 研修: "けんしゅう", 参加したい: "さんかしたい",
+    申し込む: "もうしこむ", 超える: "こえる", 傘: "かさ", 受け取る: "うけとる", 受け取れない: "うけとれない", 配達画面: "はいたつがめん", 午前中: "ごぜんちゅう",
+    持ち帰り: "もちかえり", 持ち帰った: "もちかえった", 持ち帰る: "もちかえる", 広場: "ひろば", 警告後: "けいこくご",
+    水: "みず", 入る: "はいる", 市役所: "しやくしょ", 開く: "ひらく", 暑さ: "あつさ", 備える: "そなえる", 渇いて: "かわいて",
+    好き: "すき", 使わせる: "つかわせる", 早め: "はやめ", 発売: "はつばい", 広告: "こうこく", 九月: "くがつ", 減った: "へった",
+    伸び: "のび", 税額: "ぜいがく", 送る: "おくる", 同じ: "おなじ", 何: "なに", 代表電話: "だいひょうでんわ", 移転: "いてん",
+  };
+
+  root.READING_QUIZ_DATA = [
+    make("JLPT", 1, "단문 이해",
+      "市立図書館は設備点検のため、来週の月曜日は休館します。本を返す人は、正面入口の右側にある返却箱を利用してください。",
+      "本を返したい人は、月曜日にどうすればいいですか。",
+      ["火曜日まで家で待つ", "返却箱に本を入れる", "正面入口で職員を呼ぶ", "別の図書館へ行く"], 1,
+      "휴관일에도 정문 오른쪽의 반납함을 이용하라고 안내하고 있습니다.",
+      { 市立図書館: "しりつとしょかん", 設備点検: "せつびてんけん", 来週: "らいしゅう", 月曜日: "げつようび", 休館: "きゅうかん", 本: "ほん", 返す: "かえす", 人: "ひと", 正面入口: "しょうめんいりぐち", 右側: "みぎがわ", 返却箱: "へんきゃくばこ", 利用: "りよう", 火曜日: "かようび", 家: "いえ", 待つ: "まつ", 入れる: "いれる", 職員: "しょくいん", 呼ぶ: "よぶ", 別: "べつ", 行く: "いく" }),
+    make("JLPT", 2, "메일 이해",
+      "木村さんへ。木曜日の打ち合わせですが、急な出張が入ったため、金曜日の午後三時に変更できませんか。場所は前と同じ会議室です。",
+      "打ち合わせはいつ、どこで行う予定ですか。",
+      ["木曜三時に新しい会議室", "木曜三時に同じ会議室", "金曜三時に同じ会議室", "金曜午前に新しい会議室"], 2,
+      "변경 요청은 금요일 오후 3시이며 장소는 전과 같은 회의실입니다.",
+      { 木村: "きむら", 木曜日: "もくようび", 打ち合わせ: "うちあわせ", 急: "きゅう", 出張: "しゅっちょう", 入った: "はいった", 金曜日: "きんようび", 午後三時: "ごごさんじ", 変更: "へんこう", 場所: "ばしょ", 前: "まえ", 同じ: "おなじ", 会議室: "かいぎしつ", 行う: "おこなう", 予定: "よてい", 新しい: "あたらしい", 午前: "ごぜん" }),
+    make("JLPT", 3, "생활 안내",
+      "この町では、燃えるごみを火曜日と金曜日の朝八時までに出します。祝日でも回収しますが、年末の三日間は回収しません。",
+      "燃えるごみについて、正しいものはどれですか。",
+      ["毎朝八時に出せる", "祝日は出せない", "火曜と金曜に出す", "年末も毎日回収する"], 2,
+      "타는 쓰레기는 화요일과 금요일 오전 8시까지 배출합니다.",
+      { 町: "まち", 燃える: "もえる", 火曜日: "かようび", 金曜日: "きんようび", 朝八時: "あさはちじ", 出します: "だします", 祝日: "しゅくじつ", 回収: "かいしゅう", 年末: "ねんまつ", 三日間: "みっかかん", 正しい: "ただしい", 毎朝: "まいあさ", 毎日: "まいにち" }),
+    make("JLPT", 4, "모집 안내",
+      "初心者向けのバドミントン教室を土曜日に開きます。ラケットは貸しますが、体育館で使う靴は自分で持ってきてください。初回は無料です。",
+      "参加する人が自分で用意するものは何ですか。",
+      ["ラケット", "体育館用の靴", "参加費", "飲み物と昼食"], 1,
+      "라켓은 빌려 주지만 체육관용 신발은 직접 가져와야 합니다.",
+      { 初心者向け: "しょしんしゃむけ", 教室: "きょうしつ", 土曜日: "どようび", 開きます: "ひらきます", 貸します: "かします", 体育館: "たいいくかん", 使う: "つかう", 靴: "くつ", 自分: "じぶん", 持って: "もって", 初回: "しょかい", 無料: "むりょう", 参加: "さんか", 人: "ひと", 用意: "ようい", 何: "なん", 参加費: "さんかひ", 飲み物: "のみもの", 昼食: "ちゅうしょく" }),
+    make("JLPT", 5, "공지 이해",
+      "明日の文化祭は、雨の場合、校庭ではなく体育館で行います。開始時刻は予定どおり午前十時です。上履きを忘れないでください。",
+      "雨が降った場合、文化祭はどうなりますか。",
+      ["中止になる", "開始が一時間遅れる", "体育館で十時から行う", "校庭で午後から行う"], 2,
+      "비가 와도 취소하거나 시간을 바꾸지 않고 체육관에서 오전 10시에 진행합니다.",
+      { 明日: "あした", 文化祭: "ぶんかさい", 雨: "あめ", 場合: "ばあい", 校庭: "こうてい", 体育館: "たいいくかん", 行います: "おこないます", 開始時刻: "かいしじこく", 予定: "よてい", 午前十時: "ごぜんじゅうじ", 上履き: "うわばき", 忘れないで: "わすれないで", 降った: "ふった", 中止: "ちゅうし", 一時間: "いちじかん", 遅れる: "おくれる", 午後: "ごご" }),
+    make("JLPT", 6, "절차 이해",
+      "注文した商品の届け先は、発送前ならマイページで変更できます。発送後に変更したい場合は、配送会社へ直接連絡してください。",
+      "商品がすでに発送された後で住所を変えたいとき、何をしますか。",
+      ["店のマイページで変える", "配送会社に連絡する", "新しく注文し直す", "商品が戻るまで待つ"], 1,
+      "발송 후 배송지 변경은 배송 회사에 직접 연락해야 합니다.",
+      { 注文: "ちゅうもん", 商品: "しょうひん", 届け先: "とどけさき", 発送前: "はっそうまえ", 変更: "へんこう", 発送後: "はっそうご", 場合: "ばあい", 配送会社: "はいそうがいしゃ", 直接連絡: "ちょくせつれんらく", 住所: "じゅうしょ", 何: "なに", 店: "みせ", 新しく: "あたらしく", 注文し直す: "ちゅうもんしなおす", 戻る: "もどる", 待つ: "まつ" }),
+    make("JLPT", 7, "교통 안내",
+      "駅の工事中、快速電車は青葉駅に止まりません。青葉駅を利用する方は、一つ手前の中央駅で各駅停車に乗り換えてください。",
+      "青葉駅へ行く人は、どうしなければなりませんか。",
+      ["快速でそのまま行く", "中央駅で各駅停車に乗り換える", "工事が終わるまで待つ", "青葉駅からバスに乗る"], 1,
+      "쾌속은 아오바역에 서지 않으므로 주오역에서 각역정차로 갈아타야 합니다.",
+      { 駅: "えき", 工事中: "こうじちゅう", 快速電車: "かいそくでんしゃ", 青葉駅: "あおばえき", 止まりません: "とまりません", 利用: "りよう", 方: "かた", 一つ手前: "ひとつてまえ", 中央駅: "ちゅうおうえき", 各駅停車: "かくえきていしゃ", 乗り換えて: "のりかえて", 行く: "いく", 人: "ひと", 終わる: "おわる", 待つ: "まつ", 乗る: "のる" }),
+    make("JLPT", 8, "과제 안내",
+      "次の授業までに教科書の三十ページから四十五ページを読み、内容について四百字程度で感想を書いてください。提出は月曜日の授業開始時です。",
+      "学生は月曜日までに何をしますか。",
+      ["教科書を全部暗記する", "指定部分を読んで感想を書く", "四十五字の要約を書く", "授業後に本を提出する"], 1,
+      "지정된 쪽을 읽고 약 400자로 감상을 써서 월요일 수업 시작 때 제출합니다.",
+      { 次: "つぎ", 授業: "じゅぎょう", 教科書: "きょうかしょ", 三十: "さんじゅう", 四十五: "よんじゅうご", 読み: "よみ", 内容: "ないよう", 四百字程度: "よんひゃくじていど", 感想: "かんそう", 書いて: "かいて", 提出: "ていしゅつ", 月曜日: "げつようび", 開始時: "かいしじ", 学生: "がくせい", 何: "なに", 全部暗記: "ぜんぶあんき", 指定部分: "していぶぶん", 要約: "ようやく", 授業後: "じゅぎょうご", 本: "ほん" }),
+
+    make("JPT", 1, "업무 공지",
+      "二階のコピー機は本日午後三時から修理を行います。作業は一時間ほどの予定です。急ぎの印刷がある方は、その間、三階の機械をお使いください。",
+      "午後三時半に急いで印刷したい人は、どうすればいいですか。",
+      ["二階の修理が終わるまで待つ", "三階のコピー機を使う", "修理会社へ連絡する", "印刷を明日に延期する"], 1,
+      "오후 3시부터 약 한 시간 동안 2층 복사기를 수리하므로 3층 기기를 사용해야 합니다.",
+      { 二階: "にかい", 本日: "ほんじつ", 午後三時: "ごごさんじ", 修理: "しゅうり", 行います: "おこないます", 作業: "さぎょう", 一時間: "いちじかん", 予定: "よてい", 急ぎ: "いそぎ", 印刷: "いんさつ", 方: "かた", 間: "あいだ", 三階: "さんがい", 機械: "きかい", 使う: "つかう", 午後三時半: "ごごさんじはん", 人: "ひと", 終わる: "おわる", 待つ: "まつ", 修理会社: "しゅうりがいしゃ", 連絡: "れんらく", 明日: "あした", 延期: "えんき" }),
+    make("JPT", 2, "출장 일정",
+      "大阪出張の新幹線は午前八時発です。駅の改札前に七時四十分までに集合してください。切符とホテルの予約票は総務部が当日渡します。",
+      "出張する社員が自分で準備する必要がないものはどれですか。",
+      ["駅までの交通手段", "会議の資料", "新幹線の切符", "出張用の服"], 2,
+      "신칸센 표와 호텔 예약표는 총무부가 당일 전달합니다.",
+      { 大阪出張: "おおさかしゅっちょう", 新幹線: "しんかんせん", 午前八時発: "ごぜんはちじはつ", 駅: "えき", 改札前: "かいさつまえ", 七時四十分: "しちじよんじゅっぷん", 集合: "しゅうごう", 切符: "きっぷ", 予約票: "よやくひょう", 総務部: "そうむぶ", 当日: "とうじつ", 渡します: "わたします", 社員: "しゃいん", 自分: "じぶん", 準備: "じゅんび", 必要: "ひつよう", 交通手段: "こうつうしゅだん", 会議: "かいぎ", 資料: "しりょう", 出張用: "しゅっちょうよう", 服: "ふく" }),
+    make("JPT", 3, "매장 안내",
+      "今月から、五百円の買い物につき一ポイントが付きます。たまったポイントは百ポイントから使えます。ただし、金券の購入にはポイントが付きません。",
+      "ポイントについて正しい説明はどれですか。",
+      ["五百円で百ポイント付く", "百ポイントから利用できる", "金券を買うと多く付く", "来月から制度が始まる"], 1,
+      "500엔당 1포인트가 쌓이며 100포인트부터 사용할 수 있습니다.",
+      { 今月: "こんげつ", 五百円: "ごひゃくえん", 買い物: "かいもの", 一: "いち", 付きます: "つきます", 百: "ひゃく", 使えます: "つかえます", 金券: "きんけん", 購入: "こうにゅう", 正しい: "ただしい", 説明: "せつめい", 利用: "りよう", 多く: "おおく", 来月: "らいげつ", 制度: "せいど", 始まる: "はじまる" }),
+    make("JPT", 4, "고객 대응",
+      "お問い合わせの商品は現在品切れですが、来週水曜日に再入荷する予定です。入荷後の取り置きを希望される場合は、このメールにお名前と電話番号を返信してください。",
+      "商品を取り置いてもらうには、何が必要ですか。",
+      ["店へ直接行く", "代金を先に払う", "名前と電話番号を返信する", "水曜日にもう一度注文する"], 2,
+      "재입고 후 상품 보관을 원하면 이름과 전화번호를 메일로 회신해야 합니다.",
+      { 問い合わせ: "といあわせ", 商品: "しょうひん", 現在品切れ: "げんざいしなぎれ", 来週水曜日: "らいしゅうすいようび", 再入荷: "さいにゅうか", 予定: "よてい", 入荷後: "にゅうかご", 取り置き: "とりおき", 希望: "きぼう", 場合: "ばあい", 名前: "なまえ", 電話番号: "でんわばんごう", 返信: "へんしん", 何: "なに", 必要: "ひつよう", 店: "みせ", 直接行く: "ちょくせついく", 代金: "だいきん", 先: "さき", 払う: "はらう", 一度注文: "いちどちゅうもん" }),
+    make("JPT", 5, "시설 관리",
+      "マンションの貯水槽清掃のため、二十日の午前九時から正午まで水道が使えません。必要な水は事前に準備し、蛇口が閉まっていることを確認してください。",
+      "住民が清掃前にすることは何ですか。",
+      ["水道料金を払う", "必要な水を用意する", "正午まで外出する", "貯水槽を自分で洗う"], 1,
+      "단수 전에 필요한 물을 미리 준비해야 합니다.",
+      { 貯水槽清掃: "ちょすいそうせいそう", 二十日: "はつか", 午前九時: "ごぜんくじ", 正午: "しょうご", 水道: "すいどう", 使えません: "つかえません", 必要: "ひつよう", 水: "みず", 事前: "じぜん", 準備: "じゅんび", 蛇口: "じゃぐち", 閉まって: "しまって", 確認: "かくにん", 住民: "じゅうみん", 清掃前: "せいそうまえ", 何: "なに", 水道料金: "すいどうりょうきん", 払う: "はらう", 用意: "ようい", 外出: "がいしゅつ", 自分: "じぶん", 洗う: "あらう" }),
+    make("JPT", 6, "세미나 신청",
+      "新入社員向けの接客研修を十五日に実施します。参加希望者は十日までに社内サイトで申し込んでください。定員を超えた場合は先着順とします。",
+      "研修に参加したい社員は、まず何をしますか。",
+      ["十五日に会場へ直接行く", "十日までにサイトで申し込む", "上司に参加費を払う", "定員を超えるまで待つ"], 1,
+      "참가 희망자는 10일까지 사내 사이트에서 신청해야 합니다.",
+      { 新入社員向け: "しんにゅうしゃいんむけ", 接客研修: "せっきゃくけんしゅう", 十五日: "じゅうごにち", 実施: "じっし", 参加希望者: "さんかきぼうしゃ", 十日: "とおか", 社内: "しゃない", 申し込んで: "もうしこんで", 定員: "ていいん", 超えた: "こえた", 場合: "ばあい", 先着順: "せんちゃくじゅん", 社員: "しゃいん", 何: "なに", 会場: "かいじょう", 直接行く: "ちょくせついく", 上司: "じょうし", 参加費: "さんかひ", 払う: "はらう", 待つ: "まつ" }),
+    make("JPT", 7, "분실물 안내",
+      "昨日、受付に黒い傘が届けられました。持ち手に青いテープが付いています。心当たりのある方は、社員証を持って受付へ来てください。",
+      "傘を受け取るために必要なものは何ですか。",
+      ["青いテープ", "社員証", "購入時の領収書", "受付からの電話"], 1,
+      "우산을 받을 때 사원증을 지참하라고 되어 있습니다.",
+      { 昨日: "きのう", 受付: "うけつけ", 黒い傘: "くろいかさ", 届けられました: "とどけられました", 持ち手: "もちて", 青い: "あおい", 付いて: "ついて", 心当たり: "こころあたり", 方: "かた", 社員証: "しゃいんしょう", 持って: "もって", 来て: "きて", 受け取る: "うけとる", 必要: "ひつよう", 何: "なん", 購入時: "こうにゅうじ", 領収書: "りょうしゅうしょ", 電話: "でんわ" }),
+    make("JPT", 8, "배송 안내",
+      "午前中指定の荷物は、道路工事の影響で午後一時ごろ到着する見込みです。受け取りが難しい場合は、配達状況の画面から日時を変更できます。",
+      "午後一時に荷物を受け取れない人は、どうできますか。",
+      ["道路工事を中止させる", "配達画面で日時を変える", "午前中に営業所へ行く", "注文を自動で取り消す"], 1,
+      "수령이 어려우면 배송 현황 화면에서 일시를 변경할 수 있습니다.",
+      { 午前中指定: "ごぜんちゅうしてい", 荷物: "にもつ", 道路工事: "どうろこうじ", 影響: "えいきょう", 午後一時: "ごごいちじ", 到着: "とうちゃく", 見込み: "みこみ", 受け取り: "うけとり", 難しい: "むずかしい", 場合: "ばあい", 配達状況: "はいたつじょうきょう", 画面: "がめん", 日時: "にちじ", 変更: "へんこう", 人: "ひと", 中止: "ちゅうし", 営業所: "えいぎょうしょ", 行く: "いく", 注文: "ちゅうもん", 自動: "じどう", 取り消す: "とりけす" }),
+
+    make("J.TEST", 1, "생활 정보",
+      "市は災害情報を早く知らせるため、新しい防災アプリを公開しました。避難所の場所だけでなく、混雑状況も確認できます。通信が不安定なときに備え、地図は事前に保存してください。",
+      "市が地図の事前保存を勧める理由は何ですか。",
+      ["避難所を増やすため", "通信できない場合に備えるため", "混雑状況を市へ送るため", "アプリを軽くするため"], 1,
+      "재해 시 통신이 불안정할 상황에 대비하기 위해 지도를 미리 저장하라고 합니다.",
+      { 市: "し", 災害情報: "さいがいじょうほう", 早く: "はやく", 知らせる: "しらせる", 新しい: "あたらしい", 防災: "ぼうさい", 公開: "こうかい", 避難所: "ひなんじょ", 場所: "ばしょ", 混雑状況: "こんざつじょうきょう", 確認: "かくにん", 通信: "つうしん", 不安定: "ふあんてい", 備え: "そなえ", 地図: "ちず", 事前: "じぜん", 保存: "ほぞん", 勧める: "すすめる", 理由: "りゆう", 何: "なん", 増やす: "ふやす", 場合: "ばあい", 送る: "おくる", 軽く: "かるく" }),
+    make("J.TEST", 2, "사회 주제",
+      "食べ残しを減らすため、この店では希望する客に持ち帰り用の容器を渡しています。ただし、生ものや長時間室温に置かれた料理は対象外です。持ち帰った後の管理は客自身の責任です。",
+      "この店で持ち帰ることができないものはどれですか。",
+      ["十分に加熱した料理", "注文したばかりのパン", "長時間室温にあった料理", "容器に入る焼き菓子"], 2,
+      "생식품이나 실온에 오래 놓인 요리는 포장 대상에서 제외됩니다.",
+      { 食べ残し: "たべのこし", 減らす: "へらす", 店: "みせ", 希望: "きぼう", 客: "きゃく", 持ち帰り用: "もちかえりよう", 容器: "ようき", 渡しています: "わたしています", 生もの: "なまもの", 長時間: "ちょうじかん", 室温: "しつおん", 置かれた: "おかれた", 料理: "りょうり", 対象外: "たいしょうがい", 後: "あと", 管理: "かんり", 自身: "じしん", 責任: "せきにん", 十分: "じゅうぶん", 加熱: "かねつ", 注文: "ちゅうもん", 焼き菓子: "やきがし" }),
+    make("J.TEST", 3, "규칙 이해",
+      "駅前広場への自転車の放置が増えています。短時間でも決められた駐輪場を利用してください。来月から、広場に置かれた自転車は警告札を付けた後、移動します。",
+      "来月から広場に放置された自転車はどうなりますか。",
+      ["その場で販売される", "警告後に移動される", "無料で修理される", "駐輪場へ乗って行ける"], 1,
+      "다음 달부터 광장에 방치된 자전거는 경고 표지를 붙인 뒤 이동 조치됩니다.",
+      { 駅前広場: "えきまえひろば", 自転車: "じてんしゃ", 放置: "ほうち", 増えています: "ふえています", 短時間: "たんじかん", 決められた: "きめられた", 駐輪場: "ちゅうりんじょう", 利用: "りよう", 来月: "らいげつ", 置かれた: "おかれた", 警告札: "けいこくふだ", 付けた: "つけた", 後: "あと", 移動: "いどう", 場: "ば", 販売: "はんばい", 無料: "むりょう", 修理: "しゅうり", 乗って行ける: "のっていける" }),
+    make("J.TEST", 4, "환경 정보",
+      "駅や公園に無料の給水機を設置する地域が増えています。利用者が自分のボトルを持参すれば、ペットボトルごみを減らせます。衛生のため、容器の口を給水口に触れさせないでください。",
+      "給水機を利用するとき、注意することは何ですか。",
+      ["必ず新しいボトルを買う", "容器を給水口に触れさせない", "水を有料で購入する", "公園の外でだけ飲む"], 1,
+      "위생을 위해 물병 입구가 급수구에 닿지 않도록 해야 합니다.",
+      { 駅: "えき", 公園: "こうえん", 無料: "むりょう", 給水機: "きゅうすいき", 設置: "せっち", 地域: "ちいき", 増えています: "ふえています", 利用者: "りようしゃ", 自分: "じぶん", 持参: "じさん", 減らせます: "へらせます", 衛生: "えいせい", 容器: "ようき", 口: "くち", 給水口: "きゅうすいぐち", 触れさせない: "ふれさせない", 利用: "りよう", 注意: "ちゅうい", 何: "なん", 必ず: "かならず", 新しい: "あたらしい", 買う: "かう", 有料: "ゆうりょう", 購入: "こうにゅう", 外: "そと", 飲む: "のむ" }),
+    make("J.TEST", 5, "서비스 안내",
+      "宅配便を受け取れない人のため、駅に共用ロッカーが設置されました。利用には、配達会社から届く番号が必要です。荷物は到着から三日以内に受け取ってください。",
+      "ロッカーから荷物を受け取るために必要なものは何ですか。",
+      ["駅員の許可", "配達会社からの番号", "三日分の料金", "自宅の鍵"], 1,
+      "택배 회사가 보내는 번호가 있어야 공용 보관함에서 물건을 찾을 수 있습니다.",
+      { 宅配便: "たくはいびん", 受け取れない: "うけとれない", 人: "ひと", 駅: "えき", 共用: "きょうよう", 設置: "せっち", 利用: "りよう", 配達会社: "はいたつがいしゃ", 届く: "とどく", 番号: "ばんごう", 必要: "ひつよう", 荷物: "にもつ", 到着: "とうちゃく", 三日以内: "みっかいない", 受け取って: "うけとって", 何: "なん", 駅員: "えきいん", 許可: "きょか", 三日分: "みっかぶん", 料金: "りょうきん", 自宅: "じたく", 鍵: "かぎ" }),
+    make("J.TEST", 6, "행사 안내",
+      "日曜日の朝、市役所前で地域市場を開きます。地元の野菜や菓子を販売するほか、使わなくなった本を交換するコーナーもあります。本の交換には予約が要りません。",
+      "地域市場について正しいものはどれですか。",
+      ["本の交換は予約制だ", "市役所の中で行う", "地元の商品を買える", "土曜日の夜に開く"], 2,
+      "시청 앞에서 열리며 지역 상품을 살 수 있고 책 교환은 예약이 필요 없습니다.",
+      { 日曜日: "にちようび", 朝: "あさ", 市役所前: "しやくしょまえ", 地域市場: "ちいきいちば", 開きます: "ひらきます", 地元: "じもと", 野菜: "やさい", 菓子: "かし", 販売: "はんばい", 使わなくなった: "つかわなくなった", 本: "ほん", 交換: "こうかん", 予約: "よやく", 要りません: "いりません", 正しい: "ただしい", 予約制: "よやくせい", 中: "なか", 行う: "おこなう", 商品: "しょうひん", 買える: "かえる", 土曜日: "どようび", 夜: "よる" }),
+    make("J.TEST", 7, "건강 정보",
+      "暑い日は、のどが渇く前に少しずつ水分を取ることが大切です。屋内でも熱中症になることがあるため、我慢せず冷房を使いましょう。高齢者には周囲の人が声をかけることも必要です。",
+      "文章が最も伝えたいことは何ですか。",
+      ["屋内では熱中症にならない", "水分と冷房で暑さに備える", "高齢者は外出してはいけない", "のどが渇いてから水を飲む"], 1,
+      "실내에서도 열사병 위험이 있으므로 미리 수분을 섭취하고 냉방을 사용하자는 내용입니다.",
+      { 暑い日: "あついひ", 渇く前: "かわくまえ", 少しずつ: "すこしずつ", 水分: "すいぶん", 取る: "とる", 大切: "たいせつ", 屋内: "おくない", 熱中症: "ねっちゅうしょう", 我慢: "がまん", 冷房: "れいぼう", 使いましょう: "つかいましょう", 高齢者: "こうれいしゃ", 周囲: "しゅうい", 人: "ひと", 声: "こえ", 必要: "ひつよう", 文章: "ぶんしょう", 最も: "もっとも", 伝えたい: "つたえたい", 何: "なん", 外出: "がいしゅつ", 飲む: "のむ" }),
+    make("J.TEST", 8, "교육 주제",
+      "授業中のスマートフォン使用を一律に禁止する学校もありますが、調べ学習に役立つ場面もあります。重要なのは、目的と時間を決め、学習を妨げない使い方を教えることです。",
+      "筆者の考えに最も近いものはどれですか。",
+      ["学校では常に使用を禁止すべきだ", "自由に好きなだけ使わせるべきだ", "目的を決めた適切な使用を教えるべきだ", "紙の辞書をすべてなくすべきだ"], 2,
+      "전면 금지보다 목적과 시간을 정한 적절한 사용법을 가르쳐야 한다는 주장입니다.",
+      { 授業中: "じゅぎょうちゅう", 使用: "しよう", 一律: "いちりつ", 禁止: "きんし", 学校: "がっこう", 調べ学習: "しらべがくしゅう", 役立つ: "やくだつ", 場面: "ばめん", 重要: "じゅうよう", 目的: "もくてき", 時間: "じかん", 決め: "きめ", 学習: "がくしゅう", 妨げない: "さまたげない", 使い方: "つかいかた", 教える: "おしえる", 筆者: "ひっしゃ", 考え: "かんがえ", 最も近い: "もっともちかい", 常に: "つねに", 自由: "じゆう", 適切: "てきせつ", 紙: "かみ", 辞書: "じしょ" }),
+
+    make("BJT", 1, "업무 메일",
+      "各位。企画書の提出期限は金曜日ですが、部長確認の時間を確保するため、完成した方から木曜日の正午までに共有フォルダへ保存してください。修正が必要な場合はこちらから連絡します。",
+      "このメールの主な目的は何ですか。",
+      ["提出期限を来週に延ばす", "企画書の早めの共有を依頼する", "部長会議を中止する", "新しいフォルダを作る"], 1,
+      "부장 검토 시간을 확보하기 위해 완성된 기획서를 목요일 정오까지 공유하도록 요청하고 있습니다.",
+      { 各位: "かくい", 企画書: "きかくしょ", 提出期限: "ていしゅつきげん", 金曜日: "きんようび", 部長確認: "ぶちょうかくにん", 時間: "じかん", 確保: "かくほ", 完成: "かんせい", 方: "かた", 木曜日: "もくようび", 正午: "しょうご", 共有: "きょうゆう", 保存: "ほぞん", 修正: "しゅうせい", 必要: "ひつよう", 場合: "ばあい", 連絡: "れんらく", 主な目的: "おもなもくてき", 何: "なん", 来週: "らいしゅう", 延ばす: "のばす", 依頼: "いらい", 部長会議: "ぶちょうかいぎ", 中止: "ちゅうし", 新しい: "あたらしい", 作る: "つくる" }),
+    make("BJT", 2, "회의록 이해",
+      "新製品は九月発売を目指していましたが、安全試験に追加確認が必要となりました。品質を優先し、発売を十月に延期します。広告開始日も二週間後ろへ変更します。",
+      "会議で決まったことは何ですか。",
+      ["安全試験を中止する", "品質基準を下げる", "発売と広告を延期する", "九月に広告だけ始める"], 2,
+      "추가 안전 확인 때문에 품질을 우선하여 출시와 광고 일정을 연기했습니다.",
+      { 新製品: "しんせいひん", 九月発売: "くがつはつばい", 目指して: "めざして", 安全試験: "あんぜんしけん", 追加確認: "ついかかくにん", 必要: "ひつよう", 品質: "ひんしつ", 優先: "ゆうせん", 十月: "じゅうがつ", 延期: "えんき", 広告開始日: "こうこくかいしび", 二週間後ろ: "にしゅうかんうしろ", 変更: "へんこう", 会議: "かいぎ", 決まった: "きまった", 何: "なん", 中止: "ちゅうし", 品質基準: "ひんしつきじゅん", 下げる: "さげる", 始める: "はじめる" }),
+    make("BJT", 3, "보고서 분석",
+      "今期の売上は全体で前年を八パーセント上回りました。特に西日本では新規顧客が増え、十五パーセント伸びました。一方、東日本は既存商品の不振で二パーセント減少しました。",
+      "報告の内容と合うものはどれですか。",
+      ["全地域で売上が減った", "西日本の伸びが大きい", "東日本で新規顧客が最も増えた", "全体の売上は前年と同じだ"], 1,
+      "전체 매출은 증가했고 특히 서일본의 성장 폭이 컸습니다.",
+      { 今期: "こんき", 売上: "うりあげ", 全体: "ぜんたい", 前年: "ぜんねん", 八: "はち", 上回りました: "うわまわりました", 特に: "とくに", 西日本: "にしにほん", 新規顧客: "しんきこきゃく", 増え: "ふえ", 十五: "じゅうご", 伸びました: "のびました", 一方: "いっぽう", 東日本: "ひがしにほん", 既存商品: "きそんしょうひん", 不振: "ふしん", 二: "に", 減少: "げんしょう", 報告: "ほうこく", 内容: "ないよう", 合う: "あう", 全地域: "ぜんちいき", 大きい: "おおきい", 最も: "もっとも", 同じ: "おなじ" }),
+    make("BJT", 4, "거래처 연락",
+      "先ほど送付した請求書に、消費税額の誤りがありました。訂正版を本メールに添付いたしますので、先のファイルは破棄してください。なお、支払期限に変更はありません。",
+      "受信者は何をする必要がありますか。",
+      ["支払期限を変更する", "最初の請求書を破棄する", "税額を自分で計算する", "支払いを中止する"], 1,
+      "오류가 있는 이전 청구서는 폐기하고 첨부된 정정본을 사용해야 합니다.",
+      { 先ほど: "さきほど", 送付: "そうふ", 請求書: "せいきゅうしょ", 消費税額: "しょうひぜいがく", 誤り: "あやまり", 訂正版: "ていせいばん", 本: "ほん", 添付: "てんぷ", 先: "さき", 破棄: "はき", 支払期限: "しはらいきげん", 変更: "へんこう", 受信者: "じゅしんしゃ", 何: "なに", 必要: "ひつよう", 最初: "さいしょ", 自分: "じぶん", 計算: "けいさん", 支払い: "しはらい", 中止: "ちゅうし" }),
+    make("BJT", 5, "출장 보고",
+      "訪問先では当社の提案に関心を示していただきましたが、導入費用が予算を超えるとの指摘がありました。次回は機能を絞った案と、分割払いの条件を提示する予定です。",
+      "次回の訪問で提示するものは何ですか。",
+      ["より高機能な案だけ", "値引きなしの同じ案", "機能を限定した案と支払条件", "他社製品の比較表だけ"], 2,
+      "다음 방문에서는 기능을 줄인 안과 분할 납부 조건을 제시할 예정입니다.",
+      { 訪問先: "ほうもんさき", 当社: "とうしゃ", 提案: "ていあん", 関心: "かんしん", 示して: "しめして", 導入費用: "どうにゅうひよう", 予算: "よさん", 超える: "こえる", 指摘: "してき", 次回: "じかい", 機能: "きのう", 絞った: "しぼった", 案: "あん", 分割払い: "ぶんかつばらい", 条件: "じょうけん", 提示: "ていじ", 予定: "よてい", 訪問: "ほうもん", 何: "なん", 高機能: "こうきのう", 値引き: "ねびき", 同じ: "おなじ", 限定: "げんてい", 支払条件: "しはらいじょうけん", 他社製品: "たしゃせいひん", 比較表: "ひかくひょう" }),
+    make("BJT", 6, "재고 조정",
+      "人気商品の在庫が残り二百個となりました。大型店への通常配分を続けると、小型店で欠品が発生する恐れがあります。今週は各店舗へ同じ数量を送り、来週改めて需要を確認します。",
+      "会社は今週、商品をどのように配分しますか。",
+      ["大型店だけに送る", "小型店への出荷を止める", "各店へ同じ数を送る", "すべて倉庫に残す"], 2,
+      "이번 주에는 매장 규모와 관계없이 각 점포에 같은 수량을 보냅니다.",
+      { 人気商品: "にんきしょうひん", 在庫: "ざいこ", 残り二百個: "のこりにひゃっこ", 大型店: "おおがたてん", 通常配分: "つうじょうはいぶん", 続ける: "つづける", 小型店: "こがたてん", 欠品: "けっぴん", 発生: "はっせい", 恐れ: "おそれ", 今週: "こんしゅう", 各店舗: "かくてんぽ", 同じ数量: "おなじすうりょう", 送り: "おくり", 来週: "らいしゅう", 改めて: "あらためて", 需要: "じゅよう", 確認: "かくにん", 会社: "かいしゃ", 商品: "しょうひん", 配分: "はいぶん", 出荷: "しゅっか", 止める: "とめる", 各店: "かくてん", 数: "かず", 倉庫: "そうこ", 残す: "のこす" }),
+    make("BJT", 7, "고객 불만 대응",
+      "納品した部品の一部に傷があるとの連絡を受けました。まず本日中に交換品を発送し、不良品は後日こちらで回収します。原因調査の結果は一週間以内に報告します。",
+      "会社が最初に行う対応は何ですか。",
+      ["原因調査の報告書を送る", "交換品を発送する", "全商品を回収する", "代金を返金する"], 1,
+      "우선 오늘 안에 교환품을 발송하는 것이 첫 대응입니다.",
+      { 納品: "のうひん", 部品: "ぶひん", 一部: "いちぶ", 傷: "きず", 連絡: "れんらく", 受けました: "うけました", 本日中: "ほんじつちゅう", 交換品: "こうかんひん", 発送: "はっそう", 不良品: "ふりょうひん", 後日: "ごじつ", 回収: "かいしゅう", 原因調査: "げんいんちょうさ", 結果: "けっか", 一週間以内: "いっしゅうかんいない", 報告: "ほうこく", 会社: "かいしゃ", 最初: "さいしょ", 行う: "おこなう", 対応: "たいおう", 報告書: "ほうこくしょ", 全商品: "ぜんしょうひん", 代金: "だいきん", 返金: "へんきん" }),
+    make("BJT", 8, "사무실 이전",
+      "本社移転に伴い、来月一日から住所と代表電話番号が変わります。郵便物の転送は三か月間行われますが、取引先には今月中に新住所を案内してください。",
+      "社員は今月中に何をする必要がありますか。",
+      ["郵便物を自分で転送する", "取引先へ新住所を知らせる", "代表電話を解約する", "移転を三か月延期する"], 1,
+      "우편물은 자동 전송되지만 거래처에는 이달 안에 새 주소를 안내해야 합니다.",
+      { 本社移転: "ほんしゃいてん", 伴い: "ともない", 来月一日: "らいげつついたち", 住所: "じゅうしょ", 代表電話番号: "だいひょうでんわばんごう", 変わります: "かわります", 郵便物: "ゆうびんぶつ", 転送: "てんそう", 三か月間: "さんかげつかん", 行われます: "おこなわれます", 取引先: "とりひきさき", 今月中: "こんげつちゅう", 新住所: "しんじゅうしょ", 案内: "あんない", 社員: "しゃいん", 何: "なに", 必要: "ひつよう", 自分: "じぶん", 知らせる: "しらせる", 解約: "かいやく", 三か月: "さんかげつ", 延期: "えんき" }),
+  ];
+}(typeof window !== "undefined" ? window : globalThis));
 
   </script>
   <script>
@@ -2013,6 +2646,8 @@ globalThis.KATAKANA_VOCAB_DATA = [
   const SENTENCE_TIME_LIMIT = 13;
   const STORAGE_KEY = "jlpt-vocab-quiz-progress-v1";
   const engine = window.QuizEngine;
+  const readingData = Array.isArray(window.READING_QUIZ_DATA) ? window.READING_QUIZ_DATA : [];
+  const commonReadingGuides = window.READING_COMMON_READINGS || {};
 
   function normalizeData(items, prefix) {
     return Array.isArray(items)
@@ -2046,10 +2681,21 @@ globalThis.KATAKANA_VOCAB_DATA = [
     start: document.getElementById("start-screen"),
     quiz: document.getElementById("quiz-screen"),
     result: document.getElementById("result-screen"),
+    readingStart: document.getElementById("reading-start-screen"),
+    readingQuiz: document.getElementById("reading-quiz-screen"),
+    readingResult: document.getElementById("reading-result-screen"),
   };
 
   const elements = {
     homeButton: document.getElementById("home-button"),
+    brandEyebrow: document.getElementById("brand-eyebrow"),
+    brandTitle: document.getElementById("brand-title"),
+    featureSwitchButton: document.getElementById("feature-switch-button"),
+    featureSwitchLayer: document.getElementById("feature-switch-layer"),
+    featureSwitchBackdrop: document.getElementById("feature-switch-backdrop"),
+    featureSwitchClose: document.getElementById("feature-switch-close"),
+    featureVocabButton: document.getElementById("feature-vocab-button"),
+    featureReadingButton: document.getElementById("feature-reading-button"),
     mistakeMenuButton: document.getElementById("mistake-menu-button"),
     mistakeMenuLayer: document.getElementById("mistake-menu-layer"),
     mistakeMenuBackdrop: document.getElementById("mistake-menu-backdrop"),
@@ -2146,6 +2792,41 @@ globalThis.KATAKANA_VOCAB_DATA = [
     resultMastered: document.getElementById("result-mastered"),
     returnButton: document.getElementById("return-button"),
     keyboardHint: document.getElementById("keyboard-hint"),
+    readingRecordFurigana: document.getElementById("reading-record-furigana"),
+    readingFuriganaSessions: document.getElementById("reading-furigana-sessions"),
+    readingFuriganaLastAccuracy: document.getElementById("reading-furigana-last-accuracy"),
+    readingFuriganaTotalAccuracy: document.getElementById("reading-furigana-total-accuracy"),
+    readingRecordStandard: document.getElementById("reading-record-standard"),
+    readingStandardSessions: document.getElementById("reading-standard-sessions"),
+    readingStandardLastAccuracy: document.getElementById("reading-standard-last-accuracy"),
+    readingStandardTotalAccuracy: document.getElementById("reading-standard-total-accuracy"),
+    readingDifficultyFurigana: document.getElementById("reading-difficulty-furigana"),
+    readingDifficultyStandard: document.getElementById("reading-difficulty-standard"),
+    readingQuestionCount: document.getElementById("reading-question-count"),
+    readingStartButton: document.getElementById("reading-start-button"),
+    readingSessionLabel: document.getElementById("reading-session-label"),
+    readingProgressText: document.getElementById("reading-progress-text"),
+    readingLiveAccuracy: document.getElementById("reading-live-accuracy"),
+    readingProgressBar: document.getElementById("reading-progress-bar"),
+    readingExamBadge: document.getElementById("reading-exam-badge"),
+    readingTypeBadge: document.getElementById("reading-type-badge"),
+    readingPassage: document.getElementById("reading-passage"),
+    readingQuestion: document.getElementById("reading-question"),
+    readingAnswerGrid: document.getElementById("reading-answer-grid"),
+    readingFeedback: document.getElementById("reading-feedback"),
+    readingFeedbackIcon: document.getElementById("reading-feedback-icon"),
+    readingFeedbackTitle: document.getElementById("reading-feedback-title"),
+    readingFeedbackSelected: document.getElementById("reading-feedback-selected"),
+    readingFeedbackAnswer: document.getElementById("reading-feedback-answer"),
+    readingFeedbackExplanation: document.getElementById("reading-feedback-explanation"),
+    readingNextButton: document.getElementById("reading-next-button"),
+    readingResultSessionNumber: document.getElementById("reading-result-session-number"),
+    readingResultMessage: document.getElementById("reading-result-message"),
+    readingResultAccuracy: document.getElementById("reading-result-accuracy"),
+    readingResultCorrect: document.getElementById("reading-result-correct"),
+    readingResultWrong: document.getElementById("reading-result-wrong"),
+    readingResultTotal: document.getElementById("reading-result-total"),
+    readingReturnButton: document.getElementById("reading-return-button"),
     appError: document.getElementById("app-error"),
   };
 
@@ -2184,6 +2865,8 @@ globalThis.KATAKANA_VOCAB_DATA = [
 
   let progress = loadProgress();
   let session = null;
+  let readingSession = null;
+  let currentFeature = "vocab";
   let examTimerId = null;
   let selectedMistakeDifficulty = "n5n4";
 
@@ -2243,6 +2926,13 @@ globalThis.KATAKANA_VOCAB_DATA = [
       totalCorrect: 0,
       totalAttempts: 0,
       lastAccuracy: null,
+    };
+  }
+
+  function defaultReadingStats() {
+    return {
+      furigana: emptySessionStat(),
+      standard: emptySessionStat(),
     };
   }
 
@@ -2313,6 +3003,8 @@ globalThis.KATAKANA_VOCAB_DATA = [
       examCooldowns: {},
       seenIds: [],
       sessionStats: defaultSessionStats(),
+      readingStats: defaultReadingStats(),
+      readingHistory: [],
     };
   }
 
@@ -2341,6 +3033,21 @@ globalThis.KATAKANA_VOCAB_DATA = [
       if (!saved || typeof saved !== "object") return defaultProgress();
       const normalized = { ...defaultProgress(), ...saved };
       normalized.sessionStats = normalizeSessionStats(saved.sessionStats, normalized.history, saved);
+      const savedReadingStats = saved.readingStats && typeof saved.readingStats === "object"
+        ? saved.readingStats
+        : {};
+      normalized.readingStats = defaultReadingStats();
+      Object.keys(normalized.readingStats).forEach((difficulty) => {
+        if (savedReadingStats[difficulty] && typeof savedReadingStats[difficulty] === "object") {
+          normalized.readingStats[difficulty] = {
+            ...emptySessionStat(),
+            ...savedReadingStats[difficulty],
+          };
+        }
+      });
+      normalized.readingHistory = Array.isArray(saved.readingHistory)
+        ? saved.readingHistory.slice(-20)
+        : [];
       normalized.mistakeCounts = engine.migrateScopedCounts(
         saved.mistakeCounts,
         mistakeCountMappings(),
@@ -2511,6 +3218,281 @@ globalThis.KATAKANA_VOCAB_DATA = [
       screen.classList.toggle("is-active", key === name);
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function selectedReadingDifficulty() {
+    return elements.readingDifficultyStandard.checked ? "standard" : "furigana";
+  }
+
+  function readingStatsFor(difficulty) {
+    progress.readingStats[difficulty] ||= emptySessionStat();
+    return progress.readingStats[difficulty];
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function escapeRegExp(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function textWithFurigana(text, readings, enabled) {
+    if (!enabled) return escapeHtml(text);
+    const guides = { ...commonReadingGuides, ...(readings || {}) };
+    const terms = Object.keys(guides)
+      .filter((term) => term && String(text).includes(term))
+      .sort((a, b) => b.length - a.length);
+    if (!terms.length) return escapeHtml(text);
+
+    const pattern = new RegExp(terms.map(escapeRegExp).join("|"), "g");
+    let html = "";
+    let cursor = 0;
+    for (const match of String(text).matchAll(pattern)) {
+      const term = match[0];
+      html += escapeHtml(String(text).slice(cursor, match.index));
+      html += `<ruby>${escapeHtml(term)}<rt>${escapeHtml(guides[term])}</rt></ruby>`;
+      cursor = match.index + term.length;
+    }
+    html += escapeHtml(String(text).slice(cursor));
+    return html;
+  }
+
+  function renderReadingText(target, text, readings) {
+    const showFurigana = readingSession?.difficulty === "furigana"
+      || (!readingSession && selectedReadingDifficulty() === "furigana");
+    target.innerHTML = textWithFurigana(text, readings, showFurigana);
+    target.setAttribute("aria-label", text);
+  }
+
+  function renderReadingStartScreen() {
+    const selected = selectedReadingDifficulty();
+    const records = {
+      furigana: {
+        card: elements.readingRecordFurigana,
+        sessions: elements.readingFuriganaSessions,
+        last: elements.readingFuriganaLastAccuracy,
+        total: elements.readingFuriganaTotalAccuracy,
+      },
+      standard: {
+        card: elements.readingRecordStandard,
+        sessions: elements.readingStandardSessions,
+        last: elements.readingStandardLastAccuracy,
+        total: elements.readingStandardTotalAccuracy,
+      },
+    };
+    Object.entries(records).forEach(([difficulty, fields]) => {
+      const stat = readingStatsFor(difficulty);
+      fields.sessions.textContent = `${stat.completedSessions}회`;
+      fields.last.textContent = formatAccuracy(stat.lastAccuracy);
+      fields.total.textContent = formatAccuracy(engine.accuracy(stat.totalCorrect, stat.totalAttempts));
+      fields.card.classList.toggle("is-selected", difficulty === selected);
+    });
+  }
+
+  function openFeatureSwitch() {
+    closeMistakeMenu();
+    elements.featureSwitchLayer.hidden = false;
+    elements.featureSwitchButton.setAttribute("aria-expanded", "true");
+    elements.featureVocabButton.classList.toggle("is-selected", currentFeature === "vocab");
+    elements.featureReadingButton.classList.toggle("is-selected", currentFeature === "reading");
+    elements.featureVocabButton.setAttribute("aria-pressed", String(currentFeature === "vocab"));
+    elements.featureReadingButton.setAttribute("aria-pressed", String(currentFeature === "reading"));
+    (currentFeature === "vocab" ? elements.featureVocabButton : elements.featureReadingButton).focus();
+  }
+
+  function closeFeatureSwitch(restoreFocus = true) {
+    if (elements.featureSwitchLayer.hidden) return;
+    elements.featureSwitchLayer.hidden = true;
+    elements.featureSwitchButton.setAttribute("aria-expanded", "false");
+    if (restoreFocus) elements.featureSwitchButton.focus();
+  }
+
+  function switchFeature(feature) {
+    closeFeatureSwitch(false);
+    closeMistakeMenu();
+    stopExamTimer();
+    session = null;
+    readingSession = null;
+    currentFeature = feature === "reading" ? "reading" : "vocab";
+    const readingFeature = currentFeature === "reading";
+    elements.brandEyebrow.textContent = readingFeature
+      ? "JPT · JLPT · J.TEST · BJT"
+      : "JLPT N5 · N4 · N3 · N2";
+    elements.brandTitle.textContent = readingFeature ? "일본어 독해 퀴즈" : "한자 읽기 퀴즈";
+    document.title = readingFeature ? "일본어 독해 퀴즈" : "한자 읽기 퀴즈";
+    if (readingFeature) {
+      renderReadingStartScreen();
+      showScreen("readingStart");
+      elements.readingStartButton.focus();
+    } else {
+      syncModeControls();
+      showScreen("start");
+      elements.startButton.focus();
+    }
+  }
+
+  function selectBalancedReadingQuestions(count) {
+    const groups = ["JLPT", "JPT", "J.TEST", "BJT"].map((exam) => (
+      engine.shuffle(readingData.filter((item) => item.exam === exam))
+    ));
+    const selected = [];
+    while (selected.length < count && groups.some((group) => group.length)) {
+      groups.forEach((group) => {
+        if (selected.length < count && group.length) selected.push(group.shift());
+      });
+    }
+    return engine.shuffle(selected).map((item) => ({
+      ...item,
+      sessionChoices: engine.shuffle(item.choices.map((text, originalIndex) => ({
+        text,
+        correct: originalIndex === item.answer,
+      }))),
+    }));
+  }
+
+  function startReadingSession() {
+    const difficulty = selectedReadingDifficulty();
+    const stat = readingStatsFor(difficulty);
+    const requestedCount = Math.min(
+      readingData.length,
+      Math.max(10, Math.round(Number(elements.readingQuestionCount.value) || 20)),
+    );
+    elements.readingQuestionCount.value = String(requestedCount);
+    readingSession = {
+      number: stat.completedSessions + 1,
+      difficulty,
+      questions: selectBalancedReadingQuestions(requestedCount),
+      index: 0,
+      correct: 0,
+      wrong: 0,
+      attempts: 0,
+      answered: false,
+    };
+    elements.readingSessionLabel.textContent = `독해 ${readingSession.number}회차 · ${difficulty === "furigana" ? "후리가나 표시" : "후리가나 없음"}`;
+    showScreen("readingQuiz");
+    showReadingQuestion();
+  }
+
+  function updateReadingHeader() {
+    const completed = readingSession.index + (readingSession.answered ? 1 : 0);
+    elements.readingProgressText.textContent = `${Math.min(readingSession.index + 1, readingSession.questions.length)} / ${readingSession.questions.length}`;
+    elements.readingLiveAccuracy.textContent = formatAccuracy(
+      engine.accuracy(readingSession.correct, readingSession.attempts),
+    );
+    elements.readingProgressBar.style.width = `${(completed / readingSession.questions.length) * 100}%`;
+  }
+
+  function showReadingQuestion() {
+    const item = readingSession.questions[readingSession.index];
+    readingSession.answered = false;
+    elements.readingExamBadge.textContent = `${item.exam}형`;
+    elements.readingTypeBadge.textContent = item.type;
+    renderReadingText(elements.readingPassage, item.passage, item.readings);
+    renderReadingText(elements.readingQuestion, item.question, item.readings);
+    elements.readingAnswerGrid.replaceChildren();
+    item.sessionChoices.forEach((choice, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "answer-button";
+      button.dataset.choiceIndex = String(index);
+      button.dataset.correct = String(choice.correct);
+      button.innerHTML = `<span class="answer-number">${index + 1}</span><span lang="ja">${textWithFurigana(
+        choice.text,
+        item.readings,
+        readingSession.difficulty === "furigana",
+      )}</span>`;
+      button.setAttribute("aria-label", `${index + 1}번 ${choice.text}`);
+      button.addEventListener("click", () => answerReadingQuestion(index));
+      elements.readingAnswerGrid.append(button);
+    });
+    elements.readingFeedback.hidden = true;
+    elements.readingFeedback.className = "feedback reading-feedback";
+    elements.readingNextButton.hidden = true;
+    updateReadingHeader();
+    elements.readingAnswerGrid.querySelector("button")?.focus();
+  }
+
+  function answerReadingQuestion(choiceIndex) {
+    if (!readingSession || readingSession.answered) return;
+    const item = readingSession.questions[readingSession.index];
+    const choice = item.sessionChoices[choiceIndex];
+    if (!choice) return;
+    const isCorrect = choice.correct;
+    readingSession.answered = true;
+    readingSession.attempts += 1;
+    if (isCorrect) readingSession.correct += 1;
+    else readingSession.wrong += 1;
+
+    const buttons = [...elements.readingAnswerGrid.querySelectorAll("button")];
+    buttons.forEach((button, index) => {
+      button.disabled = true;
+      if (item.sessionChoices[index].correct) button.classList.add("is-correct");
+      if (index === choiceIndex && !isCorrect) button.classList.add("is-wrong");
+    });
+    const correctChoice = item.sessionChoices.find((candidate) => candidate.correct);
+    elements.readingFeedback.hidden = false;
+    elements.readingFeedback.className = `feedback reading-feedback ${isCorrect ? "is-correct" : "is-wrong"}`;
+    elements.readingFeedbackIcon.innerHTML = `<span>${isCorrect ? "✓" : "!"}</span>`;
+    elements.readingFeedbackTitle.textContent = isCorrect ? "정답입니다" : "오답입니다. 정답을 확인하세요";
+    elements.readingFeedbackSelected.hidden = isCorrect;
+    elements.readingFeedbackSelected.textContent = isCorrect ? "" : `선택한 답 · ${choice.text}`;
+    elements.readingFeedbackAnswer.textContent = `정답 · ${correctChoice.text}`;
+    elements.readingFeedbackExplanation.textContent = `해설 · ${item.explanation}`;
+    elements.readingNextButton.textContent = readingSession.index + 1 < readingSession.questions.length
+      ? "다음 문제"
+      : "결과 보기";
+    elements.readingNextButton.hidden = false;
+    updateReadingHeader();
+    elements.readingNextButton.focus();
+  }
+
+  function showNextReadingQuestion() {
+    if (!readingSession?.answered) return;
+    if (readingSession.index + 1 >= readingSession.questions.length) {
+      completeReadingSession();
+      return;
+    }
+    readingSession.index += 1;
+    showReadingQuestion();
+  }
+
+  function completeReadingSession() {
+    const accuracy = engine.accuracy(readingSession.correct, readingSession.attempts) || 0;
+    const stat = readingStatsFor(readingSession.difficulty);
+    stat.completedSessions += 1;
+    stat.totalCorrect += readingSession.correct;
+    stat.totalAttempts += readingSession.attempts;
+    stat.lastAccuracy = accuracy;
+    progress.readingHistory.push({
+      session: readingSession.number,
+      difficulty: readingSession.difficulty,
+      accuracy,
+      correct: readingSession.correct,
+      wrong: readingSession.wrong,
+      total: readingSession.questions.length,
+      date: new Intl.DateTimeFormat("ko-KR", { month: "numeric", day: "numeric" }).format(new Date()),
+    });
+    progress.readingHistory = progress.readingHistory.slice(-20);
+    saveProgress();
+
+    elements.readingResultSessionNumber.textContent = readingSession.number;
+    elements.readingResultAccuracy.textContent = `${accuracy}%`;
+    elements.readingResultCorrect.textContent = readingSession.correct;
+    elements.readingResultWrong.textContent = readingSession.wrong;
+    elements.readingResultTotal.textContent = readingSession.questions.length;
+    elements.readingResultMessage.textContent = accuracy >= 90
+      ? "핵심 정보와 세부 조건을 정확하게 읽었습니다. 훌륭해요!"
+      : accuracy >= 70
+        ? "전체 흐름을 잘 파악했습니다. 틀린 문항의 조건 표현을 다시 확인해 보세요."
+        : "지문의 시간·대상·예외 조건에 밑줄을 긋듯 확인하며 다시 도전해 보세요.";
+    showScreen("readingResult");
+    elements.readingReturnButton.focus();
   }
 
   function renderStartScreen() {
@@ -3146,16 +4128,45 @@ globalThis.KATAKANA_VOCAB_DATA = [
     elements.examTimer.hidden = true;
     elements.examMistakeBadge.hidden = true;
     session = null;
-    syncModeControls();
-    showScreen("start");
-    elements.startButton.focus();
+    readingSession = null;
+    if (currentFeature === "reading") {
+      renderReadingStartScreen();
+      showScreen("readingStart");
+      elements.readingStartButton.focus();
+    } else {
+      syncModeControls();
+      showScreen("start");
+      elements.startButton.focus();
+    }
   }
 
   function handleKeyboard(event) {
+    if (!elements.featureSwitchLayer.hidden) {
+      if (event.key === "Escape") {
+        event.preventDefault?.();
+        closeFeatureSwitch();
+      }
+      return;
+    }
     if (!elements.mistakeMenuLayer.hidden) {
       if (event.key === "Escape") {
         event.preventDefault?.();
         closeMistakeMenu();
+      }
+      return;
+    }
+    if (screens.readingQuiz.classList.contains("is-active") && readingSession) {
+      const readingNumberKey = /^[1-4]$/.test(event.key)
+        ? Number(event.key)
+        : /^Numpad[1-4]$/.test(event.code)
+          ? Number(event.code.slice(-1))
+          : null;
+      if (!readingSession.answered && readingNumberKey !== null) {
+        event.preventDefault?.();
+        elements.readingAnswerGrid.querySelectorAll("button")[readingNumberKey - 1]?.click();
+      } else if (readingSession.answered && (event.key === "Enter" || event.code === "NumpadEnter")) {
+        event.preventDefault?.();
+        elements.readingNextButton.click();
       }
       return;
     }
@@ -3293,17 +4304,37 @@ globalThis.KATAKANA_VOCAB_DATA = [
     const invalidKanaData = jlptDifficulties.some(
       (difficulty) => datasetForMode(difficulty, "kanji-to-kana").length < EXAM_QUESTION_COUNT,
     );
+    const readingExams = ["JLPT", "JPT", "J.TEST", "BJT"];
+    const invalidReadingData = readingData.length < 10
+      || readingExams.some((exam) => readingData.filter((item) => item.exam === exam).length < 2)
+      || readingData.some((item) => !item.id
+        || !item.passage
+        || !item.question
+        || !Array.isArray(item.choices)
+        || item.choices.length !== 4
+        || !Number.isInteger(item.answer)
+        || item.answer < 0
+        || item.answer >= item.choices.length
+        || !item.explanation
+        || item.origin !== "original");
     if (Object.values(datasets).some((quizData) => quizData.length < 4)
-      || invalidCoreData || invalidSentenceData || invalidKanaData) {
+      || invalidCoreData || invalidSentenceData || invalidKanaData || invalidReadingData) {
       elements.appError.hidden = false;
-      elements.appError.textContent = "단어 데이터를 불러오지 못했습니다. 단어 데이터 파일을 확인해 주세요.";
+      elements.appError.textContent = "학습 데이터를 불러오지 못했습니다. 단어·독해 데이터 파일을 확인해 주세요.";
       elements.startButton.disabled = true;
+      elements.readingStartButton.disabled = true;
       return;
     }
     renderStartScreen();
+    renderReadingStartScreen();
     syncModeControls();
     elements.startButton.addEventListener("click", startSession);
     elements.homeButton.addEventListener("click", returnToStart);
+    elements.featureSwitchButton.addEventListener("click", openFeatureSwitch);
+    elements.featureSwitchClose.addEventListener("click", () => closeFeatureSwitch());
+    elements.featureSwitchBackdrop.addEventListener("click", () => closeFeatureSwitch());
+    elements.featureVocabButton.addEventListener("click", () => switchFeature("vocab"));
+    elements.featureReadingButton.addEventListener("click", () => switchFeature("reading"));
     elements.mistakeMenuButton.addEventListener("click", openMistakeMenu);
     elements.mistakeMenuClose.addEventListener("click", closeMistakeMenu);
     elements.mistakeMenuBackdrop.addEventListener("click", closeMistakeMenu);
@@ -3313,6 +4344,11 @@ globalThis.KATAKANA_VOCAB_DATA = [
     elements.mistakeTabKatakana.addEventListener("click", () => selectMistakeDifficulty("katakana"));
     elements.nextButton.addEventListener("click", showNextQuestion);
     elements.returnButton.addEventListener("click", returnToStart);
+    elements.readingStartButton.addEventListener("click", startReadingSession);
+    elements.readingNextButton.addEventListener("click", showNextReadingQuestion);
+    elements.readingReturnButton.addEventListener("click", returnToStart);
+    elements.readingDifficultyFurigana.addEventListener("change", renderReadingStartScreen);
+    elements.readingDifficultyStandard.addEventListener("change", renderReadingStartScreen);
     elements.kanaBackspace.addEventListener("click", removeLastKana);
     elements.kanaClear.addEventListener("click", clearKanaAnswer);
     elements.kanaSubmit.addEventListener("click", submitKanaAnswer);

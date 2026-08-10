@@ -5,12 +5,41 @@ require("./vocab-data.js");
 require("./n3-vocab-data.js");
 require("./n2-vocab-data.js");
 require("./katakana-vocab-data.js");
+require("./reading-data.js");
 const engine = require("./quiz-engine.js");
 
 const data = globalThis.VOCAB_DATA;
 const n3Data = globalThis.N3_VOCAB_DATA;
 const n2Data = globalThis.N2_VOCAB_DATA;
 const katakanaData = globalThis.KATAKANA_VOCAB_DATA;
+const readingData = globalThis.READING_QUIZ_DATA;
+const readingCommonReadings = globalThis.READING_COMMON_READINGS;
+assert.equal(readingData.length, 32, "독해 신규 문제는 32개가 있어야 합니다.");
+assert.equal(new Set(readingData.map((item) => item.id)).size, readingData.length, "독해 문제 ID는 중복되면 안 됩니다.");
+assert.deepEqual(
+  Object.fromEntries(["JLPT", "JPT", "J.TEST", "BJT"].map((exam) => [
+    exam,
+    readingData.filter((item) => item.exam === exam).length,
+  ])),
+  { JLPT: 8, JPT: 8, "J.TEST": 8, BJT: 8 },
+  "네 시험 유형을 같은 수로 구성해야 합니다.",
+);
+assert.ok(readingData.every((item) => item.origin === "original"), "공개 앱에는 새로 작성한 독해 문제만 포함해야 합니다.");
+assert.ok(readingData.every((item) => item.passage && item.question && item.explanation));
+assert.ok(readingData.every((item) => item.choices.length === 4 && new Set(item.choices).size === 4));
+assert.ok(readingData.every((item) => Number.isInteger(item.answer) && item.answer >= 0 && item.answer < 4));
+assert.ok(readingData.every((item) => item.readings && Object.keys(item.readings).length > 0), "후리가나용 읽기 데이터가 있어야 합니다.");
+const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+readingData.forEach((item) => {
+  const readings = { ...readingCommonReadings, ...item.readings };
+  [item.passage, item.question, ...item.choices].forEach((text) => {
+    const terms = Object.keys(readings)
+      .filter((term) => term && text.includes(term))
+      .sort((a, b) => b.length - a.length);
+    const unannotated = text.replace(new RegExp(terms.map(escapeRegExp).join("|"), "g"), "");
+    assert.doesNotMatch(unannotated, /[一-龯々]/, `${item.id}의 모든 한자에 후리가나가 있어야 합니다.`);
+  });
+});
 assert.equal(data.length, 480, "480개 단어가 있어야 합니다.");
 assert.equal(new Set(data.map((item) => item.id)).size, 480, "단어 ID는 중복되면 안 됩니다.");
 assert.equal(

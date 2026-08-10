@@ -5,6 +5,7 @@ require("./vocab-data.js");
 require("./n3-vocab-data.js");
 require("./n2-vocab-data.js");
 require("./katakana-vocab-data.js");
+require("./reading-data.js");
 globalThis.QuizEngine = require("./quiz-engine.js");
 
 class ClassList {
@@ -66,7 +67,8 @@ class MiniElement {
 }
 
 const ids = [
-  "start-screen", "quiz-screen", "result-screen", "home-button",
+  "start-screen", "quiz-screen", "result-screen", "reading-start-screen", "reading-quiz-screen", "reading-result-screen", "home-button",
+  "brand-eyebrow", "brand-title", "feature-switch-button", "feature-switch-layer", "feature-switch-backdrop", "feature-switch-close", "feature-vocab-button", "feature-reading-button",
   "mistake-menu-button", "mistake-menu-layer", "mistake-menu-backdrop", "mistake-menu-close",
   "mistake-menu-summary", "mistake-menu-list", "mistake-menu-empty",
   "mistake-tab-basic", "mistake-tab-n3", "mistake-tab-n2", "mistake-tab-katakana",
@@ -88,16 +90,26 @@ const ids = [
   "day-label", "exam-mistake-badge", "answer-grid", "kana-composer", "kana-answer", "kana-grid", "kana-backspace", "kana-clear", "kana-submit",
   "feedback", "feedback-icon", "feedback-title", "feedback-selected", "feedback-reading",
   "feedback-meaning", "feedback-sentence-reading", "feedback-translation", "feedback-source", "retry-note", "next-button", "result-session-number", "result-message",
-  "result-accuracy", "result-correct", "result-wrong", "result-mastered", "return-button", "keyboard-hint", "app-error",
+  "result-accuracy", "result-correct", "result-wrong", "result-mastered", "return-button", "keyboard-hint",
+  "reading-record-furigana", "reading-furigana-sessions", "reading-furigana-last-accuracy", "reading-furigana-total-accuracy",
+  "reading-record-standard", "reading-standard-sessions", "reading-standard-last-accuracy", "reading-standard-total-accuracy",
+  "reading-difficulty-furigana", "reading-difficulty-standard", "reading-question-count", "reading-start-button",
+  "reading-session-label", "reading-progress-text", "reading-live-accuracy", "reading-progress-bar", "reading-exam-badge", "reading-type-badge",
+  "reading-passage", "reading-question", "reading-answer-grid", "reading-feedback", "reading-feedback-icon", "reading-feedback-title",
+  "reading-feedback-selected", "reading-feedback-answer", "reading-feedback-explanation", "reading-next-button",
+  "reading-result-session-number", "reading-result-message", "reading-result-accuracy", "reading-result-correct", "reading-result-wrong", "reading-result-total", "reading-return-button",
+  "app-error",
 ];
 const elements = new Map(ids.map((id) => [id, new MiniElement("div", id)]));
 for (const id of [
-  "home-button", "mistake-menu-button", "mistake-menu-backdrop", "mistake-menu-close",
+  "home-button", "feature-switch-button", "feature-switch-backdrop", "feature-switch-close", "feature-vocab-button", "feature-reading-button",
+  "mistake-menu-button", "mistake-menu-backdrop", "mistake-menu-close",
   "mistake-tab-basic", "mistake-tab-n3", "mistake-tab-n2", "mistake-tab-katakana",
-  "start-button", "next-button", "return-button", "kana-backspace", "kana-clear", "kana-submit",
+  "start-button", "next-button", "return-button", "kana-backspace", "kana-clear", "kana-submit", "reading-start-button", "reading-next-button", "reading-return-button",
 ]) elements.get(id).tagName = "BUTTON";
 elements.get("start-screen").classList.add("is-active");
 elements.get("mistake-menu-layer").hidden = true;
+elements.get("feature-switch-layer").hidden = true;
 elements.get("mistake-menu-empty").hidden = true;
 elements.get("difficulty-basic").checked = true;
 elements.get("mode-kanji-reading").checked = true;
@@ -115,6 +127,11 @@ elements.get("exam-mistake-badge").hidden = true;
 elements.get("kana-composer").hidden = true;
 elements.get("next-button").hidden = true;
 elements.get("feedback").hidden = true;
+elements.get("reading-difficulty-furigana").checked = true;
+elements.get("reading-question-count").value = "20";
+elements.get("reading-question-count").max = "32";
+elements.get("reading-feedback").hidden = true;
+elements.get("reading-next-button").hidden = true;
 
 const documentListeners = {};
 globalThis.document = {
@@ -821,5 +838,70 @@ elements.get("start-button").click();
 assert.equal(elements.get("quiz-progress-text").textContent, "1 / 100");
 assert.equal(elements.get("exam-time-left").textContent, 7, "카타카나 시험 제한시간은 7초여야 합니다.");
 assert.match(elements.get("quiz-session-label").textContent, /카타카나→뜻/);
+
+elements.get("home-button").click();
+elements.get("feature-switch-button").click();
+assert.equal(elements.get("feature-switch-layer").hidden, false, "오답 기록 옆 기능 변경 버튼으로 메뉴가 열려야 합니다.");
+assert.equal(elements.get("feature-switch-button")["aria-expanded"], "true");
+elements.get("feature-reading-button").click();
+assert.ok(elements.get("reading-start-screen").classList.contains("is-active"), "독해 연습 시작 화면으로 이동해야 합니다.");
+assert.equal(elements.get("brand-title").textContent, "일본어 독해 퀴즈");
+assert.equal(elements.get("reading-furigana-sessions").textContent, "0회");
+assert.equal(elements.get("reading-standard-sessions").textContent, "0회");
+
+elements.get("reading-question-count").value = "10";
+elements.get("reading-start-button").click();
+assert.ok(elements.get("reading-quiz-screen").classList.contains("is-active"));
+assert.equal(elements.get("reading-progress-text").textContent, "1 / 10");
+assert.equal(elements.get("reading-answer-grid").querySelectorAll("button").length, 4);
+assert.match(elements.get("reading-passage").innerHTML, /<ruby>/, "후리가나 난이도에는 지문의 한자 읽기를 표시해야 합니다.");
+assert.match(elements.get("reading-question").innerHTML, /<ruby>/, "후리가나 난이도에는 질문의 한자 읽기를 표시해야 합니다.");
+assert.match(elements.get("reading-exam-badge").textContent, /^(?:JLPT|JPT|J\.TEST|BJT)형$/);
+
+let readingButtons = elements.get("reading-answer-grid").querySelectorAll("button");
+const firstReadingWrongIndex = readingButtons.findIndex((button) => button.dataset.correct !== "true");
+const firstReadingKey = pressKey(String(firstReadingWrongIndex + 1), `Digit${firstReadingWrongIndex + 1}`);
+assert.equal(firstReadingKey.defaultPrevented, true, "독해 선택지도 숫자키 1~4로 고를 수 있어야 합니다.");
+assert.match(elements.get("reading-feedback-title").textContent, /오답/);
+assert.equal(elements.get("reading-feedback-selected").hidden, false);
+assert.match(elements.get("reading-feedback-answer").textContent, /^정답/);
+assert.match(elements.get("reading-feedback-explanation").textContent, /^해설/);
+
+guard = 0;
+while (!elements.get("reading-result-screen").classList.contains("is-active") && guard < 15) {
+  pressKey("Enter", "Enter");
+  if (elements.get("reading-result-screen").classList.contains("is-active")) break;
+  readingButtons = elements.get("reading-answer-grid").querySelectorAll("button");
+  const correctReadingIndex = readingButtons.findIndex((button) => button.dataset.correct === "true");
+  assert.ok(correctReadingIndex >= 0, "독해 문제에는 정답이 하나 있어야 합니다.");
+  pressKey(String(correctReadingIndex + 1), `Digit${correctReadingIndex + 1}`);
+  guard += 1;
+}
+assert.ok(elements.get("reading-result-screen").classList.contains("is-active"), "선택한 독해 문제를 모두 풀면 결과 화면이 열려야 합니다.");
+assert.equal(elements.get("reading-result-total").textContent, 10);
+assert.equal(elements.get("reading-result-wrong").textContent, 1);
+assert.equal(JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1")).readingStats.furigana.completedSessions, 1);
+
+elements.get("reading-return-button").click();
+assert.equal(elements.get("reading-furigana-sessions").textContent, "1회", "후리가나 독해 회차를 별도로 기록해야 합니다.");
+assert.notEqual(elements.get("reading-furigana-total-accuracy").textContent, "—");
+elements.get("reading-difficulty-furigana").checked = false;
+elements.get("reading-difficulty-standard").checked = true;
+elements.get("reading-difficulty-standard").dispatch("change");
+assert.ok(elements.get("reading-record-standard").classList.contains("is-selected"));
+elements.get("reading-question-count").value = "10";
+elements.get("reading-start-button").click();
+assert.doesNotMatch(elements.get("reading-passage").innerHTML, /<ruby>/, "후리가나 없음 난이도는 일본어 원문만 표시해야 합니다.");
+elements.get("home-button").click();
+assert.ok(elements.get("reading-start-screen").classList.contains("is-active"), "독해 중 아이콘을 누르면 독해 시작 화면으로 돌아가야 합니다.");
+
+elements.get("feature-switch-button").click();
+const closeFeatureEvent = pressKey("Escape", "Escape");
+assert.equal(closeFeatureEvent.defaultPrevented, true);
+assert.equal(elements.get("feature-switch-layer").hidden, true, "Escape 키로 기능 변경 메뉴를 닫을 수 있어야 합니다.");
+elements.get("feature-switch-button").click();
+elements.get("feature-vocab-button").click();
+assert.ok(elements.get("start-screen").classList.contains("is-active"), "기능 변경 메뉴에서 기존 단어 연습으로 돌아갈 수 있어야 합니다.");
+assert.equal(elements.get("brand-title").textContent, "한자 읽기 퀴즈");
 
 console.log("app interaction flow tests passed");

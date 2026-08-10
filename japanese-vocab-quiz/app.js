@@ -10,6 +10,8 @@
   const SENTENCE_TIME_LIMIT = 13;
   const STORAGE_KEY = "jlpt-vocab-quiz-progress-v1";
   const engine = window.QuizEngine;
+  const readingData = Array.isArray(window.READING_QUIZ_DATA) ? window.READING_QUIZ_DATA : [];
+  const commonReadingGuides = window.READING_COMMON_READINGS || {};
 
   function normalizeData(items, prefix) {
     return Array.isArray(items)
@@ -43,10 +45,21 @@
     start: document.getElementById("start-screen"),
     quiz: document.getElementById("quiz-screen"),
     result: document.getElementById("result-screen"),
+    readingStart: document.getElementById("reading-start-screen"),
+    readingQuiz: document.getElementById("reading-quiz-screen"),
+    readingResult: document.getElementById("reading-result-screen"),
   };
 
   const elements = {
     homeButton: document.getElementById("home-button"),
+    brandEyebrow: document.getElementById("brand-eyebrow"),
+    brandTitle: document.getElementById("brand-title"),
+    featureSwitchButton: document.getElementById("feature-switch-button"),
+    featureSwitchLayer: document.getElementById("feature-switch-layer"),
+    featureSwitchBackdrop: document.getElementById("feature-switch-backdrop"),
+    featureSwitchClose: document.getElementById("feature-switch-close"),
+    featureVocabButton: document.getElementById("feature-vocab-button"),
+    featureReadingButton: document.getElementById("feature-reading-button"),
     mistakeMenuButton: document.getElementById("mistake-menu-button"),
     mistakeMenuLayer: document.getElementById("mistake-menu-layer"),
     mistakeMenuBackdrop: document.getElementById("mistake-menu-backdrop"),
@@ -143,6 +156,41 @@
     resultMastered: document.getElementById("result-mastered"),
     returnButton: document.getElementById("return-button"),
     keyboardHint: document.getElementById("keyboard-hint"),
+    readingRecordFurigana: document.getElementById("reading-record-furigana"),
+    readingFuriganaSessions: document.getElementById("reading-furigana-sessions"),
+    readingFuriganaLastAccuracy: document.getElementById("reading-furigana-last-accuracy"),
+    readingFuriganaTotalAccuracy: document.getElementById("reading-furigana-total-accuracy"),
+    readingRecordStandard: document.getElementById("reading-record-standard"),
+    readingStandardSessions: document.getElementById("reading-standard-sessions"),
+    readingStandardLastAccuracy: document.getElementById("reading-standard-last-accuracy"),
+    readingStandardTotalAccuracy: document.getElementById("reading-standard-total-accuracy"),
+    readingDifficultyFurigana: document.getElementById("reading-difficulty-furigana"),
+    readingDifficultyStandard: document.getElementById("reading-difficulty-standard"),
+    readingQuestionCount: document.getElementById("reading-question-count"),
+    readingStartButton: document.getElementById("reading-start-button"),
+    readingSessionLabel: document.getElementById("reading-session-label"),
+    readingProgressText: document.getElementById("reading-progress-text"),
+    readingLiveAccuracy: document.getElementById("reading-live-accuracy"),
+    readingProgressBar: document.getElementById("reading-progress-bar"),
+    readingExamBadge: document.getElementById("reading-exam-badge"),
+    readingTypeBadge: document.getElementById("reading-type-badge"),
+    readingPassage: document.getElementById("reading-passage"),
+    readingQuestion: document.getElementById("reading-question"),
+    readingAnswerGrid: document.getElementById("reading-answer-grid"),
+    readingFeedback: document.getElementById("reading-feedback"),
+    readingFeedbackIcon: document.getElementById("reading-feedback-icon"),
+    readingFeedbackTitle: document.getElementById("reading-feedback-title"),
+    readingFeedbackSelected: document.getElementById("reading-feedback-selected"),
+    readingFeedbackAnswer: document.getElementById("reading-feedback-answer"),
+    readingFeedbackExplanation: document.getElementById("reading-feedback-explanation"),
+    readingNextButton: document.getElementById("reading-next-button"),
+    readingResultSessionNumber: document.getElementById("reading-result-session-number"),
+    readingResultMessage: document.getElementById("reading-result-message"),
+    readingResultAccuracy: document.getElementById("reading-result-accuracy"),
+    readingResultCorrect: document.getElementById("reading-result-correct"),
+    readingResultWrong: document.getElementById("reading-result-wrong"),
+    readingResultTotal: document.getElementById("reading-result-total"),
+    readingReturnButton: document.getElementById("reading-return-button"),
     appError: document.getElementById("app-error"),
   };
 
@@ -181,6 +229,8 @@
 
   let progress = loadProgress();
   let session = null;
+  let readingSession = null;
+  let currentFeature = "vocab";
   let examTimerId = null;
   let selectedMistakeDifficulty = "n5n4";
 
@@ -240,6 +290,13 @@
       totalCorrect: 0,
       totalAttempts: 0,
       lastAccuracy: null,
+    };
+  }
+
+  function defaultReadingStats() {
+    return {
+      furigana: emptySessionStat(),
+      standard: emptySessionStat(),
     };
   }
 
@@ -310,6 +367,8 @@
       examCooldowns: {},
       seenIds: [],
       sessionStats: defaultSessionStats(),
+      readingStats: defaultReadingStats(),
+      readingHistory: [],
     };
   }
 
@@ -338,6 +397,21 @@
       if (!saved || typeof saved !== "object") return defaultProgress();
       const normalized = { ...defaultProgress(), ...saved };
       normalized.sessionStats = normalizeSessionStats(saved.sessionStats, normalized.history, saved);
+      const savedReadingStats = saved.readingStats && typeof saved.readingStats === "object"
+        ? saved.readingStats
+        : {};
+      normalized.readingStats = defaultReadingStats();
+      Object.keys(normalized.readingStats).forEach((difficulty) => {
+        if (savedReadingStats[difficulty] && typeof savedReadingStats[difficulty] === "object") {
+          normalized.readingStats[difficulty] = {
+            ...emptySessionStat(),
+            ...savedReadingStats[difficulty],
+          };
+        }
+      });
+      normalized.readingHistory = Array.isArray(saved.readingHistory)
+        ? saved.readingHistory.slice(-20)
+        : [];
       normalized.mistakeCounts = engine.migrateScopedCounts(
         saved.mistakeCounts,
         mistakeCountMappings(),
@@ -508,6 +582,281 @@
       screen.classList.toggle("is-active", key === name);
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function selectedReadingDifficulty() {
+    return elements.readingDifficultyStandard.checked ? "standard" : "furigana";
+  }
+
+  function readingStatsFor(difficulty) {
+    progress.readingStats[difficulty] ||= emptySessionStat();
+    return progress.readingStats[difficulty];
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function escapeRegExp(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function textWithFurigana(text, readings, enabled) {
+    if (!enabled) return escapeHtml(text);
+    const guides = { ...commonReadingGuides, ...(readings || {}) };
+    const terms = Object.keys(guides)
+      .filter((term) => term && String(text).includes(term))
+      .sort((a, b) => b.length - a.length);
+    if (!terms.length) return escapeHtml(text);
+
+    const pattern = new RegExp(terms.map(escapeRegExp).join("|"), "g");
+    let html = "";
+    let cursor = 0;
+    for (const match of String(text).matchAll(pattern)) {
+      const term = match[0];
+      html += escapeHtml(String(text).slice(cursor, match.index));
+      html += `<ruby>${escapeHtml(term)}<rt>${escapeHtml(guides[term])}</rt></ruby>`;
+      cursor = match.index + term.length;
+    }
+    html += escapeHtml(String(text).slice(cursor));
+    return html;
+  }
+
+  function renderReadingText(target, text, readings) {
+    const showFurigana = readingSession?.difficulty === "furigana"
+      || (!readingSession && selectedReadingDifficulty() === "furigana");
+    target.innerHTML = textWithFurigana(text, readings, showFurigana);
+    target.setAttribute("aria-label", text);
+  }
+
+  function renderReadingStartScreen() {
+    const selected = selectedReadingDifficulty();
+    const records = {
+      furigana: {
+        card: elements.readingRecordFurigana,
+        sessions: elements.readingFuriganaSessions,
+        last: elements.readingFuriganaLastAccuracy,
+        total: elements.readingFuriganaTotalAccuracy,
+      },
+      standard: {
+        card: elements.readingRecordStandard,
+        sessions: elements.readingStandardSessions,
+        last: elements.readingStandardLastAccuracy,
+        total: elements.readingStandardTotalAccuracy,
+      },
+    };
+    Object.entries(records).forEach(([difficulty, fields]) => {
+      const stat = readingStatsFor(difficulty);
+      fields.sessions.textContent = `${stat.completedSessions}회`;
+      fields.last.textContent = formatAccuracy(stat.lastAccuracy);
+      fields.total.textContent = formatAccuracy(engine.accuracy(stat.totalCorrect, stat.totalAttempts));
+      fields.card.classList.toggle("is-selected", difficulty === selected);
+    });
+  }
+
+  function openFeatureSwitch() {
+    closeMistakeMenu();
+    elements.featureSwitchLayer.hidden = false;
+    elements.featureSwitchButton.setAttribute("aria-expanded", "true");
+    elements.featureVocabButton.classList.toggle("is-selected", currentFeature === "vocab");
+    elements.featureReadingButton.classList.toggle("is-selected", currentFeature === "reading");
+    elements.featureVocabButton.setAttribute("aria-pressed", String(currentFeature === "vocab"));
+    elements.featureReadingButton.setAttribute("aria-pressed", String(currentFeature === "reading"));
+    (currentFeature === "vocab" ? elements.featureVocabButton : elements.featureReadingButton).focus();
+  }
+
+  function closeFeatureSwitch(restoreFocus = true) {
+    if (elements.featureSwitchLayer.hidden) return;
+    elements.featureSwitchLayer.hidden = true;
+    elements.featureSwitchButton.setAttribute("aria-expanded", "false");
+    if (restoreFocus) elements.featureSwitchButton.focus();
+  }
+
+  function switchFeature(feature) {
+    closeFeatureSwitch(false);
+    closeMistakeMenu();
+    stopExamTimer();
+    session = null;
+    readingSession = null;
+    currentFeature = feature === "reading" ? "reading" : "vocab";
+    const readingFeature = currentFeature === "reading";
+    elements.brandEyebrow.textContent = readingFeature
+      ? "JPT · JLPT · J.TEST · BJT"
+      : "JLPT N5 · N4 · N3 · N2";
+    elements.brandTitle.textContent = readingFeature ? "일본어 독해 퀴즈" : "한자 읽기 퀴즈";
+    document.title = readingFeature ? "일본어 독해 퀴즈" : "한자 읽기 퀴즈";
+    if (readingFeature) {
+      renderReadingStartScreen();
+      showScreen("readingStart");
+      elements.readingStartButton.focus();
+    } else {
+      syncModeControls();
+      showScreen("start");
+      elements.startButton.focus();
+    }
+  }
+
+  function selectBalancedReadingQuestions(count) {
+    const groups = ["JLPT", "JPT", "J.TEST", "BJT"].map((exam) => (
+      engine.shuffle(readingData.filter((item) => item.exam === exam))
+    ));
+    const selected = [];
+    while (selected.length < count && groups.some((group) => group.length)) {
+      groups.forEach((group) => {
+        if (selected.length < count && group.length) selected.push(group.shift());
+      });
+    }
+    return engine.shuffle(selected).map((item) => ({
+      ...item,
+      sessionChoices: engine.shuffle(item.choices.map((text, originalIndex) => ({
+        text,
+        correct: originalIndex === item.answer,
+      }))),
+    }));
+  }
+
+  function startReadingSession() {
+    const difficulty = selectedReadingDifficulty();
+    const stat = readingStatsFor(difficulty);
+    const requestedCount = Math.min(
+      readingData.length,
+      Math.max(10, Math.round(Number(elements.readingQuestionCount.value) || 20)),
+    );
+    elements.readingQuestionCount.value = String(requestedCount);
+    readingSession = {
+      number: stat.completedSessions + 1,
+      difficulty,
+      questions: selectBalancedReadingQuestions(requestedCount),
+      index: 0,
+      correct: 0,
+      wrong: 0,
+      attempts: 0,
+      answered: false,
+    };
+    elements.readingSessionLabel.textContent = `독해 ${readingSession.number}회차 · ${difficulty === "furigana" ? "후리가나 표시" : "후리가나 없음"}`;
+    showScreen("readingQuiz");
+    showReadingQuestion();
+  }
+
+  function updateReadingHeader() {
+    const completed = readingSession.index + (readingSession.answered ? 1 : 0);
+    elements.readingProgressText.textContent = `${Math.min(readingSession.index + 1, readingSession.questions.length)} / ${readingSession.questions.length}`;
+    elements.readingLiveAccuracy.textContent = formatAccuracy(
+      engine.accuracy(readingSession.correct, readingSession.attempts),
+    );
+    elements.readingProgressBar.style.width = `${(completed / readingSession.questions.length) * 100}%`;
+  }
+
+  function showReadingQuestion() {
+    const item = readingSession.questions[readingSession.index];
+    readingSession.answered = false;
+    elements.readingExamBadge.textContent = `${item.exam}형`;
+    elements.readingTypeBadge.textContent = item.type;
+    renderReadingText(elements.readingPassage, item.passage, item.readings);
+    renderReadingText(elements.readingQuestion, item.question, item.readings);
+    elements.readingAnswerGrid.replaceChildren();
+    item.sessionChoices.forEach((choice, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "answer-button";
+      button.dataset.choiceIndex = String(index);
+      button.dataset.correct = String(choice.correct);
+      button.innerHTML = `<span class="answer-number">${index + 1}</span><span lang="ja">${textWithFurigana(
+        choice.text,
+        item.readings,
+        readingSession.difficulty === "furigana",
+      )}</span>`;
+      button.setAttribute("aria-label", `${index + 1}번 ${choice.text}`);
+      button.addEventListener("click", () => answerReadingQuestion(index));
+      elements.readingAnswerGrid.append(button);
+    });
+    elements.readingFeedback.hidden = true;
+    elements.readingFeedback.className = "feedback reading-feedback";
+    elements.readingNextButton.hidden = true;
+    updateReadingHeader();
+    elements.readingAnswerGrid.querySelector("button")?.focus();
+  }
+
+  function answerReadingQuestion(choiceIndex) {
+    if (!readingSession || readingSession.answered) return;
+    const item = readingSession.questions[readingSession.index];
+    const choice = item.sessionChoices[choiceIndex];
+    if (!choice) return;
+    const isCorrect = choice.correct;
+    readingSession.answered = true;
+    readingSession.attempts += 1;
+    if (isCorrect) readingSession.correct += 1;
+    else readingSession.wrong += 1;
+
+    const buttons = [...elements.readingAnswerGrid.querySelectorAll("button")];
+    buttons.forEach((button, index) => {
+      button.disabled = true;
+      if (item.sessionChoices[index].correct) button.classList.add("is-correct");
+      if (index === choiceIndex && !isCorrect) button.classList.add("is-wrong");
+    });
+    const correctChoice = item.sessionChoices.find((candidate) => candidate.correct);
+    elements.readingFeedback.hidden = false;
+    elements.readingFeedback.className = `feedback reading-feedback ${isCorrect ? "is-correct" : "is-wrong"}`;
+    elements.readingFeedbackIcon.innerHTML = `<span>${isCorrect ? "✓" : "!"}</span>`;
+    elements.readingFeedbackTitle.textContent = isCorrect ? "정답입니다" : "오답입니다. 정답을 확인하세요";
+    elements.readingFeedbackSelected.hidden = isCorrect;
+    elements.readingFeedbackSelected.textContent = isCorrect ? "" : `선택한 답 · ${choice.text}`;
+    elements.readingFeedbackAnswer.textContent = `정답 · ${correctChoice.text}`;
+    elements.readingFeedbackExplanation.textContent = `해설 · ${item.explanation}`;
+    elements.readingNextButton.textContent = readingSession.index + 1 < readingSession.questions.length
+      ? "다음 문제"
+      : "결과 보기";
+    elements.readingNextButton.hidden = false;
+    updateReadingHeader();
+    elements.readingNextButton.focus();
+  }
+
+  function showNextReadingQuestion() {
+    if (!readingSession?.answered) return;
+    if (readingSession.index + 1 >= readingSession.questions.length) {
+      completeReadingSession();
+      return;
+    }
+    readingSession.index += 1;
+    showReadingQuestion();
+  }
+
+  function completeReadingSession() {
+    const accuracy = engine.accuracy(readingSession.correct, readingSession.attempts) || 0;
+    const stat = readingStatsFor(readingSession.difficulty);
+    stat.completedSessions += 1;
+    stat.totalCorrect += readingSession.correct;
+    stat.totalAttempts += readingSession.attempts;
+    stat.lastAccuracy = accuracy;
+    progress.readingHistory.push({
+      session: readingSession.number,
+      difficulty: readingSession.difficulty,
+      accuracy,
+      correct: readingSession.correct,
+      wrong: readingSession.wrong,
+      total: readingSession.questions.length,
+      date: new Intl.DateTimeFormat("ko-KR", { month: "numeric", day: "numeric" }).format(new Date()),
+    });
+    progress.readingHistory = progress.readingHistory.slice(-20);
+    saveProgress();
+
+    elements.readingResultSessionNumber.textContent = readingSession.number;
+    elements.readingResultAccuracy.textContent = `${accuracy}%`;
+    elements.readingResultCorrect.textContent = readingSession.correct;
+    elements.readingResultWrong.textContent = readingSession.wrong;
+    elements.readingResultTotal.textContent = readingSession.questions.length;
+    elements.readingResultMessage.textContent = accuracy >= 90
+      ? "핵심 정보와 세부 조건을 정확하게 읽었습니다. 훌륭해요!"
+      : accuracy >= 70
+        ? "전체 흐름을 잘 파악했습니다. 틀린 문항의 조건 표현을 다시 확인해 보세요."
+        : "지문의 시간·대상·예외 조건에 밑줄을 긋듯 확인하며 다시 도전해 보세요.";
+    showScreen("readingResult");
+    elements.readingReturnButton.focus();
   }
 
   function renderStartScreen() {
@@ -1143,16 +1492,45 @@
     elements.examTimer.hidden = true;
     elements.examMistakeBadge.hidden = true;
     session = null;
-    syncModeControls();
-    showScreen("start");
-    elements.startButton.focus();
+    readingSession = null;
+    if (currentFeature === "reading") {
+      renderReadingStartScreen();
+      showScreen("readingStart");
+      elements.readingStartButton.focus();
+    } else {
+      syncModeControls();
+      showScreen("start");
+      elements.startButton.focus();
+    }
   }
 
   function handleKeyboard(event) {
+    if (!elements.featureSwitchLayer.hidden) {
+      if (event.key === "Escape") {
+        event.preventDefault?.();
+        closeFeatureSwitch();
+      }
+      return;
+    }
     if (!elements.mistakeMenuLayer.hidden) {
       if (event.key === "Escape") {
         event.preventDefault?.();
         closeMistakeMenu();
+      }
+      return;
+    }
+    if (screens.readingQuiz.classList.contains("is-active") && readingSession) {
+      const readingNumberKey = /^[1-4]$/.test(event.key)
+        ? Number(event.key)
+        : /^Numpad[1-4]$/.test(event.code)
+          ? Number(event.code.slice(-1))
+          : null;
+      if (!readingSession.answered && readingNumberKey !== null) {
+        event.preventDefault?.();
+        elements.readingAnswerGrid.querySelectorAll("button")[readingNumberKey - 1]?.click();
+      } else if (readingSession.answered && (event.key === "Enter" || event.code === "NumpadEnter")) {
+        event.preventDefault?.();
+        elements.readingNextButton.click();
       }
       return;
     }
@@ -1290,17 +1668,37 @@
     const invalidKanaData = jlptDifficulties.some(
       (difficulty) => datasetForMode(difficulty, "kanji-to-kana").length < EXAM_QUESTION_COUNT,
     );
+    const readingExams = ["JLPT", "JPT", "J.TEST", "BJT"];
+    const invalidReadingData = readingData.length < 10
+      || readingExams.some((exam) => readingData.filter((item) => item.exam === exam).length < 2)
+      || readingData.some((item) => !item.id
+        || !item.passage
+        || !item.question
+        || !Array.isArray(item.choices)
+        || item.choices.length !== 4
+        || !Number.isInteger(item.answer)
+        || item.answer < 0
+        || item.answer >= item.choices.length
+        || !item.explanation
+        || item.origin !== "original");
     if (Object.values(datasets).some((quizData) => quizData.length < 4)
-      || invalidCoreData || invalidSentenceData || invalidKanaData) {
+      || invalidCoreData || invalidSentenceData || invalidKanaData || invalidReadingData) {
       elements.appError.hidden = false;
-      elements.appError.textContent = "단어 데이터를 불러오지 못했습니다. 단어 데이터 파일을 확인해 주세요.";
+      elements.appError.textContent = "학습 데이터를 불러오지 못했습니다. 단어·독해 데이터 파일을 확인해 주세요.";
       elements.startButton.disabled = true;
+      elements.readingStartButton.disabled = true;
       return;
     }
     renderStartScreen();
+    renderReadingStartScreen();
     syncModeControls();
     elements.startButton.addEventListener("click", startSession);
     elements.homeButton.addEventListener("click", returnToStart);
+    elements.featureSwitchButton.addEventListener("click", openFeatureSwitch);
+    elements.featureSwitchClose.addEventListener("click", () => closeFeatureSwitch());
+    elements.featureSwitchBackdrop.addEventListener("click", () => closeFeatureSwitch());
+    elements.featureVocabButton.addEventListener("click", () => switchFeature("vocab"));
+    elements.featureReadingButton.addEventListener("click", () => switchFeature("reading"));
     elements.mistakeMenuButton.addEventListener("click", openMistakeMenu);
     elements.mistakeMenuClose.addEventListener("click", closeMistakeMenu);
     elements.mistakeMenuBackdrop.addEventListener("click", closeMistakeMenu);
@@ -1310,6 +1708,11 @@
     elements.mistakeTabKatakana.addEventListener("click", () => selectMistakeDifficulty("katakana"));
     elements.nextButton.addEventListener("click", showNextQuestion);
     elements.returnButton.addEventListener("click", returnToStart);
+    elements.readingStartButton.addEventListener("click", startReadingSession);
+    elements.readingNextButton.addEventListener("click", showNextReadingQuestion);
+    elements.readingReturnButton.addEventListener("click", returnToStart);
+    elements.readingDifficultyFurigana.addEventListener("change", renderReadingStartScreen);
+    elements.readingDifficultyStandard.addEventListener("change", renderReadingStartScreen);
     elements.kanaBackspace.addEventListener("click", removeLastKana);
     elements.kanaClear.addEventListener("click", clearKanaAnswer);
     elements.kanaSubmit.addEventListener("click", submitKanaAnswer);

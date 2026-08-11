@@ -1,6 +1,7 @@
 "use strict";
 
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 require("./vocab-data.js");
 require("./n3-vocab-data.js");
 require("./n2-vocab-data.js");
@@ -14,6 +15,12 @@ const n2Data = globalThis.N2_VOCAB_DATA;
 const katakanaData = globalThis.KATAKANA_VOCAB_DATA;
 const readingData = globalThis.READING_QUIZ_DATA;
 const readingCommonReadings = globalThis.READING_COMMON_READINGS;
+const stylesheet = fs.readFileSync(`${__dirname}/styles.css`, "utf8");
+assert.match(
+  stylesheet,
+  /\.quiz-card h2\.reading-question\s*\{[\s\S]*?font-size:\s*clamp\(18px,\s*3\.2vw,\s*24px\)/,
+  "독해 질문에는 단어 문제용 대형 제목보다 우선하는 전용 글자 크기가 있어야 합니다.",
+);
 assert.equal(readingData.length, 32, "독해 신규 문제는 32개가 있어야 합니다.");
 assert.equal(new Set(readingData.map((item) => item.id)).size, readingData.length, "독해 문제 ID는 중복되면 안 됩니다.");
 assert.deepEqual(

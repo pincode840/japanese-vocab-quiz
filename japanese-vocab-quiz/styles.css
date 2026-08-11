@@ -903,11 +903,13 @@ button:focus-visible {
   font-weight: 700;
 }
 
-.reading-question {
+.quiz-card h2.reading-question {
   position: relative;
   z-index: 1;
   margin: 0 0 18px;
-  font-size: clamp(18px, 4vw, 24px);
+  font-family: "Noto Sans JP", "Yu Gothic", "Malgun Gothic", sans-serif;
+  font-size: clamp(18px, 3.2vw, 24px);
+  font-weight: 700;
   line-height: 1.65;
   letter-spacing: -0.025em;
 }

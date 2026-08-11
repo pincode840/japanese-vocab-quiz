@@ -898,8 +898,52 @@ assert.ok(elements.get("reading-record-standard").classList.contains("is-selecte
 elements.get("reading-question-count").value = "10";
 elements.get("reading-start-button").click();
 assert.doesNotMatch(elements.get("reading-passage").innerHTML, /<ruby>/, "후리가나 없음 난이도는 일본어 원문만 표시해야 합니다.");
-elements.get("home-button").click();
-assert.ok(elements.get("reading-start-screen").classList.contains("is-active"), "독해 중 아이콘을 누르면 독해 시작 화면으로 돌아가야 합니다.");
+readingButtons = elements.get("reading-answer-grid").querySelectorAll("button");
+const standardFirstWrongIndex = readingButtons.findIndex((button) => button.dataset.correct !== "true");
+pressKey(String(standardFirstWrongIndex + 1), `Digit${standardFirstWrongIndex + 1}`);
+assert.match(elements.get("reading-feedback-title").textContent, /후리가나를 확인/);
+assert.match(elements.get("reading-passage").innerHTML, /<ruby>/, "후리가나 없음 난이도의 첫 오답에는 지문 읽기를 표시해야 합니다.");
+assert.match(elements.get("reading-question").innerHTML, /<ruby>/, "후리가나 없음 난이도의 첫 오답에는 질문 읽기를 표시해야 합니다.");
+assert.equal(elements.get("reading-next-button").hidden, true, "첫 오답은 같은 문제를 다시 풀어야 합니다.");
+assert.equal(elements.get("reading-live-accuracy").textContent, "—", "첫 오답은 아직 점수에 반영하면 안 됩니다.");
+assert.equal(
+  readingButtons.some((button) => button.classList.contains("is-correct")),
+  false,
+  "첫 오답에는 정답을 공개하면 안 됩니다.",
+);
+const standardFirstCorrectIndex = readingButtons.findIndex((button) => button.dataset.correct === "true");
+pressKey(String(standardFirstCorrectIndex + 1), `Digit${standardFirstCorrectIndex + 1}`);
+assert.equal(elements.get("reading-feedback-title").textContent, "정답입니다");
+assert.equal(elements.get("reading-live-accuracy").textContent, "100%", "후리가나 힌트 후 정답은 정답으로 기록해야 합니다.");
+
+pressKey("Enter", "Enter");
+assert.doesNotMatch(elements.get("reading-passage").innerHTML, /<ruby>/, "다음 문제는 다시 후리가나 없는 상태로 시작해야 합니다.");
+readingButtons = elements.get("reading-answer-grid").querySelectorAll("button");
+const standardWrongIndexes = readingButtons
+  .map((button, index) => button.dataset.correct !== "true" ? index : -1)
+  .filter((index) => index >= 0);
+pressKey(String(standardWrongIndexes[0] + 1), `Digit${standardWrongIndexes[0] + 1}`);
+assert.match(elements.get("reading-feedback-title").textContent, /후리가나를 확인/);
+pressKey(String(standardWrongIndexes[1] + 1), `Digit${standardWrongIndexes[1] + 1}`);
+assert.match(elements.get("reading-feedback-title").textContent, /오답/);
+assert.equal(elements.get("reading-next-button").hidden, false, "후리가나 표시 후 다시 틀리면 최종 오답 처리해야 합니다.");
+assert.equal(elements.get("reading-live-accuracy").textContent, "50%");
+
+guard = 0;
+while (!elements.get("reading-result-screen").classList.contains("is-active") && guard < 15) {
+  pressKey("Enter", "Enter");
+  if (elements.get("reading-result-screen").classList.contains("is-active")) break;
+  readingButtons = elements.get("reading-answer-grid").querySelectorAll("button");
+  const correctStandardIndex = readingButtons.findIndex((button) => button.dataset.correct === "true");
+  pressKey(String(correctStandardIndex + 1), `Digit${correctStandardIndex + 1}`);
+  guard += 1;
+}
+assert.ok(elements.get("reading-result-screen").classList.contains("is-active"));
+assert.equal(elements.get("reading-result-correct").textContent, 9);
+assert.equal(elements.get("reading-result-wrong").textContent, 1, "후리가나 힌트 뒤 다시 틀린 문제만 오답이어야 합니다.");
+assert.equal(JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1")).readingStats.standard.completedSessions, 1);
+elements.get("reading-return-button").click();
+assert.ok(elements.get("reading-start-screen").classList.contains("is-active"), "독해 결과에서 시작 화면으로 돌아가야 합니다.");
 
 elements.get("feature-switch-button").click();
 const closeFeatureEvent = pressKey("Escape", "Escape");

@@ -628,8 +628,9 @@
   }
 
   function renderReadingText(target, text, readings) {
-    const showFurigana = readingSession?.difficulty === "furigana"
-      || (!readingSession && selectedReadingDifficulty() === "furigana");
+    const showFurigana = readingSession
+      ? readingSession.difficulty === "furigana" || readingSession.hintShown
+      : selectedReadingDifficulty() === "furigana";
     target.innerHTML = textWithFurigana(text, readings, showFurigana);
     target.setAttribute("aria-label", text);
   }
@@ -737,6 +738,7 @@
       wrong: 0,
       attempts: 0,
       answered: false,
+      hintShown: false,
     };
     elements.readingSessionLabel.textContent = `독해 ${readingSession.number}회차 · ${difficulty === "furigana" ? "후리가나 표시" : "후리가나 없음"}`;
     showScreen("readingQuiz");
@@ -755,6 +757,7 @@
   function showReadingQuestion() {
     const item = readingSession.questions[readingSession.index];
     readingSession.answered = false;
+    readingSession.hintShown = false;
     elements.readingExamBadge.textContent = `${item.exam}형`;
     elements.readingTypeBadge.textContent = item.type;
     renderReadingText(elements.readingPassage, item.passage, item.readings);
@@ -769,7 +772,7 @@
       button.innerHTML = `<span class="answer-number">${index + 1}</span><span lang="ja">${textWithFurigana(
         choice.text,
         item.readings,
-        readingSession.difficulty === "furigana",
+        readingSession.difficulty === "furigana" || readingSession.hintShown,
       )}</span>`;
       button.setAttribute("aria-label", `${index + 1}번 ${choice.text}`);
       button.addEventListener("click", () => answerReadingQuestion(index));
@@ -788,12 +791,41 @@
     const choice = item.sessionChoices[choiceIndex];
     if (!choice) return;
     const isCorrect = choice.correct;
+    const buttons = [...elements.readingAnswerGrid.querySelectorAll("button")];
+
+    if (!isCorrect && readingSession.difficulty === "standard" && !readingSession.hintShown) {
+      readingSession.hintShown = true;
+      renderReadingText(elements.readingPassage, item.passage, item.readings);
+      renderReadingText(elements.readingQuestion, item.question, item.readings);
+      buttons.forEach((button, index) => {
+        const candidate = item.sessionChoices[index];
+        button.innerHTML = `<span class="answer-number">${index + 1}</span><span lang="ja">${textWithFurigana(
+          candidate.text,
+          item.readings,
+          true,
+        )}</span>`;
+      });
+      const selectedButton = buttons[choiceIndex];
+      selectedButton.disabled = true;
+      selectedButton.classList.add("is-wrong");
+      elements.readingFeedback.hidden = false;
+      elements.readingFeedback.className = "feedback reading-feedback is-hint";
+      elements.readingFeedbackIcon.innerHTML = "<span>あ</span>";
+      elements.readingFeedbackTitle.textContent = "후리가나를 확인하고 한 번 더 풀어보세요";
+      elements.readingFeedbackSelected.hidden = false;
+      elements.readingFeedbackSelected.textContent = `첫 선택 · ${choice.text}`;
+      elements.readingFeedbackAnswer.textContent = "힌트 · 지문과 선택지에 한자 읽기를 표시했습니다.";
+      elements.readingFeedbackExplanation.textContent = "아직 오답으로 기록되지 않습니다. 후리가나를 보고 다시 선택하세요.";
+      elements.readingNextButton.hidden = true;
+      buttons.find((button) => !button.disabled)?.focus();
+      return;
+    }
+
     readingSession.answered = true;
     readingSession.attempts += 1;
     if (isCorrect) readingSession.correct += 1;
     else readingSession.wrong += 1;
 
-    const buttons = [...elements.readingAnswerGrid.querySelectorAll("button")];
     buttons.forEach((button, index) => {
       button.disabled = true;
       if (item.sessionChoices[index].correct) button.classList.add("is-correct");

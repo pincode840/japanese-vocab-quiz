@@ -79,7 +79,7 @@ const ids = [
   "record-reading-kanji", "reading-kanji-sessions", "reading-kanji-last-accuracy", "reading-kanji-total-accuracy",
   "record-sentence-kanji", "sentence-kanji-sessions", "sentence-kanji-last-accuracy", "sentence-kanji-total-accuracy",
   "record-katakana-meaning", "katakana-meaning-sessions", "katakana-meaning-last-accuracy", "katakana-meaning-total-accuracy",
-  "history-panel", "history-list", "start-button",
+  "history-panel", "history-list", "resume-panel", "resume-summary", "resume-button", "discard-session-button", "start-button",
   "difficulty-picker", "katakana-mode-note",
   "difficulty-basic", "difficulty-n3", "difficulty-n2", "mode-kanji-reading", "mode-kanji-kana", "mode-reading-kanji",
   "mode-sentence-kanji", "mode-katakana-meaning", "exam-mode", "exam-mode-state", "exam-mode-note", "choice-count-4", "choice-count-6", "choice-count-8", "choice-count-picker",
@@ -94,7 +94,8 @@ const ids = [
   "result-accuracy", "result-correct", "result-wrong", "result-mastered", "return-button", "keyboard-hint",
   "reading-record-furigana", "reading-furigana-sessions", "reading-furigana-last-accuracy", "reading-furigana-total-accuracy",
   "reading-record-standard", "reading-standard-sessions", "reading-standard-last-accuracy", "reading-standard-total-accuracy",
-  "reading-difficulty-furigana", "reading-difficulty-standard", "reading-question-count", "reading-start-button",
+  "reading-difficulty-furigana", "reading-difficulty-standard", "reading-question-count",
+  "reading-resume-panel", "reading-resume-summary", "reading-resume-button", "reading-discard-session-button", "reading-start-button",
   "reading-session-label", "reading-progress-text", "reading-live-accuracy", "reading-progress-bar", "reading-exam-badge", "reading-type-badge",
   "reading-passage", "reading-question", "reading-answer-grid", "reading-feedback", "reading-feedback-icon", "reading-feedback-title",
   "reading-feedback-selected", "reading-feedback-answer", "reading-feedback-explanation", "reading-next-button",
@@ -106,7 +107,8 @@ for (const id of [
   "home-button", "feature-switch-button", "feature-switch-backdrop", "feature-switch-close", "feature-vocab-button", "feature-reading-button",
   "mistake-menu-button", "mistake-menu-backdrop", "mistake-menu-close",
   "mistake-tab-basic", "mistake-tab-n3", "mistake-tab-n2", "mistake-tab-katakana",
-  "start-button", "next-button", "return-button", "kana-backspace", "kana-clear", "kana-submit", "reading-start-button", "reading-next-button", "reading-return-button",
+  "resume-button", "discard-session-button", "start-button", "next-button", "return-button", "kana-backspace", "kana-clear", "kana-submit",
+  "reading-resume-button", "reading-discard-session-button", "reading-start-button", "reading-next-button", "reading-return-button",
 ]) elements.get(id).tagName = "BUTTON";
 elements.get("start-screen").classList.add("is-active");
 elements.get("mistake-menu-layer").hidden = true;
@@ -133,6 +135,8 @@ elements.get("reading-question-count").value = "100";
 elements.get("reading-question-count").max = "600";
 elements.get("reading-feedback").hidden = true;
 elements.get("reading-next-button").hidden = true;
+elements.get("resume-panel").hidden = true;
+elements.get("reading-resume-panel").hidden = true;
 
 const documentListeners = {};
 globalThis.document = {
@@ -154,6 +158,7 @@ storage.set("jlpt-vocab-quiz-progress-v1", JSON.stringify({
 globalThis.localStorage = {
   getItem: (key) => storage.get(key) ?? null,
   setItem: (key, value) => storage.set(key, value),
+  removeItem: (key) => storage.delete(key),
 };
 
 let nextTimerId = 1;
@@ -295,6 +300,11 @@ assert.match(elements.get("general-question-count-hint").textContent, /10~480/);
 elements.get("start-button").click();
 assert.ok(elements.get("quiz-screen").classList.contains("is-active"), "시작하면 문제 화면이 열려야 합니다.");
 assert.equal(elements.get("answer-grid").querySelectorAll("button").length, 4, "선택지는 네 개여야 합니다.");
+assert.equal(
+  JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1")).kind,
+  "vocab",
+  "진행 중인 단어 회차는 첫 문제부터 별도 저장소에 자동 저장되어야 합니다.",
+);
 
 const firstWord = elements.get("quiz-word").textContent;
 const correctFirst = correctButtonForCurrentWord();
@@ -853,7 +863,14 @@ assert.equal(elements.get("reading-question-count").max, "600", "독해 문제�
 elements.get("reading-question-count").value = "600";
 elements.get("reading-start-button").click();
 assert.equal(elements.get("reading-progress-text").textContent, "1 / 600", "독해 600문제 회차를 시작할 수 있어야 합니다.");
+assert.equal(JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1")).kind, "reading");
 elements.get("home-button").click();
+assert.equal(elements.get("reading-resume-panel").hidden, false, "홈으로 나가도 진행 중인 독해 회차를 이어갈 수 있어야 합니다.");
+elements.get("reading-resume-button").click();
+assert.equal(elements.get("reading-progress-text").textContent, "1 / 600", "저장한 독해 회차를 같은 문제 위치에서 복구해야 합니다.");
+elements.get("home-button").click();
+elements.get("reading-discard-session-button").click();
+assert.equal(storage.has("jlpt-vocab-quiz-active-session-v1"), false, "사용자가 선택하면 진행 중 회차를 삭제할 수 있어야 합니다.");
 
 elements.get("reading-question-count").value = "10";
 elements.get("reading-start-button").click();
@@ -862,6 +879,12 @@ assert.equal(elements.get("reading-progress-text").textContent, "1 / 10");
 assert.equal(elements.get("reading-answer-grid").querySelectorAll("button").length, 4);
 assert.match(elements.get("reading-passage").innerHTML, /<ruby>/, "후리가나 난이도에는 지문의 한자 읽기를 표시해야 합니다.");
 assert.match(elements.get("reading-question").innerHTML, /<ruby>/, "후리가나 난이도에는 질문의 한자 읽기를 표시해야 합니다.");
+assert.match(elements.get("reading-passage")["aria-label"], /（.+）/, "스크린리더용 지문 이름에도 한자 읽기가 포함되어야 합니다.");
+assert.match(
+  elements.get("reading-answer-grid").querySelectorAll("button")[0]["aria-label"],
+  /（.+）/,
+  "후리가나 선택지는 스크린리더에도 읽기를 전달해야 합니다.",
+);
 assert.match(elements.get("reading-exam-badge").textContent, /^(?:JLPT|JPT|J\.TEST|BJT)형$/);
 
 let readingButtons = elements.get("reading-answer-grid").querySelectorAll("button");

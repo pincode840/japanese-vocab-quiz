@@ -2,17 +2,19 @@ from pathlib import Path
 
 
 base = Path(__file__).resolve().parent
-root = base / "japanese-vocab-quiz"
-html = (root / "index.html").read_text(encoding="utf-8")
-css = (root / "styles.css").read_text(encoding="utf-8")
-data = (root / "vocab-data.js").read_text(encoding="utf-8")
-n3_data = (root / "n3-vocab-data.js").read_text(encoding="utf-8")
-n2_data = (root / "n2-vocab-data.js").read_text(encoding="utf-8")
-katakana_data = (root / "katakana-vocab-data.js").read_text(encoding="utf-8")
-reading_data = (root / "reading-data.js").read_text(encoding="utf-8")
-reading_generated_data = (root / "reading-generated-data.js").read_text(encoding="utf-8")
-engine = (root / "quiz-engine.js").read_text(encoding="utf-8")
-app = (root / "app.js").read_text(encoding="utf-8")
+assets_root = base / "japanese-vocab-quiz"
+source_html = (assets_root / "index.html").read_text(encoding="utf-8")
+asset_names = [
+    "styles.css",
+    "vocab-data.js",
+    "n3-vocab-data.js",
+    "n2-vocab-data.js",
+    "katakana-vocab-data.js",
+    "reading-data.js",
+    "reading-generated-data.js",
+    "quiz-engine.js",
+    "app.js",
+]
 
 
 def replace_once(document, marker, replacement):
@@ -22,16 +24,42 @@ def replace_once(document, marker, replacement):
     return document.replace(marker, replacement, 1)
 
 
-html = replace_once(html, '  <link rel="stylesheet" href="styles.css">', f"  <style>\n{css}\n  </style>")
-html = replace_once(html, '  <script src="vocab-data.js"></script>', f"  <script>\n{data}\n  </script>")
-html = replace_once(html, '  <script src="n3-vocab-data.js"></script>', f"  <script>\n{n3_data}\n  </script>")
-html = replace_once(html, '  <script src="n2-vocab-data.js"></script>', f"  <script>\n{n2_data}\n  </script>")
-html = replace_once(html, '  <script src="katakana-vocab-data.js"></script>', f"  <script>\n{katakana_data}\n  </script>")
-html = replace_once(html, '  <script src="reading-data.js"></script>', f"  <script>\n{reading_data}\n  </script>")
-html = replace_once(html, '  <script src="reading-generated-data.js"></script>', f"  <script>\n{reading_generated_data}\n  </script>")
-html = replace_once(html, '  <script src="quiz-engine.js"></script>', f"  <script>\n{engine}\n  </script>")
-html = replace_once(html, '  <script src="app.js"></script>', f"  <script>\n{app}\n  </script>")
+# GitHub Pages uses a small entry document and separate cacheable assets.
+deploy_html = source_html
+deploy_html = replace_once(
+    deploy_html,
+    'href="styles.css"',
+    'href="japanese-vocab-quiz/styles.css"',
+)
+for asset_name in asset_names[1:]:
+    deploy_html = replace_once(
+        deploy_html,
+        f'src="{asset_name}"',
+        f'src="japanese-vocab-quiz/{asset_name}"',
+    )
 
-for output in (base / "일본어_단어_맞추기_앱.html", base / "index.html"):
-    output.write_text(html, encoding="utf-8")
-    print(f"built {output} ({output.stat().st_size} bytes)")
+deploy_output = base / "index.html"
+deploy_output.write_text(deploy_html, encoding="utf-8")
+if deploy_output.stat().st_size > 80_000:
+    raise ValueError("Deploy entry HTML must remain below 80 KB")
+print(f"built split deploy page {deploy_output} ({deploy_output.stat().st_size} bytes)")
+
+
+# Keep a portable single-file build for users who explicitly need offline use.
+standalone_html = source_html
+standalone_html = replace_once(
+    standalone_html,
+    '  <link rel="stylesheet" href="styles.css">',
+    f"  <style>\n{(assets_root / 'styles.css').read_text(encoding='utf-8')}\n  </style>",
+)
+for asset_name in asset_names[1:]:
+    script = (assets_root / asset_name).read_text(encoding="utf-8")
+    standalone_html = replace_once(
+        standalone_html,
+        f'  <script src="{asset_name}"></script>',
+        f"  <script>\n{script}\n  </script>",
+    )
+
+standalone_output = base / "일본어_단어_맞추기_앱.html"
+standalone_output.write_text(standalone_html, encoding="utf-8")
+print(f"built standalone page {standalone_output} ({standalone_output.stat().st_size} bytes)")

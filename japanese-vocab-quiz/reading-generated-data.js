@@ -556,19 +556,164 @@
     },
   ];
 
+  const supplementalProfiles = {
+    JLPT: {
+      event: term("市民講座", "しみんこうざ"),
+      place: term("学習センター", "がくしゅうセンター"),
+      office: term("受付窓口", "うけつけまどぐち"),
+    },
+    JPT: {
+      event: term("社員向け研修", "しゃいんむけけんしゅう"),
+      place: term("本社研修室", "ほんしゃけんしゅうしつ"),
+      office: term("総務窓口", "そうむまどぐち"),
+    },
+    "J.TEST": {
+      event: term("地域交流講座", "ちいきこうりゅうこうざ"),
+      place: term("地域活動館", "ちいきかつどうかん"),
+      office: term("市役所窓口", "しやくしょまどぐち"),
+    },
+    BJT: {
+      event: term("取引先説明会", "とりひきさきせつめいかい"),
+      place: term("本社会議室", "ほんしゃかいぎしつ"),
+      office: term("営業担当窓口", "えいぎょうたんとうまどぐち"),
+    },
+  };
+  register(Object.values(supplementalProfiles).flatMap((profile) => Object.values(profile)));
+  Object.assign(common, {
+    参加申込: "さんかもうしこみ", 申込締切: "もうしこみしめきり", 前日: "ぜんじつ", 午後五時: "ごごごじ",
+    定員: "ていいん", 達した場合: "たっしたばあい", 早く終了します: "はやくしゅうりょうします",
+    人です: "にんです", 時間続きます: "じかんつづきます", 日だけ: "にちだけ", 相談時間: "そうだんじかん",
+    分です: "ふんです", 管理番号: "かんりばんごう", 提出番号: "ていしゅつばんごう",
+    始まります: "はじまります", 締切: "しめきり", 講座: "こうざ", 定員を超えて: "ていいんをこえて",
+    荷物が多く: "にもつがおおく", 助け: "たすけ", 基本的: "きほんてき", 別の日: "べつのひ",
+    荷物を預けて帰る: "にもつをあずけてかえる", 今月: "こんげつ", 三十分前: "さんじゅっぷんまえ",
+    入館できる: "にゅうかんできる", 最も遅い時刻: "もっともおそいじこく", 閉館の三十分前: "へいかんのさんじゅっぷんまえ",
+    受付を済ませる: "うけつけをすませる", 閉館時刻: "へいかんじこく", 一日中: "いちにちじゅう",
+    払い戻しを受けられる: "はらいもどしをうけられる", 申し出た人: "もうしでたひと",
+    開催後: "かいさいご", 参加しなかった人: "さんかしなかったひと", 当日に会場で申し出た人: "とうじつにかいじょうでもうしでたひと",
+    相談したい人: "そうだんしたいひと", 最初: "さいしょ", 窓口に並ぶ: "まどぐちにならぶ",
+    相談後: "そうだんご", 求める: "もとめる", 別の窓口: "べつのまどぐち", 本人確認書類を郵送する: "ほんにんかくにんしょるいをゆうそうする",
+    見つかった: "みつかった", 一週間保管: "いっしゅうかんほかん", 過ぎて: "すぎて", 方法: "ほうほう",
+    交換する: "こうかんする", 自宅: "じたく", 提出した人: "ていしゅつしたひと", 書類: "しょるい", 円: "えん",
+    相談: "そうだん", 確認: "かくにん", 別: "べつ", 後: "あと", 提: "てい", 提出: "ていしゅつ",
+    参加する: "さんかする", 当日: "とうじつ", 会場: "かいじょう", 行く: "いく", 翌日: "よくじつ",
+    建物内: "たてものない", 昇降機: "しょうこうき", 点検: "てんけん", 使用できません: "しようできません",
+    上階: "じょうかい", 階段: "かいだん", 利用してください: "りようしてください", 荷物: "にもつ",
+    必要な人: "ひつようなひと", 係員: "かかりいん", 声をかけて: "こえをかけて", 移動する: "いどうする",
+    通常: "つうじょう", 開きます: "ひらきます", 今月だけ: "こんげつだけ", 閉館します: "へいかんします",
+    最終受付: "さいしゅううけつけ", 終了時刻: "しゅうりょうじこく", 入館する: "にゅうかんする",
+    参加券: "さんかけん", 開催日: "かいさいび", 三日前: "みっかまえ", 申し出れば: "もうしでれば",
+    払い戻し: "はらいもどし", 受けられます: "うけられます", 以降: "いこう", 対応できません: "たいおうできません",
+    返金を受ける: "へんきんをうける", 予約制: "よやくせい", 空き: "あき", 確認した後: "かくにんしたあと",
+    予約番号: "よやくばんごう", 発行します: "はっこうします", 予約なし: "よやくなし", 順番: "じゅんばん",
+    待っても: "まっても", 対応しません: "たいおうしません", 相談する: "そうだんする",
+    忘れ物: "わすれもの", 保管します: "ほかんします", 受け取り: "うけとり", 本人確認書類: "ほんにんかくにんしょるい",
+    必要です: "ひつようです", 保管期間: "ほかんきかん", 過ぎた物: "すぎたもの", 処分します: "しょぶんします",
+    受け取る: "うけとる", 一週間以内: "いっしゅうかんいない", 持参する: "じさんする",
+    配送: "はいそう", 送料: "そうりょう", 店頭受取: "てんとううけとり", 選べば: "えらべば", 無料です: "むりょうです",
+    受取準備: "うけとりじゅんび", 完了後: "かんりょうご", 知らせます: "しらせます", 店で受け取る: "みせでうけとる",
+    送ってもらう: "おくってもらう", 追加料金: "ついかりょうきん", 支払う: "しはらう", 別の商品: "べつのしょうひん",
+    担当者: "たんとうしゃ", 確認後: "かくにんご", 修正依頼: "しゅうせいいらい", 連絡します: "れんらくします",
+    連絡がなければ: "れんらくがなければ", 確定版: "かくていばん", 保存してください: "ほぞんしてください",
+    提出後: "ていしゅつご", 連絡を待つ: "れんらくをまつ", 自分で確定版: "じぶんでかくていばん",
+    作り直す: "つくりなおす", 削除する: "さくじょする", 印刷して郵送する: "いんさつしてゆうそうする",
+  });
+
+  function makeSupplementalGenerators(exam) {
+    const profile = supplementalProfiles[exam];
+    return [
+      (number, variant) => {
+        const day = pick(weekdays, variant);
+        const time = pick(times, variant + 2);
+        return createQuestion(exam, number, "신청 마감",
+          `${text(profile.event)}は${text(day)}の${text(time)}から始まります。定員は${20 + variant * 5}人です。参加申込の締切は前日の午後五時ですが、定員に達した場合は早く終了します。`,
+          `${text(profile.event)}に参加するには、どうすればよいですか。`,
+          "前日の午後五時までに申し込む", ["当日に会場で申し込む", "講座の翌日に申し込む", "定員を超えてから申し込む"],
+          "신청은 전날 오후 5시까지이며 정원에 도달하면 더 일찍 마감됩니다.");
+      },
+      (number, variant) => {
+        const day = pick(weekdays, variant + 1);
+        const floor = pick(officeFloors, variant);
+        return createQuestion(exam, number, "시설 점검",
+          `${text(profile.place)}では${text(day)}に建物内の昇降機を点検するため使用できません。点検は${variant + 1}時間続きます。${text(floor)}へは階段を利用してください。荷物が多く助けが必要な人は係員に声をかけてください。`,
+          `${text(day)}に${text(floor)}へ行く人は、基本的にどうしますか。`,
+          "階段で移動する", ["昇降機の点検が終わるまで待つ", "別の日に必ず行く", "係員に荷物を預けて帰る"],
+          "점검일에는 기본적으로 계단을 이용합니다.");
+      },
+      (number, variant) => {
+        const usualDay = pick(weekdays, variant);
+        const specialDay = pick(weekdays, variant + 2);
+        const closing = pick(times, variant + 3);
+        return createQuestion(exam, number, "운영 시간 예외",
+          `${text(profile.place)}は通常${text(usualDay)}も開きますが、今月${variant + 1}日だけ${text(specialDay)}の${text(closing)}に閉館します。最終受付は終了時刻の三十分前です。`,
+          `今月の${text(specialDay)}に入館できる最も遅い時刻について、正しい説明はどれですか。`,
+          "閉館の三十分前までに受付を済ませる", ["閉館時刻に受付を始める", "通常どおり一日中利用する", "翌日まで受付を待つ"],
+          "최종 접수는 폐관 30분 전입니다.");
+      },
+      (number, variant) => {
+        const day = pick(weekdays, variant + 3);
+        const price = 300 + variant * 100;
+        return createQuestion(exam, number, "취소·환불 조건",
+          `${text(day)}に行う${text(profile.event)}の参加券は${price}円です。開催日の三日前までに${text(profile.office)}へ申し出れば払い戻しを受けられます。それ以降は対応できません。`,
+          "参加券の払い戻しを受けられるのはどの人ですか。",
+          "開催日の三日前までに申し出た人", ["開催後に参加しなかった人", "当日に会場で申し出た人", "開催日の翌日に連絡した人"],
+          "환불은 개최일 3일 전까지 신청해야 합니다.");
+      },
+      (number, variant) => {
+        const day = pick(weekdays, variant + 4);
+        const time = pick(times, variant + 1);
+        return createQuestion(exam, number, "예약 절차",
+          `${text(profile.office)}への相談は予約制で、相談時間は${20 + variant * 5}分です。${text(day)}の${text(time)}に空きがあることを確認した後、予約番号を発行します。予約なしで順番を待っても対応しません。`,
+          `${text(day)}に相談したい人は最初に何をしますか。`,
+          "空きを確認して予約番号を受け取る", ["予約なしで窓口に並ぶ", "相談後に予約番号を求める", "別の窓口で料金を払う"],
+          "먼저 빈 시간을 확인하고 예약 번호를 받아야 합니다.");
+      },
+      (number, variant) => {
+        const lostItem = pick(lostItems, variant);
+        const day = pick(weekdays, variant + 5);
+        return createQuestion(exam, number, "분실물 보관",
+          `${text(profile.place)}で見つかった${text(lostItem)}の管理番号はA${variant + 1}です。${text(day)}から一週間保管し、受け取りには本人確認書類が必要です。保管期間を過ぎた物は処分します。`,
+          `${text(lostItem)}を受け取るには何が必要ですか。`,
+          "一週間以内に本人確認書類を持参する", ["保管期間が過ぎてから行く", "本人確認書類を郵送する", "別の忘れ物を持参する"],
+          "보관 기간 안에 본인 확인 서류를 가지고 가야 합니다.");
+      },
+      (number, variant) => {
+        const product = pick(products, variant);
+        const price = 400 + variant * 100;
+        return createQuestion(exam, number, "수령 방법 비교",
+          `${text(product)}の配送には${price}円の送料がかかりますが、${text(profile.place)}での店頭受取を選べば無料です。受取準備の完了後に知らせます。`,
+          `${text(product)}を追加料金なしで受け取る方法はどれですか。`,
+          `${text(profile.place)}で受け取る`, ["自宅まで送ってもらう", "送料を後で支払う", "別の商品と交換する"],
+          "매장 수령을 선택하면 배송비가 들지 않습니다.");
+      },
+      (number, variant) => {
+        const documentName = pick(documents, variant);
+        const day = pick(weekdays, variant + 1);
+        return createQuestion(exam, number, "제출 후 절차",
+          `${text(documentName)}の提出番号はB${variant + 1}です。${text(day)}までに${text(profile.office)}へ提出してください。担当者が確認後、修正依頼がある場合だけ連絡します。連絡がなければ確定版として保存してください。`,
+          `${text(documentName)}を提出した人は、その後どうしますか。`,
+          "修正依頼の連絡を待つ", ["自分で確定版を作り直す", "提出した書類を削除する", "同じ書類を印刷して郵送する"],
+          "제출 후에는 담당자의 수정 연락이 있는지 기다립니다.");
+      },
+    ];
+  }
+
   const generatorGroups = {
-    JLPT: jlptGenerators,
-    JPT: jptGenerators,
-    "J.TEST": jtestGenerators,
-    BJT: bjtGenerators,
+    JLPT: [...jlptGenerators, ...makeSupplementalGenerators("JLPT")],
+    JPT: [...jptGenerators, ...makeSupplementalGenerators("JPT")],
+    "J.TEST": [...jtestGenerators, ...makeSupplementalGenerators("J.TEST")],
+    BJT: [...bjtGenerators, ...makeSupplementalGenerators("BJT")],
   };
 
   Object.entries(generatorGroups).forEach(([exam, generators]) => {
     for (let number = 9; number <= 150; number += 1) {
       const offset = number - 9;
-      const generator = generators[offset % generators.length];
+      const templateIndex = offset % generators.length;
+      const generator = generators[templateIndex];
       const variant = Math.floor(offset / generators.length);
-      data.push(generator(number, variant));
+      const item = generator(number, variant);
+      item.templateId = `${exam.toLowerCase().replace(".", "")}-${String(templateIndex + 1).padStart(2, "0")}`;
+      data.push(item);
     }
   });
 }(typeof window !== "undefined" ? window : globalThis));

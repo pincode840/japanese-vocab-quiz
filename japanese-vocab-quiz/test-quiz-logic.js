@@ -38,6 +38,18 @@ assert.ok(readingData.every((item) => item.passage && item.question && item.expl
 assert.ok(readingData.every((item) => item.choices.length === 4 && new Set(item.choices).size === 4));
 assert.ok(readingData.every((item) => Number.isInteger(item.answer) && item.answer >= 0 && item.answer < 4));
 assert.ok(readingData.every((item) => item.readings && typeof item.readings === "object"), "후리가나용 읽기 데이터가 있어야 합니다.");
+for (const exam of ["JLPT", "JPT", "J.TEST", "BJT"]) {
+  const generated = readingData.filter((item) => item.exam === exam && item.generated);
+  const templateCounts = generated.reduce((counts, item) => {
+    counts[item.templateId] = (counts[item.templateId] || 0) + 1;
+    return counts;
+  }, {});
+  assert.equal(Object.keys(templateCounts).length, 16, `${exam} 생성 문제는 16개 유형을 고르게 사용해야 합니다.`);
+  assert.ok(
+    Math.max(...Object.values(templateCounts)) <= 9,
+    `${exam}에서 같은 생성 유형을 10회 이상 반복하면 안 됩니다.`,
+  );
+}
 const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const missingReadingGuides = new Set();
 readingData.forEach((item) => {
@@ -194,7 +206,7 @@ assert.equal(
   "N3 온라인 실전모의고사 예문 35개가 유지되어야 합니다.",
 );
 const n3TatoebaData = n3SentenceData.filter((item) => item.sentenceAttribution);
-assert.equal(n3TatoebaData.length, 465, "Tatoeba 기반 N3 예문은 465개여야 합니다.");
+assert.equal(n3TatoebaData.length, 462, "Tatoeba 기반 N3 예문은 교정 예문을 제외하고 462개여야 합니다.");
 assert.ok(
   n3TatoebaData.every(
     (item) => item.sentenceLicense === "CC BY 2.0 FR"
@@ -202,6 +214,20 @@ assert.ok(
   ),
   "Tatoeba 기반 N3 예문에는 라이선스와 원문 링크가 있어야 합니다.",
 );
+[
+  ["n3-0276", "わたしにだまってどこいってたの？"],
+  ["n3-0401", "ひさしぶりにえいがをみにいったが、おもったいじょうにかんどうしてなみだがでた。"],
+  ["n3-0946", "きのうはあめだったので、いちにちいえにいました。"],
+  ["n3-1144", "このじゅうしょまで、いってください。"],
+  ["n3-1203", "せきがあいたので、まどがわにすわりました。"],
+  ["n3-1267", "こまったときは、いつもかぞくがそばにいてくれた。"],
+  ["n3-1287", "はこのなかはからだった。"],
+].forEach(([id, expected]) => {
+  assert.equal(engine.sentenceReading(n3Data.find((item) => item.id === id)), expected, `${id} 문장 읽기가 문맥과 일치해야 합니다.`);
+});
+assert.equal(n3Data.find((item) => item.id === "n3-1203").meaning, "비다, 자리가 나다");
+assert.equal(n3Data.find((item) => item.id === "n3-1287").meaning, "비어 있음, 빈 상태");
+assert.equal(n2Data.find((item) => item.word === "錆びる").sentenceTranslation, "철은 물에 젖은 채로 두면 녹습니다.");
 
 const n3KanjiData = n3Data.filter((item) => /[一-龯々〆ヵヶ]/.test(item.word));
 for (const quizData of [data, n3KanjiData, n2Data]) {

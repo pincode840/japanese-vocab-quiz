@@ -752,6 +752,63 @@ button:focus-visible {
   line-height: 1.4;
 }
 
+.resume-panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 18px 0;
+  padding: 16px;
+  color: var(--ink);
+  background: rgba(226, 239, 234, 0.78);
+  border: 1px solid #87a99a;
+  border-radius: 14px;
+  text-align: left;
+}
+
+.resume-panel[hidden] {
+  display: none;
+}
+
+.resume-panel p {
+  margin: 5px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.resume-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.resume-actions button {
+  min-height: 40px;
+  padding: 8px 13px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.resume-actions button:first-child {
+  color: #fff;
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.resume-actions button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .primary-button {
   position: relative;
   z-index: 1;
@@ -1544,6 +1601,15 @@ button:focus-visible {
 
   .question-count-picker small {
     grid-column: 1 / -1;
+  }
+
+  .resume-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .resume-actions button {
+    flex: 1;
   }
 
   .mode-record {

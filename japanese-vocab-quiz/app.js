@@ -9,6 +9,8 @@
   const KANA_TIME_LIMIT = 10;
   const SENTENCE_TIME_LIMIT = 13;
   const STORAGE_KEY = "jlpt-vocab-quiz-progress-v1";
+  const ACTIVE_SESSION_KEY = "jlpt-vocab-quiz-active-session-v1";
+  const ACTIVE_SESSION_VERSION = 1;
   const engine = window.QuizEngine;
   const readingData = Array.isArray(window.READING_QUIZ_DATA) ? window.READING_QUIZ_DATA : [];
   const commonReadingGuides = window.READING_COMMON_READINGS || {};
@@ -119,6 +121,10 @@
     questionCountPanel: document.getElementById("question-count-panel"),
     sentenceQuestionCount: document.getElementById("sentence-question-count"),
     sentenceQuestionCountHint: document.getElementById("sentence-question-count-hint"),
+    resumePanel: document.getElementById("resume-panel"),
+    resumeSummary: document.getElementById("resume-summary"),
+    resumeButton: document.getElementById("resume-button"),
+    discardSessionButton: document.getElementById("discard-session-button"),
     startButton: document.getElementById("start-button"),
     quizSessionLabel: document.getElementById("quiz-session-label"),
     quizProgressText: document.getElementById("quiz-progress-text"),
@@ -167,6 +173,10 @@
     readingDifficultyFurigana: document.getElementById("reading-difficulty-furigana"),
     readingDifficultyStandard: document.getElementById("reading-difficulty-standard"),
     readingQuestionCount: document.getElementById("reading-question-count"),
+    readingResumePanel: document.getElementById("reading-resume-panel"),
+    readingResumeSummary: document.getElementById("reading-resume-summary"),
+    readingResumeButton: document.getElementById("reading-resume-button"),
+    readingDiscardSessionButton: document.getElementById("reading-discard-session-button"),
     readingStartButton: document.getElementById("reading-start-button"),
     readingSessionLabel: document.getElementById("reading-session-label"),
     readingProgressText: document.getElementById("reading-progress-text"),
@@ -468,6 +478,178 @@
     }
   }
 
+  function loadActiveSession() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(ACTIVE_SESSION_KEY));
+      if (!saved || saved.version !== ACTIVE_SESSION_VERSION) return null;
+      if (!['vocab', 'reading'].includes(saved.kind) || !saved.session) return null;
+      return saved;
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  function vocabSessionSnapshot() {
+    if (!session || session.completed) return null;
+    const {
+      baseIds,
+      masteredIds,
+      mistakenIds,
+      correctIds,
+      current,
+      ...plain
+    } = session;
+    return {
+      ...plain,
+      baseIds: [...baseIds],
+      masteredIds: [...masteredIds],
+      mistakenIds: [...mistakenIds],
+      correctIds: [...correctIds],
+      currentId: current?.id || null,
+    };
+  }
+
+  function readingSessionSnapshot() {
+    if (!readingSession || readingSession.completed) return null;
+    return {
+      ...readingSession,
+      questions: readingSession.questions.map((item) => ({
+        id: item.id,
+        sessionChoices: item.sessionChoices,
+      })),
+    };
+  }
+
+  function saveActiveSession(kind) {
+    const snapshot = kind === "reading" ? readingSessionSnapshot() : vocabSessionSnapshot();
+    if (!snapshot) return;
+    try {
+      localStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify({
+        version: ACTIVE_SESSION_VERSION,
+        kind,
+        savedAt: Date.now(),
+        session: snapshot,
+      }));
+    } catch (_error) {
+      // The current screen remains usable if storage is unavailable.
+    }
+  }
+
+  function clearActiveSession() {
+    try {
+      localStorage.removeItem(ACTIVE_SESSION_KEY);
+    } catch (_error) {
+      // Ignore unavailable storage.
+    }
+    renderResumePanels();
+  }
+
+  function renderResumePanels() {
+    const saved = loadActiveSession();
+    const vocabSaved = saved?.kind === "vocab";
+    const readingSaved = saved?.kind === "reading";
+    elements.resumePanel.hidden = !vocabSaved;
+    elements.readingResumePanel.hidden = !readingSaved;
+    if (vocabSaved) {
+      const value = saved.session;
+      const completed = value.examMode
+        ? Number(value.completedQuestions) || 0
+        : Array.isArray(value.masteredIds) ? value.masteredIds.length : 0;
+      elements.resumeSummary.textContent = `${difficultyLabels[value.difficulty] || value.difficulty} · ${modeLabels[value.mode] || value.mode} · ${value.number}회차 · ${completed}/${value.total} 완료`;
+    }
+    if (readingSaved) {
+      const value = saved.session;
+      const total = Array.isArray(value.questions) ? value.questions.length : 0;
+      const completed = Math.min(total, (Number(value.index) || 0) + (value.answered ? 1 : 0));
+      elements.readingResumeSummary.textContent = `${value.difficulty === "furigana" ? "후리가나 표시" : "후리가나 없음"} · ${value.number}회차 · ${completed}/${total} 완료`;
+    }
+  }
+
+  function setFeatureBrand(feature) {
+    currentFeature = feature === "reading" ? "reading" : "vocab";
+    const readingFeature = currentFeature === "reading";
+    elements.brandEyebrow.textContent = readingFeature
+      ? "JPT · JLPT · J.TEST · BJT"
+      : "JLPT N5 · N4 · N3 · N2";
+    elements.brandTitle.textContent = readingFeature ? "일본어 독해 퀴즈" : "한자 읽기 퀴즈";
+    document.title = readingFeature ? "일본어 독해 퀴즈" : "한자 읽기 퀴즈";
+  }
+
+  function restoreVocabSession(saved) {
+    const value = saved?.session;
+    if (!value || !difficultyLabels[value.difficulty] || !modeLabels[value.mode]) return false;
+    const validIds = new Set(datasetForMode(value.difficulty, value.mode).map((item) => item.id));
+    const referencedIds = [
+      ...(Array.isArray(value.baseIds) ? value.baseIds : []),
+      ...(Array.isArray(value.queue) ? value.queue : []),
+      value.currentId,
+    ].filter(Boolean);
+    if (!referencedIds.length || referencedIds.some((id) => !validIds.has(id))) return false;
+
+    session = {
+      ...value,
+      baseIds: new Set(value.baseIds || []),
+      queue: [...(value.queue || [])],
+      masteredIds: new Set(value.masteredIds || []),
+      mistakenIds: new Set(value.mistakenIds || []),
+      correctIds: new Set(value.correctIds || []),
+      current: null,
+    };
+    setFeatureBrand("vocab");
+    configureSessionLabels();
+    showScreen("quiz");
+    if (value.answered) {
+      showNextQuestion();
+    } else {
+      session.queue.unshift(value.currentId);
+      showNextQuestion({
+        currentMisses: Number(value.currentMisses) || 0,
+        hintSelectedId: value.hintSelectedId || null,
+        kanaAnswer: value.kanaAnswer || "",
+      });
+    }
+    return true;
+  }
+
+  function restoreReadingSession(saved) {
+    const value = saved?.session;
+    if (!value || !["furigana", "standard"].includes(value.difficulty)) return false;
+    const byId = new Map(readingData.map((item) => [item.id, item]));
+    const savedQuestions = Array.isArray(value.questions) ? value.questions : [];
+    if (!savedQuestions.length || savedQuestions.some((item) => !byId.has(item.id))) return false;
+    const questions = savedQuestions.map((item) => ({
+      ...byId.get(item.id),
+      sessionChoices: item.sessionChoices,
+    }));
+    if (questions.some((item) => !Array.isArray(item.sessionChoices) || item.sessionChoices.length !== 4)) return false;
+
+    readingSession = { ...value, questions };
+    setFeatureBrand("reading");
+    elements.readingSessionLabel.textContent = `독해 ${readingSession.number}회차 · ${readingSession.difficulty === "furigana" ? "후리가나 표시" : "후리가나 없음"}`;
+    showScreen("readingQuiz");
+    if (readingSession.answered) showNextReadingQuestion();
+    else showReadingQuestion(true);
+    return true;
+  }
+
+  function restoreActiveSession(expectedKind = null) {
+    const saved = loadActiveSession();
+    if (!saved || (expectedKind && saved.kind !== expectedKind)) return false;
+    const restored = saved.kind === "reading"
+      ? restoreReadingSession(saved)
+      : restoreVocabSession(saved);
+    if (!restored) clearActiveSession();
+    return restored;
+  }
+
+  function discardSavedSession() {
+    session = null;
+    readingSession = null;
+    clearActiveSession();
+    renderStartScreen();
+    renderReadingStartScreen();
+  }
+
   function formatAccuracy(value) {
     return value === null ? "—" : `${value}%`;
   }
@@ -620,11 +802,22 @@
     for (const match of String(text).matchAll(pattern)) {
       const term = match[0];
       html += escapeHtml(String(text).slice(cursor, match.index));
-      html += `<ruby>${escapeHtml(term)}<rt>${escapeHtml(guides[term])}</rt></ruby>`;
+      html += `<ruby>${escapeHtml(term)}<rt aria-hidden="true">${escapeHtml(guides[term])}</rt></ruby>`;
       cursor = match.index + term.length;
     }
     html += escapeHtml(String(text).slice(cursor));
     return html;
+  }
+
+  function textWithAccessibleReadings(text, readings, enabled) {
+    if (!enabled) return String(text);
+    const guides = { ...commonReadingGuides, ...(readings || {}) };
+    const terms = Object.keys(guides)
+      .filter((term) => term && String(text).includes(term))
+      .sort((a, b) => b.length - a.length);
+    if (!terms.length) return String(text);
+    const pattern = new RegExp(terms.map(escapeRegExp).join("|"), "g");
+    return String(text).replace(pattern, (term) => `${term}（${guides[term]}）`);
   }
 
   function renderReadingText(target, text, readings) {
@@ -632,7 +825,7 @@
       ? readingSession.difficulty === "furigana" || readingSession.hintShown
       : selectedReadingDifficulty() === "furigana";
     target.innerHTML = textWithFurigana(text, readings, showFurigana);
-    target.setAttribute("aria-label", text);
+    target.setAttribute("aria-label", textWithAccessibleReadings(text, readings, showFurigana));
   }
 
   function renderReadingStartScreen() {
@@ -658,6 +851,7 @@
       fields.total.textContent = formatAccuracy(engine.accuracy(stat.totalCorrect, stat.totalAttempts));
       fields.card.classList.toggle("is-selected", difficulty === selected);
     });
+    renderResumePanels();
   }
 
   function openFeatureSwitch() {
@@ -682,15 +876,12 @@
     closeFeatureSwitch(false);
     closeMistakeMenu();
     stopExamTimer();
+    if (session) saveActiveSession("vocab");
+    if (readingSession) saveActiveSession("reading");
     session = null;
     readingSession = null;
-    currentFeature = feature === "reading" ? "reading" : "vocab";
+    setFeatureBrand(feature);
     const readingFeature = currentFeature === "reading";
-    elements.brandEyebrow.textContent = readingFeature
-      ? "JPT · JLPT · J.TEST · BJT"
-      : "JLPT N5 · N4 · N3 · N2";
-    elements.brandTitle.textContent = readingFeature ? "일본어 독해 퀴즈" : "한자 읽기 퀴즈";
-    document.title = readingFeature ? "일본어 독해 퀴즈" : "한자 읽기 퀴즈";
     if (readingFeature) {
       renderReadingStartScreen();
       showScreen("readingStart");
@@ -722,6 +913,7 @@
   }
 
   function startReadingSession() {
+    clearActiveSession();
     const difficulty = selectedReadingDifficulty();
     const stat = readingStatsFor(difficulty);
     const requestedCount = Math.min(
@@ -739,6 +931,7 @@
       attempts: 0,
       answered: false,
       hintShown: false,
+      hintChoiceIndex: null,
     };
     elements.readingSessionLabel.textContent = `독해 ${readingSession.number}회차 · ${difficulty === "furigana" ? "후리가나 표시" : "후리가나 없음"}`;
     showScreen("readingQuiz");
@@ -754,10 +947,13 @@
     elements.readingProgressBar.style.width = `${(completed / readingSession.questions.length) * 100}%`;
   }
 
-  function showReadingQuestion() {
+  function showReadingQuestion(preserveHint = false) {
     const item = readingSession.questions[readingSession.index];
     readingSession.answered = false;
-    readingSession.hintShown = false;
+    if (!preserveHint) {
+      readingSession.hintShown = false;
+      readingSession.hintChoiceIndex = null;
+    }
     elements.readingExamBadge.textContent = `${item.exam}형`;
     elements.readingTypeBadge.textContent = item.type;
     renderReadingText(elements.readingPassage, item.passage, item.readings);
@@ -774,15 +970,34 @@
         item.readings,
         readingSession.difficulty === "furigana" || readingSession.hintShown,
       )}</span>`;
-      button.setAttribute("aria-label", `${index + 1}번 ${choice.text}`);
+      button.setAttribute("aria-label", `${index + 1}번 ${textWithAccessibleReadings(
+        choice.text,
+        item.readings,
+        readingSession.difficulty === "furigana" || readingSession.hintShown,
+      )}`);
       button.addEventListener("click", () => answerReadingQuestion(index));
       elements.readingAnswerGrid.append(button);
     });
     elements.readingFeedback.hidden = true;
     elements.readingFeedback.className = "feedback reading-feedback";
     elements.readingNextButton.hidden = true;
+    if (readingSession.hintShown && Number.isInteger(readingSession.hintChoiceIndex)) {
+      const selectedChoice = item.sessionChoices[readingSession.hintChoiceIndex];
+      const selectedButton = elements.readingAnswerGrid.querySelectorAll("button")[readingSession.hintChoiceIndex];
+      selectedButton.disabled = true;
+      selectedButton.classList.add("is-wrong");
+      elements.readingFeedback.hidden = false;
+      elements.readingFeedback.className = "feedback reading-feedback is-hint";
+      elements.readingFeedbackIcon.innerHTML = "<span>あ</span>";
+      elements.readingFeedbackTitle.textContent = "후리가나를 확인하고 한 번 더 풀어보세요";
+      elements.readingFeedbackSelected.hidden = false;
+      elements.readingFeedbackSelected.textContent = `첫 선택 · ${selectedChoice.text}`;
+      elements.readingFeedbackAnswer.textContent = "힌트 · 지문과 선택지에 한자 읽기를 표시했습니다.";
+      elements.readingFeedbackExplanation.textContent = "아직 오답으로 기록되지 않습니다. 후리가나를 보고 다시 선택하세요.";
+    }
     updateReadingHeader();
     elements.readingAnswerGrid.querySelector("button")?.focus();
+    saveActiveSession("reading");
   }
 
   function answerReadingQuestion(choiceIndex) {
@@ -795,6 +1010,7 @@
 
     if (!isCorrect && readingSession.difficulty === "standard" && !readingSession.hintShown) {
       readingSession.hintShown = true;
+      readingSession.hintChoiceIndex = choiceIndex;
       renderReadingText(elements.readingPassage, item.passage, item.readings);
       renderReadingText(elements.readingQuestion, item.question, item.readings);
       buttons.forEach((button, index) => {
@@ -804,6 +1020,7 @@
           item.readings,
           true,
         )}</span>`;
+        button.setAttribute("aria-label", `${index + 1}번 ${textWithAccessibleReadings(candidate.text, item.readings, true)}`);
       });
       const selectedButton = buttons[choiceIndex];
       selectedButton.disabled = true;
@@ -817,6 +1034,7 @@
       elements.readingFeedbackAnswer.textContent = "힌트 · 지문과 선택지에 한자 읽기를 표시했습니다.";
       elements.readingFeedbackExplanation.textContent = "아직 오답으로 기록되지 않습니다. 후리가나를 보고 다시 선택하세요.";
       elements.readingNextButton.hidden = true;
+      saveActiveSession("reading");
       buttons.find((button) => !button.disabled)?.focus();
       return;
     }
@@ -845,6 +1063,7 @@
       : "결과 보기";
     elements.readingNextButton.hidden = false;
     updateReadingHeader();
+    saveActiveSession("reading");
     elements.readingNextButton.focus();
   }
 
@@ -859,6 +1078,8 @@
   }
 
   function completeReadingSession() {
+    readingSession.completed = true;
+    clearActiveSession();
     const accuracy = engine.accuracy(readingSession.correct, readingSession.attempts) || 0;
     const stat = readingStatsFor(readingSession.difficulty);
     stat.completedSessions += 1;
@@ -935,6 +1156,7 @@
       row.append(label, score, date);
       elements.historyList.append(row);
     });
+    renderResumePanels();
   }
 
   function mistakeModesForDifficulty(difficulty) {
@@ -1051,6 +1273,20 @@
     );
   }
 
+  function configureSessionLabels() {
+    const modeLabel = modeLabels[session.mode];
+    const examLabel = session.examMode ? " · 시험 모드" : "";
+    const choiceLabel = session.mode === "kanji-to-kana" ? "히라가나 9개" : `${session.choiceCount}지선다`;
+    elements.quizSessionLabel.textContent = `${session.number}회차 · ${difficultyLabels[session.difficulty]} · ${modeLabel}${examLabel} · ${choiceLabel}`;
+    elements.keyboardHint.textContent = session.mode === "kanji-to-kana"
+      ? session.examMode
+        ? "숫자키 1–9로 히라가나 선택 · Backspace로 지우기 · 제한시간 안에 Enter로 제출"
+        : "숫자키 1–9로 히라가나 선택 · Backspace로 지우기 · Enter로 제출"
+      : session.examMode
+        ? `숫자키 1–${session.choiceCount} 또는 숫자패드로 선택 · 제한시간 안에 답하세요`
+        : `숫자키 1–${session.choiceCount} 또는 숫자패드로 선택 · Enter로 다음`;
+  }
+
   function startSession() {
     const mode = selectedMode();
     const difficulty = selectedDifficulty();
@@ -1081,6 +1317,7 @@
       ? EXAM_QUESTION_COUNT
       : Math.min(maximumSize, Math.max(10, Math.round(Number(countInput.value) || maximumSize)));
     const items = selectSessionItems(mode, difficulty, requestedSize, eligibleItems);
+    clearActiveSession();
     session = {
       number: sessionNumber,
       difficulty,
@@ -1101,20 +1338,11 @@
       kanaAnswer: "",
       current: null,
       currentMisses: 0,
+      hintSelectedId: null,
       answered: false,
     };
 
-    const modeLabel = modeLabels[mode];
-    const examLabel = examMode ? " · 시험 모드" : "";
-    const choiceLabel = mode === "kanji-to-kana" ? "히라가나 9개" : `${choiceCount}지선다`;
-    elements.quizSessionLabel.textContent = `${session.number}회차 · ${difficultyLabels[difficulty]} · ${modeLabel}${examLabel} · ${choiceLabel}`;
-    elements.keyboardHint.textContent = mode === "kanji-to-kana"
-      ? examMode
-        ? "숫자키 1–9로 히라가나 선택 · Backspace로 지우기 · 제한시간 안에 Enter로 제출"
-        : "숫자키 1–9로 히라가나 선택 · Backspace로 지우기 · Enter로 제출"
-      : examMode
-        ? `숫자키 1–${choiceCount} 또는 숫자패드로 선택 · 제한시간 안에 답하세요`
-        : `숫자키 1–${choiceCount} 또는 숫자패드로 선택 · Enter로 다음`;
+    configureSessionLabels();
     showScreen("quiz");
     showNextQuestion();
   }
@@ -1159,18 +1387,21 @@
     if (session.kanaAnswer.length >= 20) return;
     session.kanaAnswer += character;
     renderKanaAnswer();
+    saveActiveSession("vocab");
   }
 
   function removeLastKana() {
     if (!session || session.answered || session.mode !== "kanji-to-kana") return;
     session.kanaAnswer = session.kanaAnswer.slice(0, -1);
     renderKanaAnswer();
+    saveActiveSession("vocab");
   }
 
   function clearKanaAnswer() {
     if (!session || session.answered || session.mode !== "kanji-to-kana") return;
     session.kanaAnswer = "";
     renderKanaAnswer();
+    saveActiveSession("vocab");
   }
 
   function submitKanaAnswer() {
@@ -1178,7 +1409,7 @@
     answerQuestion(null, false, session.kanaAnswer);
   }
 
-  function showNextQuestion() {
+  function showNextQuestion(resumeState = null) {
     stopExamTimer();
     if (session.queue.length === 0) {
       completeSession();
@@ -1186,9 +1417,10 @@
     }
 
     session.current = findItem(session.queue.shift());
-    session.currentMisses = 0;
+    session.currentMisses = Number(resumeState?.currentMisses) || 0;
+    session.hintSelectedId = resumeState?.hintSelectedId || null;
     session.answered = false;
-    session.kanaAnswer = "";
+    session.kanaAnswer = resumeState?.kanaAnswer || "";
     const item = session.current;
     const isKanjiToKana = session.mode === "kanji-to-kana";
     const choices = isKanjiToKana ? [] : buildChoices(item);
@@ -1298,12 +1530,35 @@
       : "";
     elements.retryNote.hidden = true;
     elements.nextButton.hidden = true;
+    if (isSentenceToKanji && session.currentMisses > 0 && session.hintSelectedId) {
+      const selectedItem = findItem(session.hintSelectedId);
+      const selectedButton = [...elements.answerGrid.querySelectorAll("button")].find(
+        (button) => button.dataset.itemId === session.hintSelectedId,
+      );
+      if (selectedButton && selectedItem) {
+        selectedButton.disabled = true;
+        selectedButton.classList.add("is-wrong");
+        elements.quizWord.innerHTML = item.sentenceFurigana.replace(
+          "___",
+          '<span class="sentence-blank" aria-hidden="true">＿＿＿</span>',
+        );
+        elements.feedback.hidden = false;
+        elements.feedback.className = "feedback is-wrong";
+        elements.feedbackIcon.innerHTML = "<span>!</span>";
+        elements.feedbackTitle.textContent = "한 번 더 생각해 보세요";
+        elements.feedbackSelected.hidden = false;
+        elements.feedbackSelected.textContent = `선택한 답  ${selectedItem.word}（${normalizedReading(selectedItem.reading)}） · ${selectedItem.meaning}`;
+        elements.feedbackReading.textContent = "힌트  문장에 후리가나를 표시했어요.";
+        elements.feedbackMeaning.textContent = "후리가나를 참고해서 다시 선택하세요.";
+      }
+    }
     updateSessionHeader();
     const firstInput = isKanjiToKana
       ? elements.kanaGrid.querySelector("button")
       : elements.answerGrid.querySelector("button");
     firstInput?.focus();
     startExamTimer();
+    saveActiveSession("vocab");
   }
 
   function answerQuestion(selectedId, timedOut = false, constructedAnswer = null) {
@@ -1334,6 +1589,7 @@
 
     if (!session.examMode && isSentenceToKanji && !isCorrect && session.currentMisses === 0) {
       session.currentMisses = 1;
+      session.hintSelectedId = selectedId;
       session.wrong += 1;
       progress.mistakeCounts[key] = (progress.mistakeCounts[key] || 0) + 1;
       recordWrongAnswer(key);
@@ -1359,6 +1615,7 @@
       elements.retryNote.hidden = true;
       elements.nextButton.hidden = true;
       updateSessionHeader();
+      saveActiveSession("vocab");
       buttons.find((button) => !button.disabled)?.focus();
       return;
     }
@@ -1453,6 +1710,7 @@
       : "결과 보기";
     elements.nextButton.hidden = false;
     updateSessionHeader();
+    saveActiveSession("vocab");
     elements.nextButton.focus();
   }
 
@@ -1466,6 +1724,8 @@
 
   function completeSession() {
     stopExamTimer();
+    session.completed = true;
+    clearActiveSession();
     elements.examTimer.hidden = true;
     const sessionAccuracy = engine.accuracy(session.correct, session.attempts) || 0;
     const newlyProtectedCount = updatePracticeReviewProgress();
@@ -1523,6 +1783,8 @@
     stopExamTimer();
     elements.examTimer.hidden = true;
     elements.examMistakeBadge.hidden = true;
+    if (session && !session.completed) saveActiveSession("vocab");
+    if (readingSession && !readingSession.completed) saveActiveSession("reading");
     session = null;
     readingSession = null;
     if (currentFeature === "reading") {
@@ -1725,6 +1987,8 @@
     renderReadingStartScreen();
     syncModeControls();
     elements.startButton.addEventListener("click", startSession);
+    elements.resumeButton.addEventListener("click", () => restoreActiveSession("vocab"));
+    elements.discardSessionButton.addEventListener("click", discardSavedSession);
     elements.homeButton.addEventListener("click", returnToStart);
     elements.featureSwitchButton.addEventListener("click", openFeatureSwitch);
     elements.featureSwitchClose.addEventListener("click", () => closeFeatureSwitch());
@@ -1741,6 +2005,8 @@
     elements.nextButton.addEventListener("click", showNextQuestion);
     elements.returnButton.addEventListener("click", returnToStart);
     elements.readingStartButton.addEventListener("click", startReadingSession);
+    elements.readingResumeButton.addEventListener("click", () => restoreActiveSession("reading"));
+    elements.readingDiscardSessionButton.addEventListener("click", discardSavedSession);
     elements.readingNextButton.addEventListener("click", showNextReadingQuestion);
     elements.readingReturnButton.addEventListener("click", returnToStart);
     elements.readingDifficultyFurigana.addEventListener("change", renderReadingStartScreen);
@@ -1758,6 +2024,7 @@
     elements.difficultyN3.addEventListener("change", syncModeControls);
     elements.difficultyN2.addEventListener("change", syncModeControls);
     document.addEventListener("keydown", handleKeyboard);
+    restoreActiveSession();
   }
 
   init();

@@ -201,6 +201,10 @@ ENGLISH_REFERENCE_FALLBACKS = [
 ]
 
 QUALITY_OVERRIDES = {
+    "n3-0276": {
+        "word": "黙る",
+        "sentenceFurigana": "<ruby>私<rt>わたし</rt></ruby>に___てどこ<ruby>行っ<rt>いっ</rt></ruby>てたの？",
+    },
     "n3-0319": {
         "word": "激しい",
         "surface": "激しい",
@@ -209,9 +213,44 @@ QUALITY_OVERRIDES = {
         "sentenceOriginal": "彼らは激しい議論を始めた。",
         "translation": "그들은 격렬한 토론을 시작했다.",
     },
+    "n3-0401": {
+        "word": "涙",
+        "sentenceFurigana": "<ruby>久しぶり<rt>ひさしぶり</rt></ruby>に<ruby>映画<rt>えいが</rt></ruby>を<ruby>観<rt>み</rt></ruby>に<ruby>行っ<rt>いっ</rt></ruby>たが、<ruby>思っ<rt>おもっ</rt></ruby>た<ruby>以上<rt>いじょう</rt></ruby>に<ruby>感動<rt>かんどう</rt></ruby>して___が<ruby>出<rt>で</rt></ruby>た。",
+    },
+    "n3-0946": {
+        "word": "雨",
+        "sentenceFurigana": "きのうは___だったので、<ruby>一日<rt>いちにち</rt></ruby><ruby>家<rt>いえ</rt></ruby>にいました。",
+    },
+    "n3-1144": {
+        "word": "住所",
+        "sentenceFurigana": "この___まで、<ruby>行っ<rt>いっ</rt></ruby>てください。",
+    },
     "n3-1151": {
         "word": "暇",
         "translation": "일요일은 한가합니다.",
+    },
+    "n3-1203": {
+        "word": "空く",
+        "meaning": "비다, 자리가 나다",
+        "surface": "空い",
+        "sentenceOriginal": "席が空いたので、窓側に座りました。",
+        "translation": "자리가 비어서 창가에 앉았습니다.",
+        "source": "학습용 교정 예문",
+    },
+    "n3-1267": {
+        "word": "側",
+        "surface": "側",
+        "sentenceOriginal": "困ったときは、いつも家族が側にいてくれた。",
+        "translation": "곤란할 때는 언제나 가족이 곁에 있어 주었다.",
+        "source": "학습용 교정 예문",
+    },
+    "n3-1287": {
+        "word": "空",
+        "meaning": "비어 있음, 빈 상태",
+        "surface": "空",
+        "sentenceOriginal": "箱の中は空だった。",
+        "translation": "상자 안은 비어 있었다.",
+        "source": "학습용 교정 예문",
     },
 }
 
@@ -452,19 +491,31 @@ def apply_quality_overrides(items, tokenizer):
             if original.count(surface) != 1:
                 raise ValueError(f"품질 교정 예문의 표면형이 하나가 아닙니다: {item['word']}")
             sentence = original.replace(surface, "___", 1)
+            source = override.get("source", "Tatoeba 예문 · 학습용 번역")
             item.update({
                 "sentence": sentence,
                 "sentenceSurface": surface,
                 "sentenceFurigana": add_furigana(sentence, tokenizer),
                 "sentenceTranslation": override["translation"],
-                "sentenceSource": "Tatoeba 예문 · 학습용 번역",
-                "sentenceLicense": "CC BY 2.0 FR",
-                "sentenceAttribution": f"https://tatoeba.org/ko/sentences/show/{override['japaneseId']}",
-                "sentenceEnglishReference": f"https://tatoeba.org/ko/sentences/show/{override['englishId']}",
+                "sentenceSource": source,
             })
-        else:
+            if override.get("japaneseId") and override.get("englishId"):
+                item.update({
+                    "sentenceLicense": "CC BY 2.0 FR",
+                    "sentenceAttribution": f"https://tatoeba.org/ko/sentences/show/{override['japaneseId']}",
+                    "sentenceEnglishReference": f"https://tatoeba.org/ko/sentences/show/{override['englishId']}",
+                })
+            else:
+                item.pop("sentenceLicense", None)
+                item.pop("sentenceAttribution", None)
+                item.pop("sentenceEnglishReference", None)
+        elif override.get("translation"):
             item["sentenceTranslation"] = override["translation"]
             item["sentenceSource"] = "Tatoeba 예문 · 학습용 번역"
+
+        for field in ("sentenceFurigana", "meaning"):
+            if override.get(field):
+                item[field] = override[field]
 
         item.pop("sentenceTranslationAttribution", None)
 

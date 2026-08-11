@@ -242,6 +242,17 @@
           <small id="sentence-question-count-hint">10~480개 사이에서 선택 · 능력단어 Word 예문에서 출제</small>
         </div>
 
+        <section id="resume-panel" class="resume-panel" aria-labelledby="resume-summary" hidden>
+          <div>
+            <strong>진행 중인 회차가 있습니다</strong>
+            <p id="resume-summary"></p>
+          </div>
+          <div class="resume-actions">
+            <button id="resume-button" type="button">이어하기</button>
+            <button id="discard-session-button" type="button">기록 삭제</button>
+          </div>
+        </section>
+
         <button id="start-button" class="primary-button" type="button">학습 시작</button>
         <p class="helper">선택지 4·6·8개 · 문제 수 선택 · 오답 자동 재출제 · 무오답 2회 간격 반복 · 기록 자동 저장</p>
         <p class="source-note">N3 추가 예문: <a href="https://tatoeba.org/ko/" target="_blank" rel="noreferrer">Tatoeba · CC BY 2.0 FR</a></p>
@@ -378,6 +389,17 @@
           <input id="reading-question-count" type="number" min="10" max="600" step="1" value="100" inputmode="numeric">
           <small>10~600문제 · 네 시험 유형이 고르게 출제됩니다.</small>
         </div>
+
+        <section id="reading-resume-panel" class="resume-panel" aria-labelledby="reading-resume-summary" hidden>
+          <div>
+            <strong>진행 중인 독해 회차가 있습니다</strong>
+            <p id="reading-resume-summary"></p>
+          </div>
+          <div class="resume-actions">
+            <button id="reading-resume-button" type="button">이어하기</button>
+            <button id="reading-discard-session-button" type="button">기록 삭제</button>
+          </div>
+        </section>
 
         <button id="reading-start-button" class="primary-button" type="button">독해 시험 시작</button>
         <p class="helper">숫자키 1~4로 답 선택 · Enter로 다음 문제 · 기록은 현재 브라우저에 저장</p>

@@ -51,8 +51,13 @@ def main():
     japanese = read_sentences(TATOEBA_DIR / "jpn_sentences.tsv.bz2")
     korean = read_sentences(TATOEBA_DIR / "kor_sentences.tsv.bz2")
     tatoeba_items = [item for item in sentence_items if item.get("sentenceAttribution")]
-    if len(tatoeba_items) != 465:
-        raise ValueError(f"Tatoeba 기반 예문은 465개여야 합니다: {len(tatoeba_items)}")
+    if len(tatoeba_items) != 462:
+        raise ValueError(f"Tatoeba 기반 예문은 462개여야 합니다: {len(tatoeba_items)}")
+    corrected_items = [
+        item for item in sentence_items if item.get("sentenceSource") == "학습용 교정 예문"
+    ]
+    if len(corrected_items) != 3:
+        raise ValueError(f"문맥 읽기 교정 예문은 3개여야 합니다: {len(corrected_items)}")
 
     used_japanese_ids = set()
     for item in tatoeba_items:

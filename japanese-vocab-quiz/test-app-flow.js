@@ -944,6 +944,23 @@ assert.equal(elements.get("reading-live-accuracy").textContent, "100%", "후리�
 pressKey("Enter", "Enter");
 assert.doesNotMatch(elements.get("reading-passage").innerHTML, /<ruby>/, "다음 문제는 다시 후리가나 없는 상태로 시작해야 합니다.");
 readingButtons = elements.get("reading-answer-grid").querySelectorAll("button");
+const standardDirectCorrectIndex = readingButtons.findIndex((button) => button.dataset.correct === "true");
+pressKey(String(standardDirectCorrectIndex + 1), `Digit${standardDirectCorrectIndex + 1}`);
+assert.equal(elements.get("reading-feedback-title").textContent, "정답입니다");
+assert.match(
+  elements.get("reading-passage").innerHTML,
+  /<ruby>/,
+  "후리가나 없음 난이도에서 바로 맞혀도 정답 화면에는 지문 읽기를 표시해야 합니다.",
+);
+assert.match(
+  elements.get("reading-question").innerHTML,
+  /<ruby>/,
+  "후리가나 없음 난이도에서 바로 맞혀도 정답 화면에는 질문 읽기를 표시해야 합니다.",
+);
+
+pressKey("Enter", "Enter");
+assert.doesNotMatch(elements.get("reading-passage").innerHTML, /<ruby>/, "새 문제에서는 후리가나를 다시 숨겨야 합니다.");
+readingButtons = elements.get("reading-answer-grid").querySelectorAll("button");
 const standardWrongIndexes = readingButtons
   .map((button, index) => button.dataset.correct !== "true" ? index : -1)
   .filter((index) => index >= 0);
@@ -952,7 +969,7 @@ assert.match(elements.get("reading-feedback-title").textContent, /후리가나�
 pressKey(String(standardWrongIndexes[1] + 1), `Digit${standardWrongIndexes[1] + 1}`);
 assert.match(elements.get("reading-feedback-title").textContent, /오답/);
 assert.equal(elements.get("reading-next-button").hidden, false, "후리가나 표시 후 다시 틀리면 최종 오답 처리해야 합니다.");
-assert.equal(elements.get("reading-live-accuracy").textContent, "50%");
+assert.equal(elements.get("reading-live-accuracy").textContent, "67%");
 
 guard = 0;
 while (!elements.get("reading-result-screen").classList.contains("is-active") && guard < 15) {

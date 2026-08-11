@@ -702,10 +702,10 @@
     return progress.readingStats[difficulty];
   }
 
-  function renderReadingText(target, text, readings) {
-    const showFurigana = readingSession
+  function renderReadingText(target, text, readings, forceFurigana = null) {
+    const showFurigana = forceFurigana ?? (readingSession
       ? readingSession.difficulty === "furigana" || readingSession.hintShown
-      : selectedReadingDifficulty() === "furigana";
+      : selectedReadingDifficulty() === "furigana");
     readingRenderer.render(target, text, readings, showFurigana);
   }
 
@@ -844,9 +844,9 @@
     );
   }
 
-  function renderReadingHint(item, choiceIndex, buttons) {
-    renderReadingText(elements.readingPassage, item.passage, item.readings);
-    renderReadingText(elements.readingQuestion, item.question, item.readings);
+  function revealReadingFurigana(item, buttons) {
+    renderReadingText(elements.readingPassage, item.passage, item.readings, true);
+    renderReadingText(elements.readingQuestion, item.question, item.readings, true);
     buttons.forEach((button, index) => renderReadingChoice(
       button,
       item.sessionChoices[index],
@@ -854,6 +854,10 @@
       item,
       true,
     ));
+  }
+
+  function renderReadingHint(item, choiceIndex, buttons) {
+    revealReadingFurigana(item, buttons);
 
     const selectedChoice = item.sessionChoices[choiceIndex];
     const selectedButton = buttons[choiceIndex];
@@ -871,6 +875,8 @@
   }
 
   function renderReadingAnswer(item, choiceIndex, isCorrect, buttons) {
+    // The standard difficulty hides readings while solving, then reveals them with the answer.
+    revealReadingFurigana(item, buttons);
     buttons.forEach((button, index) => {
       button.disabled = true;
       if (item.sessionChoices[index].correct) button.classList.add("is-correct");

@@ -6,6 +6,7 @@ require("./n3-vocab-data.js");
 require("./n2-vocab-data.js");
 require("./katakana-vocab-data.js");
 require("./reading-data.js");
+require("./reading-generated-data.js");
 globalThis.QuizEngine = require("./quiz-engine.js");
 
 class ClassList {
@@ -128,8 +129,8 @@ elements.get("kana-composer").hidden = true;
 elements.get("next-button").hidden = true;
 elements.get("feedback").hidden = true;
 elements.get("reading-difficulty-furigana").checked = true;
-elements.get("reading-question-count").value = "20";
-elements.get("reading-question-count").max = "32";
+elements.get("reading-question-count").value = "100";
+elements.get("reading-question-count").max = "600";
 elements.get("reading-feedback").hidden = true;
 elements.get("reading-next-button").hidden = true;
 
@@ -848,6 +849,11 @@ assert.ok(elements.get("reading-start-screen").classList.contains("is-active"), 
 assert.equal(elements.get("brand-title").textContent, "일본어 독해 퀴즈");
 assert.equal(elements.get("reading-furigana-sessions").textContent, "0회");
 assert.equal(elements.get("reading-standard-sessions").textContent, "0회");
+assert.equal(elements.get("reading-question-count").max, "600", "독해 문제는 최대 600개까지 선택할 수 있어야 합니다.");
+elements.get("reading-question-count").value = "600";
+elements.get("reading-start-button").click();
+assert.equal(elements.get("reading-progress-text").textContent, "1 / 600", "독해 600문제 회차를 시작할 수 있어야 합니다.");
+elements.get("home-button").click();
 
 elements.get("reading-question-count").value = "10";
 elements.get("reading-start-button").click();

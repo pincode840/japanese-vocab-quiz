@@ -10,6 +10,7 @@ n3_data = (root / "n3-vocab-data.js").read_text(encoding="utf-8")
 n2_data = (root / "n2-vocab-data.js").read_text(encoding="utf-8")
 katakana_data = (root / "katakana-vocab-data.js").read_text(encoding="utf-8")
 reading_data = (root / "reading-data.js").read_text(encoding="utf-8")
+reading_generated_data = (root / "reading-generated-data.js").read_text(encoding="utf-8")
 engine = (root / "quiz-engine.js").read_text(encoding="utf-8")
 app = (root / "app.js").read_text(encoding="utf-8")
 
@@ -27,6 +28,7 @@ html = replace_once(html, '  <script src="n3-vocab-data.js"></script>', f"  <scr
 html = replace_once(html, '  <script src="n2-vocab-data.js"></script>', f"  <script>\n{n2_data}\n  </script>")
 html = replace_once(html, '  <script src="katakana-vocab-data.js"></script>', f"  <script>\n{katakana_data}\n  </script>")
 html = replace_once(html, '  <script src="reading-data.js"></script>', f"  <script>\n{reading_data}\n  </script>")
+html = replace_once(html, '  <script src="reading-generated-data.js"></script>', f"  <script>\n{reading_generated_data}\n  </script>")
 html = replace_once(html, '  <script src="quiz-engine.js"></script>', f"  <script>\n{engine}\n  </script>")
 html = replace_once(html, '  <script src="app.js"></script>', f"  <script>\n{app}\n  </script>")
 

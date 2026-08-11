@@ -7,6 +7,7 @@ require("./n3-vocab-data.js");
 require("./n2-vocab-data.js");
 require("./katakana-vocab-data.js");
 require("./reading-data.js");
+require("./reading-generated-data.js");
 const engine = require("./quiz-engine.js");
 
 const data = globalThis.VOCAB_DATA;
@@ -21,22 +22,24 @@ assert.match(
   /\.quiz-card h2\.reading-question\s*\{[\s\S]*?font-size:\s*clamp\(18px,\s*3\.2vw,\s*24px\)/,
   "독해 질문에는 단어 문제용 대형 제목보다 우선하는 전용 글자 크기가 있어야 합니다.",
 );
-assert.equal(readingData.length, 32, "독해 신규 문제는 32개가 있어야 합니다.");
+assert.equal(readingData.length, 600, "독해 신규 문제는 600개가 있어야 합니다.");
 assert.equal(new Set(readingData.map((item) => item.id)).size, readingData.length, "독해 문제 ID는 중복되면 안 됩니다.");
+assert.equal(new Set(readingData.map((item) => item.passage)).size, readingData.length, "독해 지문은 중복되면 안 됩니다.");
 assert.deepEqual(
   Object.fromEntries(["JLPT", "JPT", "J.TEST", "BJT"].map((exam) => [
     exam,
     readingData.filter((item) => item.exam === exam).length,
   ])),
-  { JLPT: 8, JPT: 8, "J.TEST": 8, BJT: 8 },
+  { JLPT: 150, JPT: 150, "J.TEST": 150, BJT: 150 },
   "네 시험 유형을 같은 수로 구성해야 합니다.",
 );
 assert.ok(readingData.every((item) => item.origin === "original"), "공개 앱에는 새로 작성한 독해 문제만 포함해야 합니다.");
 assert.ok(readingData.every((item) => item.passage && item.question && item.explanation));
 assert.ok(readingData.every((item) => item.choices.length === 4 && new Set(item.choices).size === 4));
 assert.ok(readingData.every((item) => Number.isInteger(item.answer) && item.answer >= 0 && item.answer < 4));
-assert.ok(readingData.every((item) => item.readings && Object.keys(item.readings).length > 0), "후리가나용 읽기 데이터가 있어야 합니다.");
+assert.ok(readingData.every((item) => item.readings && typeof item.readings === "object"), "후리가나용 읽기 데이터가 있어야 합니다.");
 const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const missingReadingGuides = new Set();
 readingData.forEach((item) => {
   const readings = { ...readingCommonReadings, ...item.readings };
   [item.passage, item.question, ...item.choices].forEach((text) => {
@@ -44,9 +47,16 @@ readingData.forEach((item) => {
       .filter((term) => term && text.includes(term))
       .sort((a, b) => b.length - a.length);
     const unannotated = text.replace(new RegExp(terms.map(escapeRegExp).join("|"), "g"), "");
-    assert.doesNotMatch(unannotated, /[一-龯々]/, `${item.id}의 모든 한자에 후리가나가 있어야 합니다.`);
+    if (/[一-龯々]/.test(unannotated)) {
+      (unannotated.match(/[一-龯々]+/g) || []).forEach((kanji) => missingReadingGuides.add(kanji));
+    }
   });
 });
+assert.equal(
+  missingReadingGuides.size,
+  0,
+  `모든 독해 한자에 후리가나가 있어야 합니다.\n${[...missingReadingGuides].slice(0, 120).join("\n")}`,
+);
 assert.equal(data.length, 480, "480개 단어가 있어야 합니다.");
 assert.equal(new Set(data.map((item) => item.id)).size, 480, "단어 ID는 중복되면 안 됩니다.");
 assert.equal(

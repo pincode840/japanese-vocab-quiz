@@ -725,7 +725,7 @@
     const stat = readingStatsFor(difficulty);
     const requestedCount = Math.min(
       readingData.length,
-      Math.max(10, Math.round(Number(elements.readingQuestionCount.value) || 20)),
+      Math.max(10, Math.round(Number(elements.readingQuestionCount.value) || 100)),
     );
     elements.readingQuestionCount.value = String(requestedCount);
     readingSession = {
@@ -1669,8 +1669,8 @@
       (difficulty) => datasetForMode(difficulty, "kanji-to-kana").length < EXAM_QUESTION_COUNT,
     );
     const readingExams = ["JLPT", "JPT", "J.TEST", "BJT"];
-    const invalidReadingData = readingData.length < 10
-      || readingExams.some((exam) => readingData.filter((item) => item.exam === exam).length < 2)
+    const invalidReadingData = readingData.length !== 600
+      || readingExams.some((exam) => readingData.filter((item) => item.exam === exam).length !== 150)
       || readingData.some((item) => !item.id
         || !item.passage
         || !item.question

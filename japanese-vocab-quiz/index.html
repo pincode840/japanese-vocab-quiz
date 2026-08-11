@@ -375,8 +375,8 @@
 
         <div class="question-count-picker">
           <label for="reading-question-count">독해 문제 수</label>
-          <input id="reading-question-count" type="number" min="10" max="32" step="1" value="20" inputmode="numeric">
-          <small>10~32문제 · 네 시험 유형이 고르게 출제됩니다.</small>
+          <input id="reading-question-count" type="number" min="10" max="600" step="1" value="100" inputmode="numeric">
+          <small>10~600문제 · 네 시험 유형이 고르게 출제됩니다.</small>
         </div>
 
         <button id="reading-start-button" class="primary-button" type="button">독해 시험 시작</button>
@@ -454,6 +454,7 @@
   <script src="n2-vocab-data.js"></script>
   <script src="katakana-vocab-data.js"></script>
   <script src="reading-data.js"></script>
+  <script src="reading-generated-data.js"></script>
   <script src="quiz-engine.js"></script>
   <script src="app.js"></script>
 </body>

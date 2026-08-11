@@ -14,6 +14,8 @@
 !/japanese-vocab-quiz/styles.css
 !/japanese-vocab-quiz/app.js
 !/japanese-vocab-quiz/quiz-engine.js
+!/japanese-vocab-quiz/reading-renderer.js
+!/japanese-vocab-quiz/session-store.js
 !/japanese-vocab-quiz/vocab-data.js
 !/japanese-vocab-quiz/n3-vocab-data.js
 !/japanese-vocab-quiz/n2-vocab-data.js
@@ -22,3 +24,4 @@
 !/japanese-vocab-quiz/reading-generated-data.js
 !/japanese-vocab-quiz/test-quiz-logic.js
 !/japanese-vocab-quiz/test-app-flow.js
+!/japanese-vocab-quiz/test-support-modules.js

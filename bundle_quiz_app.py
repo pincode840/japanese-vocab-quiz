@@ -13,6 +13,8 @@ asset_names = [
     "reading-data.js",
     "reading-generated-data.js",
     "quiz-engine.js",
+    "reading-renderer.js",
+    "session-store.js",
     "app.js",
 ]
 

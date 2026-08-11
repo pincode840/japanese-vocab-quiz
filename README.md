@@ -147,11 +147,24 @@ Tatoeba 기반 예문은 `CC BY 2.0 FR` 자료이며, 앱 데이터에 원문 �
 - 원본 HTML·CSS·JavaScript·단어 데이터와 자동 테스트는 `japanese-vocab-quiz/`에 있습니다.
 - 루트 `index.html`은 80KB 이하의 GitHub Pages 진입 파일이며 CSS·앱 코드·데이터는 `japanese-vocab-quiz/`의 분리된 캐시 가능 자산으로 배포합니다.
 - 오프라인 전달용 단일 HTML은 `bundle_quiz_app.py`가 별도로 만들며 GitHub Pages에서는 사용하지 않습니다.
+
+### 코드 구조
+
+- `app.js`: 화면 전환과 문제 풀이 흐름을 조정하는 컨트롤러입니다. 문제 표시·채점·결과 기록은 단계별 작은 함수로 나뉘어 있습니다.
+- `quiz-engine.js`: 문제 선택, 재출제, 정답률, 복습 간격처럼 화면과 무관한 순수 학습 로직입니다.
+- `session-store.js`: 진행 중 회차의 저장·복구와 `Set` 직렬화를 담당합니다. 독해 원문은 ID만 저장해 브라우저 저장 공간을 아낍니다.
+- `reading-renderer.js`: 후리가나 HTML과 스크린리더용 읽기 이름을 한 곳에서 생성합니다.
+- `*-data.js`: 난이도별 단어·문장·독해 데이터입니다.
+- `test-*.js`: 학습 로직, 저장·후리가나 모듈, 실제 화면 상호작용을 각각 검증합니다.
+
+주석은 코드 한 줄의 동작을 반복하기보다 저장 호환성, 첫 오답 힌트, 시험·복습 제외 기간처럼 변경 시 주의해야 할 정책의 이유를 설명합니다.
+
 - 로직 테스트: `node japanese-vocab-quiz/test-quiz-logic.js`
+- 저장·후리가나 모듈 테스트: `node japanese-vocab-quiz/test-support-modules.js`
 - 앱 흐름 테스트: `node japanese-vocab-quiz/test-app-flow.js`
 - 배포 파일 생성: `python bundle_quiz_app.py`
 - N3 데이터 내보내기: `python export_n3_vocab_data.py`
-- GitHub Actions는 푸시와 Pull Request마다 두 테스트를 실행하고 배포 파일이 원본과 일치하는지 확인합니다.
+- GitHub Actions는 푸시와 Pull Request마다 세 테스트를 실행하고 배포 파일이 원본과 일치하는지 확인합니다.
 
 ### 원본 자료에서 데이터 다시 만들기
 

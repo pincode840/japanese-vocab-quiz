@@ -9,11 +9,11 @@
   const KANA_TIME_LIMIT = 10;
   const SENTENCE_TIME_LIMIT = 13;
   const STORAGE_KEY = "jlpt-vocab-quiz-progress-v1";
-  const ACTIVE_SESSION_KEY = "jlpt-vocab-quiz-active-session-v1";
-  const ACTIVE_SESSION_VERSION = 1;
   const engine = window.QuizEngine;
   const readingData = Array.isArray(window.READING_QUIZ_DATA) ? window.READING_QUIZ_DATA : [];
   const commonReadingGuides = window.READING_COMMON_READINGS || {};
+  const readingRenderer = window.ReadingRenderer.create(commonReadingGuides);
+  const activeSessionStore = window.QuizSessionStore.create(localStorage);
 
   function normalizeData(items, prefix) {
     return Array.isArray(items)
@@ -478,74 +478,17 @@
     }
   }
 
-  function loadActiveSession() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(ACTIVE_SESSION_KEY));
-      if (!saved || saved.version !== ACTIVE_SESSION_VERSION) return null;
-      if (!['vocab', 'reading'].includes(saved.kind) || !saved.session) return null;
-      return saved;
-    } catch (_error) {
-      return null;
-    }
-  }
-
-  function vocabSessionSnapshot() {
-    if (!session || session.completed) return null;
-    const {
-      baseIds,
-      masteredIds,
-      mistakenIds,
-      correctIds,
-      current,
-      ...plain
-    } = session;
-    return {
-      ...plain,
-      baseIds: [...baseIds],
-      masteredIds: [...masteredIds],
-      mistakenIds: [...mistakenIds],
-      correctIds: [...correctIds],
-      currentId: current?.id || null,
-    };
-  }
-
-  function readingSessionSnapshot() {
-    if (!readingSession || readingSession.completed) return null;
-    return {
-      ...readingSession,
-      questions: readingSession.questions.map((item) => ({
-        id: item.id,
-        sessionChoices: item.sessionChoices,
-      })),
-    };
-  }
-
   function saveActiveSession(kind) {
-    const snapshot = kind === "reading" ? readingSessionSnapshot() : vocabSessionSnapshot();
-    if (!snapshot) return;
-    try {
-      localStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify({
-        version: ACTIVE_SESSION_VERSION,
-        kind,
-        savedAt: Date.now(),
-        session: snapshot,
-      }));
-    } catch (_error) {
-      // The current screen remains usable if storage is unavailable.
-    }
+    activeSessionStore.save(kind, kind === "reading" ? readingSession : session);
   }
 
   function clearActiveSession() {
-    try {
-      localStorage.removeItem(ACTIVE_SESSION_KEY);
-    } catch (_error) {
-      // Ignore unavailable storage.
-    }
+    activeSessionStore.clear();
     renderResumePanels();
   }
 
   function renderResumePanels() {
-    const saved = loadActiveSession();
+    const saved = activeSessionStore.load();
     const vocabSaved = saved?.kind === "vocab";
     const readingSaved = saved?.kind === "reading";
     elements.resumePanel.hidden = !vocabSaved;
@@ -586,15 +529,7 @@
     ].filter(Boolean);
     if (!referencedIds.length || referencedIds.some((id) => !validIds.has(id))) return false;
 
-    session = {
-      ...value,
-      baseIds: new Set(value.baseIds || []),
-      queue: [...(value.queue || [])],
-      masteredIds: new Set(value.masteredIds || []),
-      mistakenIds: new Set(value.mistakenIds || []),
-      correctIds: new Set(value.correctIds || []),
-      current: null,
-    };
+    session = window.QuizSessionStore.hydrateVocab(value);
     setFeatureBrand("vocab");
     configureSessionLabels();
     showScreen("quiz");
@@ -614,16 +549,8 @@
   function restoreReadingSession(saved) {
     const value = saved?.session;
     if (!value || !["furigana", "standard"].includes(value.difficulty)) return false;
-    const byId = new Map(readingData.map((item) => [item.id, item]));
-    const savedQuestions = Array.isArray(value.questions) ? value.questions : [];
-    if (!savedQuestions.length || savedQuestions.some((item) => !byId.has(item.id))) return false;
-    const questions = savedQuestions.map((item) => ({
-      ...byId.get(item.id),
-      sessionChoices: item.sessionChoices,
-    }));
-    if (questions.some((item) => !Array.isArray(item.sessionChoices) || item.sessionChoices.length !== 4)) return false;
-
-    readingSession = { ...value, questions };
+    readingSession = window.QuizSessionStore.hydrateReading(value, readingData);
+    if (!readingSession) return false;
     setFeatureBrand("reading");
     elements.readingSessionLabel.textContent = `독해 ${readingSession.number}회차 · ${readingSession.difficulty === "furigana" ? "후리가나 표시" : "후리가나 없음"}`;
     showScreen("readingQuiz");
@@ -633,7 +560,7 @@
   }
 
   function restoreActiveSession(expectedKind = null) {
-    const saved = loadActiveSession();
+    const saved = activeSessionStore.load();
     if (!saved || (expectedKind && saved.kind !== expectedKind)) return false;
     const restored = saved.kind === "reading"
       ? restoreReadingSession(saved)
@@ -775,57 +702,11 @@
     return progress.readingStats[difficulty];
   }
 
-  function escapeHtml(value) {
-    return String(value)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#39;");
-  }
-
-  function escapeRegExp(value) {
-    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-
-  function textWithFurigana(text, readings, enabled) {
-    if (!enabled) return escapeHtml(text);
-    const guides = { ...commonReadingGuides, ...(readings || {}) };
-    const terms = Object.keys(guides)
-      .filter((term) => term && String(text).includes(term))
-      .sort((a, b) => b.length - a.length);
-    if (!terms.length) return escapeHtml(text);
-
-    const pattern = new RegExp(terms.map(escapeRegExp).join("|"), "g");
-    let html = "";
-    let cursor = 0;
-    for (const match of String(text).matchAll(pattern)) {
-      const term = match[0];
-      html += escapeHtml(String(text).slice(cursor, match.index));
-      html += `<ruby>${escapeHtml(term)}<rt aria-hidden="true">${escapeHtml(guides[term])}</rt></ruby>`;
-      cursor = match.index + term.length;
-    }
-    html += escapeHtml(String(text).slice(cursor));
-    return html;
-  }
-
-  function textWithAccessibleReadings(text, readings, enabled) {
-    if (!enabled) return String(text);
-    const guides = { ...commonReadingGuides, ...(readings || {}) };
-    const terms = Object.keys(guides)
-      .filter((term) => term && String(text).includes(term))
-      .sort((a, b) => b.length - a.length);
-    if (!terms.length) return String(text);
-    const pattern = new RegExp(terms.map(escapeRegExp).join("|"), "g");
-    return String(text).replace(pattern, (term) => `${term}（${guides[term]}）`);
-  }
-
   function renderReadingText(target, text, readings) {
     const showFurigana = readingSession
       ? readingSession.difficulty === "furigana" || readingSession.hintShown
       : selectedReadingDifficulty() === "furigana";
-    target.innerHTML = textWithFurigana(text, readings, showFurigana);
-    target.setAttribute("aria-label", textWithAccessibleReadings(text, readings, showFurigana));
+    readingRenderer.render(target, text, readings, showFurigana);
   }
 
   function renderReadingStartScreen() {
@@ -947,6 +828,70 @@
     elements.readingProgressBar.style.width = `${(completed / readingSession.questions.length) * 100}%`;
   }
 
+  function readingShowsFurigana() {
+    return readingSession.difficulty === "furigana" || readingSession.hintShown;
+  }
+
+  function renderReadingChoice(button, choice, index, item, showFurigana = readingShowsFurigana()) {
+    button.innerHTML = `<span class="answer-number">${index + 1}</span><span lang="ja">${readingRenderer.toHtml(
+      choice.text,
+      item.readings,
+      showFurigana,
+    )}</span>`;
+    button.setAttribute(
+      "aria-label",
+      `${index + 1}번 ${readingRenderer.toAccessibleText(choice.text, item.readings, showFurigana)}`,
+    );
+  }
+
+  function renderReadingHint(item, choiceIndex, buttons) {
+    renderReadingText(elements.readingPassage, item.passage, item.readings);
+    renderReadingText(elements.readingQuestion, item.question, item.readings);
+    buttons.forEach((button, index) => renderReadingChoice(
+      button,
+      item.sessionChoices[index],
+      index,
+      item,
+      true,
+    ));
+
+    const selectedChoice = item.sessionChoices[choiceIndex];
+    const selectedButton = buttons[choiceIndex];
+    selectedButton.disabled = true;
+    selectedButton.classList.add("is-wrong");
+    elements.readingFeedback.hidden = false;
+    elements.readingFeedback.className = "feedback reading-feedback is-hint";
+    elements.readingFeedbackIcon.innerHTML = "<span>あ</span>";
+    elements.readingFeedbackTitle.textContent = "후리가나를 확인하고 한 번 더 풀어보세요";
+    elements.readingFeedbackSelected.hidden = false;
+    elements.readingFeedbackSelected.textContent = `첫 선택 · ${selectedChoice.text}`;
+    elements.readingFeedbackAnswer.textContent = "힌트 · 지문과 선택지에 한자 읽기를 표시했습니다.";
+    elements.readingFeedbackExplanation.textContent = "아직 오답으로 기록되지 않습니다. 후리가나를 보고 다시 선택하세요.";
+    elements.readingNextButton.hidden = true;
+  }
+
+  function renderReadingAnswer(item, choiceIndex, isCorrect, buttons) {
+    buttons.forEach((button, index) => {
+      button.disabled = true;
+      if (item.sessionChoices[index].correct) button.classList.add("is-correct");
+      if (index === choiceIndex && !isCorrect) button.classList.add("is-wrong");
+    });
+    const choice = item.sessionChoices[choiceIndex];
+    const correctChoice = item.sessionChoices.find((candidate) => candidate.correct);
+    elements.readingFeedback.hidden = false;
+    elements.readingFeedback.className = `feedback reading-feedback ${isCorrect ? "is-correct" : "is-wrong"}`;
+    elements.readingFeedbackIcon.innerHTML = `<span>${isCorrect ? "✓" : "!"}</span>`;
+    elements.readingFeedbackTitle.textContent = isCorrect ? "정답입니다" : "오답입니다. 정답을 확인하세요";
+    elements.readingFeedbackSelected.hidden = isCorrect;
+    elements.readingFeedbackSelected.textContent = isCorrect ? "" : `선택한 답 · ${choice.text}`;
+    elements.readingFeedbackAnswer.textContent = `정답 · ${correctChoice.text}`;
+    elements.readingFeedbackExplanation.textContent = `해설 · ${item.explanation}`;
+    elements.readingNextButton.textContent = readingSession.index + 1 < readingSession.questions.length
+      ? "다음 문제"
+      : "결과 보기";
+    elements.readingNextButton.hidden = false;
+  }
+
   function showReadingQuestion(preserveHint = false) {
     const item = readingSession.questions[readingSession.index];
     readingSession.answered = false;
@@ -965,16 +910,7 @@
       button.className = "answer-button";
       button.dataset.choiceIndex = String(index);
       button.dataset.correct = String(choice.correct);
-      button.innerHTML = `<span class="answer-number">${index + 1}</span><span lang="ja">${textWithFurigana(
-        choice.text,
-        item.readings,
-        readingSession.difficulty === "furigana" || readingSession.hintShown,
-      )}</span>`;
-      button.setAttribute("aria-label", `${index + 1}번 ${textWithAccessibleReadings(
-        choice.text,
-        item.readings,
-        readingSession.difficulty === "furigana" || readingSession.hintShown,
-      )}`);
+      renderReadingChoice(button, choice, index, item);
       button.addEventListener("click", () => answerReadingQuestion(index));
       elements.readingAnswerGrid.append(button);
     });
@@ -982,18 +918,11 @@
     elements.readingFeedback.className = "feedback reading-feedback";
     elements.readingNextButton.hidden = true;
     if (readingSession.hintShown && Number.isInteger(readingSession.hintChoiceIndex)) {
-      const selectedChoice = item.sessionChoices[readingSession.hintChoiceIndex];
-      const selectedButton = elements.readingAnswerGrid.querySelectorAll("button")[readingSession.hintChoiceIndex];
-      selectedButton.disabled = true;
-      selectedButton.classList.add("is-wrong");
-      elements.readingFeedback.hidden = false;
-      elements.readingFeedback.className = "feedback reading-feedback is-hint";
-      elements.readingFeedbackIcon.innerHTML = "<span>あ</span>";
-      elements.readingFeedbackTitle.textContent = "후리가나를 확인하고 한 번 더 풀어보세요";
-      elements.readingFeedbackSelected.hidden = false;
-      elements.readingFeedbackSelected.textContent = `첫 선택 · ${selectedChoice.text}`;
-      elements.readingFeedbackAnswer.textContent = "힌트 · 지문과 선택지에 한자 읽기를 표시했습니다.";
-      elements.readingFeedbackExplanation.textContent = "아직 오답으로 기록되지 않습니다. 후리가나를 보고 다시 선택하세요.";
+      renderReadingHint(
+        item,
+        readingSession.hintChoiceIndex,
+        [...elements.readingAnswerGrid.querySelectorAll("button")],
+      );
     }
     updateReadingHeader();
     elements.readingAnswerGrid.querySelector("button")?.focus();
@@ -1009,31 +938,10 @@
     const buttons = [...elements.readingAnswerGrid.querySelectorAll("button")];
 
     if (!isCorrect && readingSession.difficulty === "standard" && !readingSession.hintShown) {
+      // The first miss is a learning hint, not a scored attempt.
       readingSession.hintShown = true;
       readingSession.hintChoiceIndex = choiceIndex;
-      renderReadingText(elements.readingPassage, item.passage, item.readings);
-      renderReadingText(elements.readingQuestion, item.question, item.readings);
-      buttons.forEach((button, index) => {
-        const candidate = item.sessionChoices[index];
-        button.innerHTML = `<span class="answer-number">${index + 1}</span><span lang="ja">${textWithFurigana(
-          candidate.text,
-          item.readings,
-          true,
-        )}</span>`;
-        button.setAttribute("aria-label", `${index + 1}번 ${textWithAccessibleReadings(candidate.text, item.readings, true)}`);
-      });
-      const selectedButton = buttons[choiceIndex];
-      selectedButton.disabled = true;
-      selectedButton.classList.add("is-wrong");
-      elements.readingFeedback.hidden = false;
-      elements.readingFeedback.className = "feedback reading-feedback is-hint";
-      elements.readingFeedbackIcon.innerHTML = "<span>あ</span>";
-      elements.readingFeedbackTitle.textContent = "후리가나를 확인하고 한 번 더 풀어보세요";
-      elements.readingFeedbackSelected.hidden = false;
-      elements.readingFeedbackSelected.textContent = `첫 선택 · ${choice.text}`;
-      elements.readingFeedbackAnswer.textContent = "힌트 · 지문과 선택지에 한자 읽기를 표시했습니다.";
-      elements.readingFeedbackExplanation.textContent = "아직 오답으로 기록되지 않습니다. 후리가나를 보고 다시 선택하세요.";
-      elements.readingNextButton.hidden = true;
+      renderReadingHint(item, choiceIndex, buttons);
       saveActiveSession("reading");
       buttons.find((button) => !button.disabled)?.focus();
       return;
@@ -1044,24 +952,7 @@
     if (isCorrect) readingSession.correct += 1;
     else readingSession.wrong += 1;
 
-    buttons.forEach((button, index) => {
-      button.disabled = true;
-      if (item.sessionChoices[index].correct) button.classList.add("is-correct");
-      if (index === choiceIndex && !isCorrect) button.classList.add("is-wrong");
-    });
-    const correctChoice = item.sessionChoices.find((candidate) => candidate.correct);
-    elements.readingFeedback.hidden = false;
-    elements.readingFeedback.className = `feedback reading-feedback ${isCorrect ? "is-correct" : "is-wrong"}`;
-    elements.readingFeedbackIcon.innerHTML = `<span>${isCorrect ? "✓" : "!"}</span>`;
-    elements.readingFeedbackTitle.textContent = isCorrect ? "정답입니다" : "오답입니다. 정답을 확인하세요";
-    elements.readingFeedbackSelected.hidden = isCorrect;
-    elements.readingFeedbackSelected.textContent = isCorrect ? "" : `선택한 답 · ${choice.text}`;
-    elements.readingFeedbackAnswer.textContent = `정답 · ${correctChoice.text}`;
-    elements.readingFeedbackExplanation.textContent = `해설 · ${item.explanation}`;
-    elements.readingNextButton.textContent = readingSession.index + 1 < readingSession.questions.length
-      ? "다음 문제"
-      : "결과 보기";
-    elements.readingNextButton.hidden = false;
+    renderReadingAnswer(item, choiceIndex, isCorrect, buttons);
     updateReadingHeader();
     saveActiveSession("reading");
     elements.readingNextButton.focus();
@@ -1409,50 +1300,53 @@
     answerQuestion(null, false, session.kanaAnswer);
   }
 
-  function showNextQuestion(resumeState = null) {
-    stopExamTimer();
-    if (session.queue.length === 0) {
-      completeSession();
-      return;
-    }
+  function currentQuestionContext(item) {
+    return {
+      item,
+      isKanjiToKana: session.mode === "kanji-to-kana",
+      isReadingToKanji: session.mode === "reading-to-kanji",
+      isSentenceToKanji: session.mode === "sentence-to-kanji",
+      isKatakanaToMeaning: session.mode === "katakana-to-meaning",
+    };
+  }
 
-    session.current = findItem(session.queue.shift());
-    session.currentMisses = Number(resumeState?.currentMisses) || 0;
-    session.hintSelectedId = resumeState?.hintSelectedId || null;
-    session.answered = false;
-    session.kanaAnswer = resumeState?.kanaAnswer || "";
-    const item = session.current;
-    const isKanjiToKana = session.mode === "kanji-to-kana";
-    const choices = isKanjiToKana ? [] : buildChoices(item);
-    const isReadingToKanji = session.mode === "reading-to-kanji";
-    const isSentenceToKanji = session.mode === "sentence-to-kanji";
-    const isKatakanaToMeaning = session.mode === "katakana-to-meaning";
-    elements.answerGrid.setAttribute(
-      "aria-label",
-      isKatakanaToMeaning
-        ? "한국어 뜻 선택지"
-        : isReadingToKanji || isSentenceToKanji
-          ? "한자 단어 선택지"
-          : "읽기 선택지",
-    );
+  function createNumberedButton(index, text, language, className) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = className;
+    button.setAttribute("aria-label", `${index + 1}번, ${text}`);
 
-    elements.quizPrompt.textContent = isKanjiToKana
-      ? "히라가나를 순서대로 눌러 한자의 읽기를 완성하세요."
-      : isSentenceToKanji
-      ? "문장의 빈칸에 알맞은 한자 단어는 무엇일까요?"
-      : isKatakanaToMeaning
-        ? "이 카타카나 단어의 뜻은 무엇일까요?"
-      : isReadingToKanji
-        ? "이 읽기에 알맞은 단어는 무엇일까요?"
-        : "이 단어를 어떻게 읽을까요?";
-    elements.quizWord.textContent = isSentenceToKanji
-      ? item.sentence.replace("___", "＿＿＿")
-      : isReadingToKanji
-        ? normalizedReading(item.reading)
-        : item.word;
+    const number = document.createElement("span");
+    number.className = "answer-number";
+    number.textContent = index + 1;
+    const label = document.createElement("span");
+    label.lang = language;
+    label.textContent = text;
+    button.append(number, label);
+    return button;
+  }
+
+  function renderQuestionHeading(context) {
+    const prompts = {
+      "kanji-to-kana": "히라가나를 순서대로 눌러 한자의 읽기를 완성하세요.",
+      "sentence-to-kanji": "문장의 빈칸에 알맞은 한자 단어는 무엇일까요?",
+      "katakana-to-meaning": "이 카타카나 단어의 뜻은 무엇일까요?",
+      "reading-to-kanji": "이 읽기에 알맞은 단어는 무엇일까요?",
+      "kanji-to-reading": "이 단어를 어떻게 읽을까요?",
+    };
+    elements.quizPrompt.textContent = prompts[session.mode];
+    elements.quizWord.textContent = context.isSentenceToKanji
+      ? context.item.sentence.replace("___", "＿＿＿")
+      : context.isReadingToKanji
+        ? normalizedReading(context.item.reading)
+        : context.item.word;
     elements.quizWord.setAttribute("aria-label", elements.quizWord.textContent);
-    elements.quizWord.classList.toggle("is-reading", isReadingToKanji);
-    elements.quizWord.classList.toggle("is-sentence", isSentenceToKanji);
+    elements.quizWord.classList.toggle("is-reading", context.isReadingToKanji);
+    elements.quizWord.classList.toggle("is-sentence", context.isSentenceToKanji);
+  }
+
+  function renderQuestionMetadata(context) {
+    const { item, isSentenceToKanji } = context;
     if (session.difficulty === "n5n4") {
       elements.dayLabel.textContent = isSentenceToKanji
         ? `${item.day}일차 · 문장 빈칸`
@@ -1461,60 +1355,62 @@
       elements.dayLabel.textContent = "카타카나 · 기초 단어 100개";
     } else {
       const source = isSentenceToKanji ? item.sentenceSource || item.source : item.source;
-      const sentenceLabel = isSentenceToKanji ? " · 문장 빈칸" : "";
-      elements.dayLabel.textContent = `${difficultyLabels[session.difficulty]}${sentenceLabel} · ${source}`;
+      elements.dayLabel.textContent = `${difficultyLabels[session.difficulty]}${isSentenceToKanji ? " · 문장 빈칸" : ""} · ${source}`;
     }
-    const examMistakeKey = itemProgressKey(session.difficulty, session.mode, item.id);
-    const examMistakeCount = Number(progress.examMistakeCounts[examMistakeKey]) || 0;
-    elements.examMistakeBadge.hidden = !(session.examMode && examMistakeCount > 0);
-    elements.examMistakeBadge.textContent = examMistakeCount > 0
-      ? `⚠ 이 문제는 시험에서 ${examMistakeCount}회 틀렸습니다`
+
+    const mistakeKey = itemProgressKey(session.difficulty, session.mode, item.id);
+    const mistakeCount = Number(progress.examMistakeCounts[mistakeKey]) || 0;
+    elements.examMistakeBadge.hidden = !(session.examMode && mistakeCount > 0);
+    elements.examMistakeBadge.textContent = mistakeCount > 0
+      ? `⚠ 이 문제는 시험에서 ${mistakeCount}회 틀렸습니다`
       : "";
+  }
+
+  function answerText(choice, context) {
+    if (context.isKatakanaToMeaning) return choice.meaning;
+    if (context.isReadingToKanji || context.isSentenceToKanji) return choice.word;
+    return normalizedReading(choice.reading);
+  }
+
+  function renderAnswerOptions(context) {
+    const label = context.isKatakanaToMeaning
+      ? "한국어 뜻 선택지"
+      : context.isReadingToKanji || context.isSentenceToKanji
+        ? "한자 단어 선택지"
+        : "읽기 선택지";
+    elements.answerGrid.setAttribute("aria-label", label);
     elements.answerGrid.replaceChildren();
-    elements.answerGrid.hidden = isKanjiToKana;
-    elements.kanaComposer.hidden = !isKanjiToKana;
-    choices.forEach((choice, index) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "answer-button";
+    elements.answerGrid.hidden = context.isKanjiToKana;
+    elements.kanaComposer.hidden = !context.isKanjiToKana;
+    if (context.isKanjiToKana) return;
+
+    buildChoices(context.item).forEach((choice, index) => {
+      const text = answerText(choice, context);
+      const button = createNumberedButton(
+        index,
+        text,
+        context.isKatakanaToMeaning ? "ko" : "ja",
+        "answer-button",
+      );
       button.dataset.itemId = choice.id;
-      const answerText = isKatakanaToMeaning
-        ? choice.meaning
-        : isReadingToKanji || isSentenceToKanji
-        ? choice.word
-        : normalizedReading(choice.reading);
-      button.setAttribute("aria-label", `${index + 1}번, ${answerText}`);
-      const number = document.createElement("span");
-      number.className = "answer-number";
-      number.textContent = index + 1;
-      const reading = document.createElement("span");
-      reading.lang = isKatakanaToMeaning ? "ko" : "ja";
-      reading.textContent = answerText;
-      button.append(number, reading);
       button.addEventListener("click", () => answerQuestion(choice.id));
       elements.answerGrid.append(button);
     });
-    elements.kanaGrid.replaceChildren();
-    if (isKanjiToKana) {
-      buildKanaTiles(item).forEach((character, index) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "kana-tile";
-        button.dataset.kana = character;
-        button.setAttribute("aria-label", `${index + 1}번, ${character}`);
-        const number = document.createElement("span");
-        number.className = "answer-number";
-        number.textContent = index + 1;
-        const kana = document.createElement("span");
-        kana.lang = "ja";
-        kana.textContent = character;
-        button.append(number, kana);
-        button.addEventListener("click", () => appendKana(character));
-        elements.kanaGrid.append(button);
-      });
-      renderKanaAnswer();
-    }
+  }
 
+  function renderKanaOptions(item) {
+    elements.kanaGrid.replaceChildren();
+    if (session.mode !== "kanji-to-kana") return;
+    buildKanaTiles(item).forEach((character, index) => {
+      const button = createNumberedButton(index, character, "ja", "kana-tile");
+      button.dataset.kana = character;
+      button.addEventListener("click", () => appendKana(character));
+      elements.kanaGrid.append(button);
+    });
+    renderKanaAnswer();
+  }
+
+  function resetQuestionFeedback(item) {
     elements.feedback.hidden = true;
     elements.feedback.className = "feedback";
     elements.feedbackSelected.hidden = true;
@@ -1530,30 +1426,58 @@
       : "";
     elements.retryNote.hidden = true;
     elements.nextButton.hidden = true;
-    if (isSentenceToKanji && session.currentMisses > 0 && session.hintSelectedId) {
+  }
+
+  function renderSentenceHint(selectedItem, selectedButton) {
+    if (!selectedItem || !selectedButton) return;
+    selectedButton.disabled = true;
+    selectedButton.classList.add("is-wrong");
+    elements.quizWord.innerHTML = session.current.sentenceFurigana.replace(
+      "___",
+      '<span class="sentence-blank" aria-hidden="true">＿＿＿</span>',
+    );
+    elements.feedback.hidden = false;
+    elements.feedback.className = "feedback is-wrong";
+    elements.feedbackIcon.innerHTML = "<span>!</span>";
+    elements.feedbackTitle.textContent = "한 번 더 생각해 보세요";
+    elements.feedbackSelected.hidden = false;
+    elements.feedbackSelected.textContent = `선택한 답  ${selectedItem.word}（${normalizedReading(selectedItem.reading)}） · ${selectedItem.meaning}`;
+    elements.feedbackReading.textContent = "힌트  문장에 후리가나를 표시했어요.";
+    elements.feedbackMeaning.textContent = "후리가나를 참고해서 다시 선택하세요.";
+    elements.feedbackSentenceReading.hidden = true;
+    elements.feedbackTranslation.hidden = true;
+    elements.retryNote.hidden = true;
+    elements.nextButton.hidden = true;
+  }
+
+  function showNextQuestion(resumeState = null) {
+    stopExamTimer();
+    if (session.queue.length === 0) {
+      completeSession();
+      return;
+    }
+
+    session.current = findItem(session.queue.shift());
+    session.currentMisses = Number(resumeState?.currentMisses) || 0;
+    session.hintSelectedId = resumeState?.hintSelectedId || null;
+    session.answered = false;
+    session.kanaAnswer = resumeState?.kanaAnswer || "";
+    const context = currentQuestionContext(session.current);
+    renderQuestionHeading(context);
+    renderQuestionMetadata(context);
+    renderAnswerOptions(context);
+    renderKanaOptions(context.item);
+    resetQuestionFeedback(context.item);
+
+    if (context.isSentenceToKanji && session.currentMisses > 0 && session.hintSelectedId) {
       const selectedItem = findItem(session.hintSelectedId);
       const selectedButton = [...elements.answerGrid.querySelectorAll("button")].find(
         (button) => button.dataset.itemId === session.hintSelectedId,
       );
-      if (selectedButton && selectedItem) {
-        selectedButton.disabled = true;
-        selectedButton.classList.add("is-wrong");
-        elements.quizWord.innerHTML = item.sentenceFurigana.replace(
-          "___",
-          '<span class="sentence-blank" aria-hidden="true">＿＿＿</span>',
-        );
-        elements.feedback.hidden = false;
-        elements.feedback.className = "feedback is-wrong";
-        elements.feedbackIcon.innerHTML = "<span>!</span>";
-        elements.feedbackTitle.textContent = "한 번 더 생각해 보세요";
-        elements.feedbackSelected.hidden = false;
-        elements.feedbackSelected.textContent = `선택한 답  ${selectedItem.word}（${normalizedReading(selectedItem.reading)}） · ${selectedItem.meaning}`;
-        elements.feedbackReading.textContent = "힌트  문장에 후리가나를 표시했어요.";
-        elements.feedbackMeaning.textContent = "후리가나를 참고해서 다시 선택하세요.";
-      }
+      renderSentenceHint(selectedItem, selectedButton);
     }
     updateSessionHeader();
-    const firstInput = isKanjiToKana
+    const firstInput = context.isKanjiToKana
       ? elements.kanaGrid.querySelector("button")
       : elements.answerGrid.querySelector("button");
     firstInput?.focus();
@@ -1561,10 +1485,7 @@
     saveActiveSession("vocab");
   }
 
-  function answerQuestion(selectedId, timedOut = false, constructedAnswer = null) {
-    if (session.answered) return;
-    if (session.examMode) stopExamTimer();
-    session.attempts += 1;
+  function createAnswerContext(selectedId, timedOut, constructedAnswer) {
     const isKanjiToKana = session.mode === "kanji-to-kana";
     const correctKanaAnswers = isKanjiToKana ? kanaReadings(session.current.reading) : [];
     const isCorrect = !timedOut && (
@@ -1578,133 +1499,143 @@
       ? "시간 초과"
       : isKanjiToKana
         ? constructedAnswer
-      : isKatakanaToMeaning
-        ? `${selectedItem.meaning} · ${selectedItem.word}（${selectedReading}）`
-      : session.mode === "kanji-to-reading"
-        ? `${selectedReading} · ${selectedItem.word} · ${selectedItem.meaning}`
-        : `${selectedItem.word}（${selectedReading}） · ${selectedItem.meaning}`;
+        : isKatakanaToMeaning
+          ? `${selectedItem.meaning} · ${selectedItem.word}（${selectedReading}）`
+          : session.mode === "kanji-to-reading"
+            ? `${selectedReading} · ${selectedItem.word} · ${selectedItem.meaning}`
+            : `${selectedItem.word}（${selectedReading}） · ${selectedItem.meaning}`;
     const buttons = [...elements.answerGrid.querySelectorAll("button")];
-    const selectedButton = buttons.find((button) => button.dataset.itemId === selectedId);
-    const key = itemProgressKey(session.difficulty, session.mode, session.current.id);
+    return {
+      selectedId,
+      timedOut,
+      isCorrect,
+      isKanjiToKana,
+      isSentenceToKanji,
+      isKatakanaToMeaning,
+      correctKanaAnswers,
+      selectedItem,
+      selectedAnswer,
+      selectedButton: buttons.find((button) => button.dataset.itemId === selectedId),
+      buttons,
+      progressKey: itemProgressKey(session.difficulty, session.mode, session.current.id),
+    };
+  }
 
-    if (!session.examMode && isSentenceToKanji && !isCorrect && session.currentMisses === 0) {
-      session.currentMisses = 1;
-      session.hintSelectedId = selectedId;
-      session.wrong += 1;
-      progress.mistakeCounts[key] = (progress.mistakeCounts[key] || 0) + 1;
-      recordWrongAnswer(key);
-      saveProgress();
-      selectedButton.disabled = true;
-      selectedButton.classList.add("is-wrong");
+  function shouldOfferSentenceHint(context) {
+    return !session.examMode
+      && context.isSentenceToKanji
+      && !context.isCorrect
+      && session.currentMisses === 0;
+  }
 
-      elements.quizWord.innerHTML = session.current.sentenceFurigana.replace(
-        "___",
-        '<span class="sentence-blank" aria-hidden="true">＿＿＿</span>',
-      );
-      elements.feedback.hidden = false;
-      elements.feedback.className = "feedback";
-      elements.feedback.classList.add("is-wrong");
-      elements.feedbackIcon.innerHTML = "<span>!</span>";
-      elements.feedbackTitle.textContent = "한 번 더 생각해 보세요";
-      elements.feedbackSelected.hidden = false;
-      elements.feedbackSelected.textContent = `선택한 답  ${selectedAnswer}`;
-      elements.feedbackReading.textContent = "힌트  문장에 후리가나를 표시했어요.";
-      elements.feedbackMeaning.textContent = "후리가나를 참고해서 다시 선택하세요.";
-      elements.feedbackSentenceReading.hidden = true;
-      elements.feedbackTranslation.hidden = true;
-      elements.retryNote.hidden = true;
-      elements.nextButton.hidden = true;
-      updateSessionHeader();
-      saveActiveSession("vocab");
-      buttons.find((button) => !button.disabled)?.focus();
-      return;
-    }
+  function recordSentenceHintAttempt(context) {
+    const { progressKey, selectedId, selectedItem, selectedButton, buttons } = context;
+    // In practice mode the first sentence miss reveals furigana and remains on the same question.
+    // It still counts as a miss so accuracy and the mistake menu match what the learner experienced.
+    session.currentMisses = 1;
+    session.hintSelectedId = selectedId;
+    session.wrong += 1;
+    progress.mistakeCounts[progressKey] = (progress.mistakeCounts[progressKey] || 0) + 1;
+    recordWrongAnswer(progressKey);
+    saveProgress();
+    renderSentenceHint(selectedItem, selectedButton);
+    updateSessionHeader();
+    saveActiveSession("vocab");
+    buttons.find((button) => !button.disabled)?.focus();
+  }
 
-    session.answered = true;
-    if (isSentenceToKanji && !isCorrect) session.currentMisses += 1;
+  function lockAnsweredQuestion(context) {
+    const { buttons, isCorrect, isKanjiToKana, selectedId } = context;
     buttons.forEach((button) => {
       button.disabled = true;
       if (button.dataset.itemId === session.current.id) button.classList.add("is-correct");
       if (!isCorrect && selectedId && button.dataset.itemId === selectedId) button.classList.add("is-wrong");
     });
-    if (isKanjiToKana) {
-      [...elements.kanaGrid.querySelectorAll("button")].forEach((button) => {
-        button.disabled = true;
-      });
-      renderKanaAnswer();
-    }
+    if (!isKanjiToKana) return;
+    [...elements.kanaGrid.querySelectorAll("button")].forEach((button) => {
+      button.disabled = true;
+    });
+    renderKanaAnswer();
+  }
 
+  function answerFeedbackTitle(context) {
+    if (context.isCorrect) return "정답이에요";
+    if (context.timedOut) return "시간이 초과됐어요. 정답을 확인하세요";
+    if (!context.isSentenceToKanji) return "아쉬워요, 정답을 확인하세요";
+    return session.examMode
+      ? "오답이에요. 정답과 해석을 확인하세요"
+      : "두 번 틀렸어요. 정답과 해석을 확인하세요";
+  }
+
+  function correctAnswerText(context) {
+    if (context.isSentenceToKanji) {
+      return `정답  ${session.current.word}（${normalizedReading(session.current.reading)}）`;
+    }
+    if (context.isKanjiToKana) return `정답 읽기  ${context.correctKanaAnswers.join(" / ")}`;
+    if (context.isKatakanaToMeaning) return `정답 뜻  ${session.current.meaning}`;
+    if (session.mode === "reading-to-kanji") return `정답  ${session.current.word}`;
+    return `읽기  ${normalizedReading(session.current.reading)}`;
+  }
+
+  function renderAnsweredFeedback(context) {
+    const { isCorrect, isSentenceToKanji, isKatakanaToMeaning, selectedAnswer } = context;
     elements.feedback.hidden = false;
-    elements.feedback.className = "feedback";
-    elements.feedback.classList.add(isCorrect ? "is-correct" : "is-wrong");
+    elements.feedback.className = `feedback ${isCorrect ? "is-correct" : "is-wrong"}`;
     elements.feedbackIcon.innerHTML = `<span>${isCorrect ? "✓" : "!"}</span>`;
-    elements.feedbackTitle.textContent = isCorrect
-      ? "정답이에요"
-      : timedOut
-        ? "시간이 초과됐어요. 정답을 확인하세요"
-      : isSentenceToKanji
-        ? session.examMode
-          ? "오답이에요. 정답과 해석을 확인하세요"
-          : "두 번 틀렸어요. 정답과 해석을 확인하세요"
-        : "아쉬워요, 정답을 확인하세요";
+    elements.feedbackTitle.textContent = answerFeedbackTitle(context);
     elements.feedbackSelected.hidden = isCorrect;
     elements.feedbackSelected.textContent = isCorrect ? "" : `선택한 답  ${selectedAnswer}`;
-    elements.feedbackReading.textContent = session.mode === "sentence-to-kanji"
-      ? `정답  ${session.current.word}（${normalizedReading(session.current.reading)}）`
-      : isKanjiToKana
-        ? `정답 읽기  ${correctKanaAnswers.join(" / ")}`
-      : isKatakanaToMeaning
-        ? `정답 뜻  ${session.current.meaning}`
-      : session.mode === "reading-to-kanji"
-        ? `정답  ${session.current.word}`
-        : `읽기  ${normalizedReading(session.current.reading)}`;
+    elements.feedbackReading.textContent = correctAnswerText(context);
     elements.feedbackMeaning.textContent = isKatakanaToMeaning
       ? `단어  ${session.current.word}（${normalizedReading(session.current.reading)}）`
       : `뜻  ${session.current.meaning}`;
-    const showSentenceReading = isSentenceToKanji;
-    const showSentenceTranslation = isSentenceToKanji && !isCorrect;
-    elements.feedbackSentenceReading.hidden = !showSentenceReading;
-    elements.feedbackSentenceReading.textContent = showSentenceReading
+    elements.feedbackSentenceReading.hidden = !isSentenceToKanji;
+    elements.feedbackSentenceReading.textContent = isSentenceToKanji
       ? `문장 읽기  ${engine.sentenceReading(session.current)}`
       : "";
-    elements.feedbackTranslation.hidden = !showSentenceTranslation;
-    elements.feedbackTranslation.textContent = showSentenceTranslation
+    elements.feedbackTranslation.hidden = !isSentenceToKanji || isCorrect;
+    elements.feedbackTranslation.textContent = isSentenceToKanji && !isCorrect
       ? `문장 해석  ${session.current.sentenceTranslation}`
       : "";
+  }
 
-    if (isCorrect) {
-      session.correct += 1;
-      session.masteredIds.add(session.current.id);
-      if (session.examMode) session.correctIds.add(session.current.id);
-      if (progress.mistakeCounts[key]) {
-        progress.mistakeCounts[key] = Math.max(0, progress.mistakeCounts[key] - 1);
-      }
-    } else {
-      session.wrong += 1;
-      session.masteredIds.delete(session.current.id);
-      if (!session.examMode && !isSentenceToKanji) {
-        session.mistakenIds.add(session.current.id);
-      }
-      progress.mistakeCounts[key] = (progress.mistakeCounts[key] || 0) + 1;
-      recordWrongAnswer(key);
-      if (session.examMode) {
-        progress.examMistakeCounts[key] = (progress.examMistakeCounts[key] || 0) + 1;
-        const examMistakeCount = progress.examMistakeCounts[key];
-        elements.examMistakeBadge.hidden = false;
-        elements.examMistakeBadge.textContent = `⚠ 이 문제는 시험에서 ${examMistakeCount}회 틀렸습니다`;
-        elements.retryNote.textContent = `시험 누적 오답 ${examMistakeCount}회가 기록되었습니다.`;
-      } else {
-        engine.insertRetry(session.queue, session.current.id, RETRY_DELAY);
-        elements.retryNote.textContent = isSentenceToKanji
-          ? "이 문장은 잠시 뒤 다시 나옵니다."
-          : "이 단어는 잠시 뒤 다시 나옵니다.";
-      }
-      elements.retryNote.hidden = false;
+  function recordCorrectAnswer(context) {
+    session.correct += 1;
+    session.masteredIds.add(session.current.id);
+    if (session.examMode) session.correctIds.add(session.current.id);
+    if (progress.mistakeCounts[context.progressKey]) {
+      progress.mistakeCounts[context.progressKey] = Math.max(
+        0,
+        progress.mistakeCounts[context.progressKey] - 1,
+      );
     }
-    saveProgress();
+  }
 
+  function recordIncorrectAnswer(context) {
+    const { progressKey, isSentenceToKanji } = context;
+    session.wrong += 1;
+    session.masteredIds.delete(session.current.id);
+    if (!session.examMode && !isSentenceToKanji) session.mistakenIds.add(session.current.id);
+    progress.mistakeCounts[progressKey] = (progress.mistakeCounts[progressKey] || 0) + 1;
+    recordWrongAnswer(progressKey);
+
+    if (session.examMode) {
+      progress.examMistakeCounts[progressKey] = (progress.examMistakeCounts[progressKey] || 0) + 1;
+      const examMistakeCount = progress.examMistakeCounts[progressKey];
+      elements.examMistakeBadge.hidden = false;
+      elements.examMistakeBadge.textContent = `⚠ 이 문제는 시험에서 ${examMistakeCount}회 틀렸습니다`;
+      elements.retryNote.textContent = `시험 누적 오답 ${examMistakeCount}회가 기록되었습니다.`;
+    } else {
+      engine.insertRetry(session.queue, session.current.id, RETRY_DELAY);
+      elements.retryNote.textContent = isSentenceToKanji
+        ? "이 문장은 잠시 뒤 다시 나옵니다."
+        : "이 단어는 잠시 뒤 다시 나옵니다.";
+    }
+    elements.retryNote.hidden = false;
+  }
+
+  function finishAnsweredQuestion() {
     if (session.examMode) session.completedQuestions += 1;
-
     elements.nextButton.textContent = session.queue.length
       ? session.mode === "sentence-to-kanji" ? "다음 문제" : "다음 단어"
       : "결과 보기";
@@ -1712,6 +1643,27 @@
     updateSessionHeader();
     saveActiveSession("vocab");
     elements.nextButton.focus();
+  }
+
+  function answerQuestion(selectedId, timedOut = false, constructedAnswer = null) {
+    if (session.answered) return;
+    if (session.examMode) stopExamTimer();
+    session.attempts += 1;
+    const context = createAnswerContext(selectedId, timedOut, constructedAnswer);
+
+    if (shouldOfferSentenceHint(context)) {
+      recordSentenceHintAttempt(context);
+      return;
+    }
+
+    session.answered = true;
+    if (context.isSentenceToKanji && !context.isCorrect) session.currentMisses += 1;
+    lockAnsweredQuestion(context);
+    renderAnsweredFeedback(context);
+    if (context.isCorrect) recordCorrectAnswer(context);
+    else recordIncorrectAnswer(context);
+    saveProgress();
+    finishAnsweredQuestion();
   }
 
   function updateSessionHeader() {
@@ -1722,13 +1674,7 @@
     elements.progressBar.style.width = `${(completed / session.total) * 100}%`;
   }
 
-  function completeSession() {
-    stopExamTimer();
-    session.completed = true;
-    clearActiveSession();
-    elements.examTimer.hidden = true;
-    const sessionAccuracy = engine.accuracy(session.correct, session.attempts) || 0;
-    const newlyProtectedCount = updatePracticeReviewProgress();
+  function recordCompletedSession(sessionAccuracy) {
     const sessionStat = statsFor(session.difficulty, session.mode);
     sessionStat.completedSessions += 1;
     sessionStat.totalCorrect += session.correct;
@@ -1740,6 +1686,9 @@
     progress.totalCorrect += session.correct;
     progress.totalAttempts += session.attempts;
     progress.lastAccuracy = sessionAccuracy;
+
+    // A correct exam answer is hidden for the next three completed rounds.
+    // Store the first eligible round rather than repeatedly decrementing counters.
     if (session.examMode) {
       session.correctIds.forEach((itemId) => {
         progress.examCooldowns[itemProgressKey(session.difficulty, session.mode, itemId)] = session.number + 4;
@@ -1759,24 +1708,41 @@
     });
     progress.history = progress.history.slice(-20);
     saveProgress();
+  }
 
-    elements.resultSessionNumber.textContent = session.number;
-    elements.resultAccuracy.textContent = `${sessionAccuracy}%`;
-    elements.resultCorrect.textContent = session.correct;
-    elements.resultWrong.textContent = session.wrong;
-    elements.resultMastered.textContent = session.total;
-    const baseResultMessage = session.examMode
+  function completedSessionMessage(newlyProtectedCount) {
+    const baseMessage = session.examMode
       ? session.wrong === 0
         ? "100문제를 모두 맞혔습니다. 정답 문제는 다음 3회차 동안 시험에서 제외됩니다."
         : `100문제 시험을 마쳤습니다. 오답 ${session.wrong}개를 다시 확인해 보세요.`
       : session.wrong === 0
         ? "한 번도 틀리지 않고 모두 맞혔습니다. 완벽해요!"
         : `오답 ${session.wrong}번도 다시 풀어 모두 익혔습니다.`;
-    elements.resultMessage.textContent = newlyProtectedCount > 0
-      ? `${baseResultMessage} ${newlyProtectedCount}개 단어는 다음 2회차 동안 쉬고 다시 나옵니다.`
-      : baseResultMessage;
+    return newlyProtectedCount > 0
+      ? `${baseMessage} ${newlyProtectedCount}개 단어는 다음 2회차 동안 쉬고 다시 나옵니다.`
+      : baseMessage;
+  }
+
+  function renderCompletedSession(sessionAccuracy, newlyProtectedCount) {
+    elements.resultSessionNumber.textContent = session.number;
+    elements.resultAccuracy.textContent = `${sessionAccuracy}%`;
+    elements.resultCorrect.textContent = session.correct;
+    elements.resultWrong.textContent = session.wrong;
+    elements.resultMastered.textContent = session.total;
+    elements.resultMessage.textContent = completedSessionMessage(newlyProtectedCount);
     showScreen("result");
     elements.returnButton.focus();
+  }
+
+  function completeSession() {
+    stopExamTimer();
+    session.completed = true;
+    clearActiveSession();
+    elements.examTimer.hidden = true;
+    const sessionAccuracy = engine.accuracy(session.correct, session.attempts) || 0;
+    const newlyProtectedCount = updatePracticeReviewProgress();
+    recordCompletedSession(sessionAccuracy);
+    renderCompletedSession(sessionAccuracy, newlyProtectedCount);
   }
 
   function returnToStart() {

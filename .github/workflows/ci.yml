@@ -19,6 +19,8 @@ jobs:
         run: node japanese-vocab-quiz/test-quiz-logic.js
       - name: Run app interaction tests
         run: node japanese-vocab-quiz/test-app-flow.js
+      - name: Run support module tests
+        run: node japanese-vocab-quiz/test-support-modules.js
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"

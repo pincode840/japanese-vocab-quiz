@@ -8,6 +8,8 @@ require("./katakana-vocab-data.js");
 require("./reading-data.js");
 require("./reading-generated-data.js");
 globalThis.QuizEngine = require("./quiz-engine.js");
+globalThis.ReadingRenderer = require("./reading-renderer.js");
+globalThis.QuizSessionStore = require("./session-store.js");
 
 class ClassList {
   constructor(owner) {

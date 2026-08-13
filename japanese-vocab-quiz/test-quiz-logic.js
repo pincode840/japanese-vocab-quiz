@@ -8,6 +8,7 @@ require("./n2-vocab-data.js");
 require("./katakana-vocab-data.js");
 require("./reading-data.js");
 require("./reading-generated-data.js");
+require("./reading-advanced-guides.js");
 const engine = require("./quiz-engine.js");
 
 const data = globalThis.VOCAB_DATA;
@@ -44,12 +45,33 @@ for (const exam of ["JLPT", "JPT", "J.TEST", "BJT"]) {
     counts[item.templateId] = (counts[item.templateId] || 0) + 1;
     return counts;
   }, {});
-  assert.equal(Object.keys(templateCounts).length, 16, `${exam} 생성 문제는 16개 유형을 고르게 사용해야 합니다.`);
+  assert.equal(Object.keys(templateCounts).length, 24, `${exam} 생성 문제는 24개 유형을 고르게 사용해야 합니다.`);
   assert.ok(
-    Math.max(...Object.values(templateCounts)) <= 9,
-    `${exam}에서 같은 생성 유형을 10회 이상 반복하면 안 됩니다.`,
+    Math.max(...Object.values(templateCounts)) <= 6,
+    `${exam}에서 같은 생성 유형을 7회 이상 반복하면 안 됩니다.`,
   );
 }
+assert.equal(
+  new Set(readingData.map((item) => item.templateId || item.id)).size,
+  128,
+  "독해 문제군은 128개를 유지해야 합니다.",
+);
+assert.ok(new Set(readingData.map((item) => item.type)).size >= 75, "독해 주제는 최소 75종이어야 합니다.");
+const normalizeReadingTemplate = (text) => String(text)
+  .replace(/[0-9０-９一二三四五六七八九十百千]+/g, "#")
+  .replace(/\s+/g, "");
+const normalizedReadingTemplates = readingData.reduce((counts, item) => {
+  const key = `${normalizeReadingTemplate(item.passage)}\n${normalizeReadingTemplate(item.question)}`;
+  counts[key] = (counts[key] || 0) + 1;
+  return counts;
+}, {});
+const repeatedTemplateItems = Object.values(normalizedReadingTemplates)
+  .filter((count) => count > 1)
+  .reduce((sum, count) => sum + count, 0);
+assert.ok(
+  repeatedTemplateItems <= 24,
+  `숫자만 다른 유사 독해가 다시 늘었습니다: ${repeatedTemplateItems}개`,
+);
 const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const missingReadingGuides = new Set();
 readingData.forEach((item) => {

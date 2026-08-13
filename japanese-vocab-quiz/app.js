@@ -774,17 +774,56 @@
     }
   }
 
-  function selectBalancedReadingQuestions(count) {
-    const groups = ["JLPT", "JPT", "J.TEST", "BJT"].map((exam) => (
-      engine.shuffle(readingData.filter((item) => item.exam === exam))
-    ));
-    const selected = [];
-    while (selected.length < count && groups.some((group) => group.length)) {
-      groups.forEach((group) => {
-        if (selected.length < count && group.length) selected.push(group.shift());
+  function readingFamilyKey(item) {
+    return item.templateId || item.id;
+  }
+
+  function buildReadingFamilyQueue(items) {
+    const families = new Map();
+    items.forEach((item) => {
+      const key = readingFamilyKey(item);
+      if (!families.has(key)) families.set(key, []);
+      families.get(key).push(item);
+    });
+    families.forEach((familyItems, key) => {
+      families.set(key, engine.shuffle(familyItems));
+    });
+
+    const queue = [];
+    while ([...families.values()].some((family) => family.length)) {
+      // Use every passage family once before taking another variation of it.
+      engine.shuffle([...families.keys()]).forEach((key) => {
+        const family = families.get(key);
+        if (family.length) queue.push(family.shift());
       });
     }
-    return engine.shuffle(selected).map((item) => ({
+    return queue;
+  }
+
+  function takeReadingWithFreshTopic(queue, recentTypes) {
+    const searchLimit = Math.min(8, queue.length);
+    let index = queue.slice(0, searchLimit).findIndex((item) => !recentTypes.includes(item.type));
+    if (index < 0) index = 0;
+    return queue.splice(index, 1)[0];
+  }
+
+  function selectBalancedReadingQuestions(count) {
+    const groups = engine.shuffle(["JLPT", "JPT", "J.TEST", "BJT"]).map((exam) => ({
+      exam,
+      queue: buildReadingFamilyQueue(readingData.filter((item) => item.exam === exam)),
+    }));
+    const selected = [];
+    const recentTypes = [];
+    while (selected.length < count && groups.some((group) => group.queue.length)) {
+      engine.shuffle(groups).forEach((group) => {
+        if (selected.length >= count || !group.queue.length) return;
+        const item = takeReadingWithFreshTopic(group.queue, recentTypes);
+        selected.push(item);
+        recentTypes.push(item.type);
+        if (recentTypes.length > 3) recentTypes.shift();
+      });
+    }
+    return selected.map((item) => ({
       ...item,
       sessionChoices: engine.shuffle(item.choices.map((text, originalIndex) => ({
         text,

@@ -7,6 +7,7 @@ require("./n2-vocab-data.js");
 require("./katakana-vocab-data.js");
 require("./reading-data.js");
 require("./reading-generated-data.js");
+require("./reading-advanced-guides.js");
 globalThis.QuizEngine = require("./quiz-engine.js");
 globalThis.ReadingRenderer = require("./reading-renderer.js");
 globalThis.QuizSessionStore = require("./session-store.js");
@@ -862,6 +863,24 @@ assert.equal(elements.get("brand-title").textContent, "일본어 독해 퀴즈")
 assert.equal(elements.get("reading-furigana-sessions").textContent, "0회");
 assert.equal(elements.get("reading-standard-sessions").textContent, "0회");
 assert.equal(elements.get("reading-question-count").max, "600", "독해 문제는 최대 600개까지 선택할 수 있어야 합니다.");
+elements.get("reading-question-count").value = "100";
+elements.get("reading-start-button").click();
+const diverseReadingIds = JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1"))
+  .session.questions.map((item) => item.id);
+const readingById = new Map(globalThis.READING_QUIZ_DATA.map((item) => [item.id, item]));
+const diverseReadingItems = diverseReadingIds.map((id) => readingById.get(id));
+assert.equal(
+  new Set(diverseReadingItems.map((item) => item.templateId || item.id)).size,
+  100,
+  "100문제 회차에서는 같은 생성 문제군을 반복하면 안 됩니다.",
+);
+assert.ok(
+  diverseReadingItems.every((item, index) => index === 0 || item.type !== diverseReadingItems[index - 1].type),
+  "같은 독해 주제가 연속으로 출제되면 안 됩니다.",
+);
+elements.get("home-button").click();
+elements.get("reading-discard-session-button").click();
+
 elements.get("reading-question-count").value = "600";
 elements.get("reading-start-button").click();
 assert.equal(elements.get("reading-progress-text").textContent, "1 / 600", "독해 600문제 회차를 시작할 수 있어야 합니다.");

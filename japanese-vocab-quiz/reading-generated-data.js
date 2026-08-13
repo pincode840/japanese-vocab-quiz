@@ -698,11 +698,301 @@
     ];
   }
 
+  // These advanced scenarios add a second layer of reasoning to each exam family.
+  // Together with the original and supplemental generators, each exam now has
+  // enough distinct families to build a normal 100-question session without
+  // repeating the same passage structure.
+  const advancedGeneratorGroups = {
+    JLPT: [
+      (number, variant) => {
+        const day = pick(weekdays, variant);
+        const facility = pick(facilities, variant + 2);
+        return createQuestion("JLPT", number, "이용 조건 비교",
+          `${text(facility)}の資料室は${text(day)}だけ予約不要です。ただし、午後四時以降に利用する人は、学生証か利用者カードを受付に預けなければなりません。`,
+          `${text(day)}の午後五時に資料室を使う人はどうしますか。`,
+          "身分を示すカードを受付に預ける", ["前日までに必ず予約する", "午後四時前まで外で待つ", "資料を自宅へ持ち帰る"],
+          "예약은 필요 없지만 오후 4시 이후에는 신분을 확인할 카드를 맡겨야 합니다.");
+      },
+      (number, variant) => {
+        const first = pick(weekdays, variant);
+        const second = pick(weekdays, variant + 1);
+        const timeValue = pick(times, variant + 2);
+        return createQuestion("JLPT", number, "일정 변경 판단",
+          `${text(first)}の会話教室は講師の都合で${text(second)}に変更されました。開始は${text(timeValue)}で、教室は同じです。参加できない人だけ受付へ連絡してください。`,
+          "参加できる学生は何をする必要がありますか。",
+          `${text(second)}の${text(timeValue)}に同じ教室へ行く`, ["全員が受付へ電話する", `${text(first)}に別の教室へ行く`, "新しい申込書を提出する"],
+          "참석 가능한 학생은 변경된 요일과 시간에 기존 교실로 가면 됩니다.");
+      },
+      (number, variant) => {
+        const eventName = pick(["写真講座", "料理教室", "読書会"], variant);
+        const venue = pick(venues, variant + 1);
+        const day = pick(weekdays, variant + 3);
+        return createQuestion("JLPT", number, "신청 우선순위",
+          `${eventName}は${text(day)}に${text(venue)}で行います。定員を超えた場合、市内在住で初参加の人を優先し、その後は抽選で決めます。申込順ではありません。`,
+          "定員を超えたとき、最初に優先されるのは誰ですか。",
+          "市内に住む初参加者", ["最も早く申し込んだ人", "市外から毎年来る人", "参加費を多く払った人"],
+          "정원을 넘으면 시내 거주자 중 첫 참가자를 먼저 우선합니다.");
+      },
+      (number, variant) => {
+        const target = pick(stationNames, variant + 1);
+        const transfer = pick(transferStations, variant);
+        return createQuestion("JLPT", number, "경로 비교",
+          `${text(target)}へは直通バスなら四十分、${text(transfer)}で電車に乗り換えると二十五分かかります。ただし、電車は階段が多いため、大きな荷物がある人にはバスを勧めます。`,
+          "時間より荷物の運びやすさを優先する人には何がよいですか。",
+          "直通バスを利用する", [`${text(transfer)}で電車に乗り換える`, "荷物を駅に置いて歩く", "どちらも同じなので抽選する"],
+          "시간은 더 걸리지만 큰 짐이 있으면 환승과 계단이 없는 직행버스가 적합합니다.");
+      },
+      (number, variant) => {
+        const product = pick(products, variant);
+        return createQuestion("JLPT", number, "주장 파악",
+          `便利だからという理由だけで${text(product)}を買い替えるのではなく、修理費と使用期間も比べるべきだ。少し不便でも長く使えるなら、結果としてごみと出費を減らせる。`,
+          "筆者が最も言いたいことは何ですか。",
+          "買い替える前に修理や使用期間も考える", ["新製品は発売日に必ず買う", "不便な製品はすぐ捨てる", "修理費は比較する必要がない"],
+          "편리함만 보지 말고 수리비와 사용 기간까지 비교하자는 주장입니다.");
+      },
+      (number, variant) => {
+        const facility = pick(facilities, variant + 3);
+        const day = pick(weekdays, variant + 2);
+        return createQuestion("JLPT", number, "대출 연장 조건",
+          `${text(facility)}の本は返却日の前なら一度だけ延長できます。ただし、次の予約者がいる本と、${text(day)}から始まる特別展示の資料は延長できません。`,
+          "本を延長できるのはどの場合ですか。",
+          "予約も展示予定もない本を返却日前に手続きする", ["返却日を過ぎてから申し込む", "次の予約者がいる本を選ぶ", "特別展示の資料を借り続ける"],
+          "반납일 전이며 예약자와 전시 예정이 없는 자료만 한 번 연장할 수 있습니다.");
+      },
+      (number, variant) => {
+        const first = pick(weekdays, variant);
+        const second = pick(weekdays, variant + 2);
+        return createQuestion("JLPT", number, "예외 규칙 이해",
+          `資源ごみは通常${text(first)}に回収しますが、びんだけは月二回の${text(second)}です。割れたびんは紙に包み、「危険」と書いて別の袋に入れてください。`,
+          "割れたびんを出すときに必要なことは何ですか。",
+          "包んで危険と表示し別の袋に入れる", [`${text(first)}に普通の袋で出す`, "中身を入れたまま出す", "燃えるごみと一緒にする"],
+          "깨진 병은 싸서 위험 표시를 하고 별도 봉투에 넣어야 합니다.");
+      },
+      (number, variant) => {
+        const venue = pick(indoorVenues, variant);
+        const day = pick(weekdays, variant + 4);
+        return createQuestion("JLPT", number, "조건에 맞는 행사 선택",
+          `${text(day)}の${text(venue)}では、午前に子ども向け工作、午後に成人向け講演があります。工作は材料持参、講演は事前予約が必要ですが、どちらも入場は無料です。`,
+          "大人が午後の行事に参加するために必要なことは何ですか。",
+          "事前に講演を予約する", ["工作材料を持参する", "子どもと一緒に行く", "入場料を窓口で払う"],
+          "성인 대상 오후 강연은 무료이지만 사전 예약이 필요합니다.");
+      },
+    ],
+    JPT: [
+      (number, variant) => {
+        const dept = pick(departments, variant);
+        const day = pick(weekdays, variant + 1);
+        return createQuestion("JPT", number, "회의 준비 절차",
+          `${text(dept)}の会議資料は${text(day)}の正午までに共有してください。数値表は経理担当の確認後、結論を一ページにまとめ、元のデータも同じフォルダに残します。`,
+          "資料を共有する前に必要なことは何ですか。",
+          "数値表の確認を受けて結論をまとめる", ["元のデータを削除する", "結論を口頭だけで伝える", "会議後に数値を確認する"],
+          "수치표 확인을 받은 뒤 결론을 정리하고 원본 데이터도 남겨야 합니다.");
+      },
+      (number, variant) => {
+        const first = pick(weekdays, variant);
+        const second = pick(weekdays, variant + 3);
+        return createQuestion("JPT", number, "근무 교대 조건",
+          `${text(first)}の遅番を${text(second)}と交代したい場合、両方の社員が申請画面で同意し、前日の午後三時までに責任者の承認を受けてください。口頭の約束だけでは変更されません。`,
+          "勤務を交代するために必要なものは何ですか。",
+          "双方の同意と責任者の承認", ["同僚との口頭の約束だけ", "勤務後の報告書", "当日の午後三時の申請"],
+          "양쪽 직원의 시스템 동의와 책임자 승인이 모두 필요합니다.");
+      },
+      (number, variant) => {
+        const city = pick(cities, variant);
+        const amount = 5000 + variant * 1000;
+        return createQuestion("JPT", number, "경비 정산",
+          `${text(city)}出張の交通費が${amount}円を超える場合は領収書の原本が必要です。宿泊費は会社手配なら申請不要ですが、個人で予約した場合は理由を記入してください。`,
+          "個人で宿泊先を予約した社員は何をしますか。",
+          "予約した理由を申請書に書く", ["交通費の領収書を捨てる", "宿泊費を申請しない", "会社の予約を後から取り消す"],
+          "개인이 숙소를 예약했다면 그 이유를 신청서에 적어야 합니다.");
+      },
+      (number, variant) => {
+        const product = pick(products, variant + 1);
+        const region = pick(regions, variant);
+        return createQuestion("JPT", number, "재고 우선 배분",
+          `${text(product)}の入荷数が予定の半分になりました。${text(region)}では予約客が多いため必要数を先に確保し、残りを各店舗の先週の販売数に応じて配分します。`,
+          "会社は商品をどの順序で配分しますか。",
+          "予約分を確保してから販売実績で分ける", ["すべての店舗へ同数を送る", "予約客への販売を中止する", "先週売れなかった店を最優先する"],
+          "예약분을 먼저 확보한 다음 남은 수량을 판매 실적에 따라 배분합니다.");
+      },
+      (number, variant) => {
+        const product = pick(products, variant + 2);
+        return createQuestion("JPT", number, "불만 대응 우선순위",
+          `${text(product)}が動かないという連絡を受けたら、まず電源と型番を確認してください。安全上の異常が疑われる場合は操作を中止してもらい、交換手続きを修理案内より優先します。`,
+          "安全上の異常が疑われるとき、最初に案内することは何ですか。",
+          "使用を中止して交換手続きを進める", ["何度も電源を入れ直す", "保証期間が切れるまで待つ", "修理費を先に支払う"],
+          "안전 이상이 의심되면 사용을 중지시키고 교환 절차를 우선합니다.");
+      },
+      (number, variant) => {
+        const documentName = pick(documents, variant + 1);
+        const dept = pick(departments, variant + 2);
+        return createQuestion("JPT", number, "승인 절차",
+          `${text(documentName)}は担当者が作成した後、${text(dept)}の責任者が内容を確認します。金額変更がある場合だけ役員承認も必要で、誤字の修正なら責任者確認で提出できます。`,
+          "金額を変更した書類には何が追加で必要ですか。",
+          "役員の承認", ["担当者の退職手続き", "取引先の押印だけ", "誤字を残したままの提出"],
+          "금액 변경이 있는 경우에만 임원 승인이 추가로 필요합니다.");
+      },
+      (number, variant) => {
+        const product = pick(products, variant + 3);
+        const day = pick(weekdays, variant + 2);
+        return createQuestion("JPT", number, "배송 선택 판단",
+          `${text(product)}は通常便なら無料で${text(day)}着、速達便なら八百円で前日に届きます。設置担当者は${text(day)}の午後に来るため、それまでに届けば作業に間に合います。`,
+          "追加料金をかけず設置に間に合わせるにはどの便がよいですか。",
+          "通常便を選ぶ", ["速達便を二回利用する", "設置日を必ず延期する", "商品を受け取らず返送する"],
+          "일반 배송도 설치 담당자가 오는 시간 전에 도착하므로 추가 요금이 필요 없습니다.");
+      },
+      (number, variant) => {
+        const region = pick(regions, variant + 1);
+        const other = pick(regions, variant + 3);
+        return createQuestion("JPT", number, "실적 원인 분석",
+          `${text(region)}の来店客は増えましたが、平均購入額は下がりました。${text(other)}は客数が横ばいでも高価格商品の販売が伸び、売上全体では上回りました。`,
+          "売上全体が高かった地域と理由の組合せはどれですか。",
+          `${text(other)}・高価格商品の販売増`, [`${text(region)}・平均購入額の上昇`, `${text(region)}・客数の減少`, `${text(other)}・来店客の大幅増加`],
+          "고가 상품 판매가 늘어난 지역이 전체 매출에서 앞섰습니다.");
+      },
+    ],
+    "J.TEST": [
+      (number, variant) => {
+        const facility = pick(facilities, variant);
+        return createQuestion("J.TEST", number, "재난 대비 순서",
+          `${text(facility)}では避難訓練の前に、家族との連絡方法と避難場所を決めるよう呼びかけています。訓練当日は非常袋を持参し、終了後に不足品を確認します。`,
+          "訓練より前にしておくことは何ですか。",
+          "連絡方法と避難場所を決める", ["不足品を訓練後まで考えない", "非常袋を当日に初めて買う", "家族との連絡を避ける"],
+          "훈련 전에는 가족과 연락 방법과 대피 장소를 정해야 합니다.");
+      },
+      (number, variant) => {
+        const day = pick(weekdays, variant + 1);
+        const venue = pick(venues, variant);
+        return createQuestion("J.TEST", number, "봉사 활동 조건",
+          `${text(day)}に${text(venue)}で清掃活動を行います。中学生は保護者の同意書が必要で、雨の場合は屋内で古着の仕分けをします。参加の可否は天候で変わりません。`,
+          "雨が降った場合、活動はどうなりますか。",
+          "屋内で古着を仕分ける", ["全員の参加を取り消す", "同意書が不要になる", "翌月まで何もしない"],
+          "비가 와도 취소하지 않고 실내에서 헌옷 분류 활동을 합니다.");
+      },
+      (number, variant) => {
+        const product = pick(products, variant);
+        return createQuestion("J.TEST", number, "정보 판단",
+          `インターネットで${text(product)}の評判を調べるとき、評価の数だけで決めてはいけない。購入時期や使用目的が自分と近い人の具体的な説明を比べることが大切だ。`,
+          "筆者が勧めている調べ方はどれですか。",
+          "自分に近い条件の具体的な評価を比べる", ["評価の星の数だけを見る", "最初の一件だけを信じる", "商品の説明を全く読まない"],
+          "별점 수치만 보지 말고 자신과 조건이 비슷한 구체적인 후기를 비교하라는 내용입니다.");
+      },
+      (number, variant) => {
+        const region = pick(regions, variant);
+        return createQuestion("J.TEST", number, "재활용 원인과 결과",
+          `${text(region)}では容器の分別率が上がった一方、汚れたまま出される物も増えました。再利用できず焼却する量を減らすため、市は軽く洗ってから出すよう説明しています。`,
+          "市が容器を洗うよう求める理由は何ですか。",
+          "再利用できない容器を減らすため", ["分別する種類をなくすため", "焼却する量を増やすため", "容器を有料で回収するため"],
+          "오염 때문에 재활용하지 못하는 용기를 줄이려는 목적입니다.");
+      },
+      (number, variant) => {
+        const timeValue = pick(times, variant + 1);
+        return createQuestion("J.TEST", number, "건강 권고 판단",
+          `運動は長時間続けることより、毎日無理なく行うことが重要です。${text(timeValue)}に時間が取れない日は、通勤で一駅歩くなど生活の中で回数を増やしましょう。`,
+          "文章の考えに合うものはどれですか。",
+          "短くても続けられる運動を生活に入れる", ["週末だけ限界まで運動する", "時間がない日は全く動かない", "通勤では必ず乗り物だけを使う"],
+          "긴 운동보다 생활 속에서 무리 없이 계속하는 운동을 권합니다.");
+      },
+      (number, variant) => {
+        const venue = pick(indoorVenues, variant + 1);
+        const day = pick(weekdays, variant + 2);
+        return createQuestion("J.TEST", number, "공공시설 배려",
+          `${text(venue)}の静かな学習室では${text(day)}も通話を禁止していますが、音声入力が必要な利用者には防音席を案内します。規則を守ることと必要な支援を両立させるためです。`,
+          "防音席を設ける目的は何ですか。",
+          "静かな環境と利用者への支援を両立する", ["全員に通話を勧める", "学習室を閉鎖する", "支援が必要な人の利用を断る"],
+          "조용한 환경을 지키면서 필요한 이용 지원도 제공하기 위한 조치입니다.");
+      },
+      (number, variant) => {
+        const station = pick(stationNames, variant + 2);
+        return createQuestion("J.TEST", number, "교통 정책 평가",
+          `${text(station)}周辺では朝の渋滞を減らすためバスを増便しました。しかし利用者が少ない夜は小型車に替え、運行本数を保ちながら燃料消費を抑えます。`,
+          "夜に小型車を使う理由は何ですか。",
+          "本数を保ちつつ燃料を節約するため", ["夜の運行をすべてやめるため", "朝の利用者を減らすため", "大型車を増やすため"],
+          "운행 횟수는 유지하면서 야간의 연료 소비를 줄이려는 선택입니다.");
+      },
+      (number, variant) => {
+        const topic = pick(trainingTopics, variant + 1);
+        return createQuestion("J.TEST", number, "학습 방법 주장",
+          `${text(topic)}では答えを早く覚えるより、なぜその判断になるかを説明する時間を設けます。間違いを共有すると、考え方の違いから新しい解決法を学べるからです。`,
+          "この授業が重視していることは何ですか。",
+          "判断の理由や間違いから学ぶこと", ["答えだけを最短時間で暗記すること", "間違いを他人に見せないこと", "説明をせず一人で進めること"],
+          "정답 암기보다 판단 이유와 실수를 공유하며 사고 과정을 배우는 것을 중시합니다.");
+      },
+    ],
+    BJT: [
+      (number, variant) => {
+        const product = pick(products, variant);
+        return createQuestion("BJT", number, "협상 조건 판단",
+          `取引先は${text(product)}の単価引下げを求めています。こちらは価格を五パーセント下げる代わりに、年間発注量の保証と納期の一週間延長を条件として提示します。`,
+          "会社が値下げの条件として求めるものは何ですか。",
+          "発注量の保証と納期延長", ["品質基準の引下げ", "契約期間の短縮だけ", "すべての送料の負担"],
+          "가격을 낮추는 대신 연간 발주량 보장과 납기 연장을 요구합니다.");
+      },
+      (number, variant) => {
+        const region = pick(regions, variant + 1);
+        return createQuestion("BJT", number, "위험 분석",
+          `${text(region)}の新規事業は利益率が高い一方、一社の供給元に依存しています。開始時期を一か月遅らせても、代替供給元を確保してから契約する案が提案されました。`,
+          "提案の狙いは何ですか。",
+          "開始を遅らせて供給停止の危険を減らす", ["利益率を意図的に下げる", "供給元を一社に限定する", "契約を確認せず急いで始める"],
+          "시작을 늦추더라도 대체 공급처를 확보해 공급 중단 위험을 낮추려는 제안입니다.");
+      },
+      (number, variant) => {
+        const documentName = pick(documents, variant + 2);
+        const day = pick(weekdays, variant);
+        return createQuestion("BJT", number, "실행 항목 파악",
+          `会議では${text(documentName)}の方向性に合意しました。${text(day)}までに営業部が顧客候補を整理し、開発部は必要工数を見積もります。次回は両方の資料を基に優先順位を決めます。`,
+          "次回の会議までに開発部がすることは何ですか。",
+          "必要な作業量を見積もる", ["顧客候補だけを整理する", "優先順位を単独で確定する", "計画をすべて中止する"],
+          "개발부의 실행 항목은 필요한 작업량을 산정하는 것입니다.");
+      },
+      (number, variant) => {
+        const dept = pick(departments, variant + 1);
+        return createQuestion("BJT", number, "예산 배분",
+          `${text(dept)}の予算は増えません。新規広告を続けるには、効果の低い展示会を一つ減らし、その費用をオンライン施策へ移す必要があります。既存顧客向け支援費は維持します。`,
+          "予算案では何を変更しますか。",
+          "展示会費を減らしてオンライン施策へ移す", ["既存顧客の支援を中止する", "全体予算を増額する", "オンライン広告をすべてやめる"],
+          "효과가 낮은 전시회 비용을 줄여 온라인 활동으로 옮깁니다.");
+      },
+      (number, variant) => {
+        const product = pick(products, variant + 3);
+        return createQuestion("BJT", number, "지연 대응",
+          `${text(product)}の開発は部品変更で二週間遅れています。発売日は動かさず、優先度の低い機能を次回更新へ回し、安全試験と主要機能の確認時間は短縮しません。`,
+          "会社は遅れにどう対応しますか。",
+          "一部機能を後に回し重要な確認は維持する", ["安全試験を省略する", "主要機能を削除する", "発売を無期限に延期する"],
+          "중요한 검증은 유지하면서 우선순위가 낮은 기능을 다음 업데이트로 미룹니다.");
+      },
+      (number, variant) => {
+        const dept = pick(departments, variant + 3);
+        return createQuestion("BJT", number, "평가 기준 해석",
+          `${text(dept)}では売上額だけでなく、顧客からの継続率とチームへの情報共有も評価します。短期売上が高くても解約が多い案件は、同じ点数にはなりません。`,
+          "この評価制度が重視するものは何ですか。",
+          "長期的な顧客関係と情報共有", ["一度の売上額だけ", "個人が情報を独占すること", "契約後の解約件数を増やすこと"],
+          "단기 매출뿐 아니라 고객 유지와 팀 정보 공유를 함께 평가합니다.");
+      },
+      (number, variant) => {
+        const day = pick(weekdays, variant + 2);
+        return createQuestion("BJT", number, "계약 예외 조건",
+          `保守契約では通常、連絡から二営業日以内に対応します。ただし、業務停止につながる障害は二十四時間受付で、${text(day)}が祝日でも四時間以内に担当者が連絡します。`,
+          "業務が止まる障害が祝日に起きた場合、どうなりますか。",
+          "四時間以内に担当者から連絡が来る", ["二営業日後まで受付しない", "通常契約を自動解約する", "利用者が自分で修理する"],
+          "업무 중단 장애는 휴일에도 접수하며 4시간 이내 담당자가 연락합니다.");
+      },
+      (number, variant) => {
+        const floor = pick(officeFloors, variant);
+        return createQuestion("BJT", number, "업무 개선 효과",
+          `${text(floor)}の問い合わせ窓口では、よくある質問を受付前に表示した結果、件数は減りました。一方、複雑な相談の割合が増えたため、担当者一人当たりの対応時間は長くなっています。`,
+          "改善後の状況として正しいものはどれですか。",
+          "問い合わせ総数は減ったが一件の対応は長くなった", ["問い合わせも対応時間も増えた", "複雑な相談がなくなった", "担当者が全く不要になった"],
+          "단순 문의는 줄었지만 복잡한 상담 비중이 올라 건당 대응 시간은 길어졌습니다.");
+      },
+    ],
+  };
+
   const generatorGroups = {
-    JLPT: [...jlptGenerators, ...makeSupplementalGenerators("JLPT")],
-    JPT: [...jptGenerators, ...makeSupplementalGenerators("JPT")],
-    "J.TEST": [...jtestGenerators, ...makeSupplementalGenerators("J.TEST")],
-    BJT: [...bjtGenerators, ...makeSupplementalGenerators("BJT")],
+    JLPT: [...jlptGenerators, ...makeSupplementalGenerators("JLPT"), ...advancedGeneratorGroups.JLPT],
+    JPT: [...jptGenerators, ...makeSupplementalGenerators("JPT"), ...advancedGeneratorGroups.JPT],
+    "J.TEST": [...jtestGenerators, ...makeSupplementalGenerators("J.TEST"), ...advancedGeneratorGroups["J.TEST"]],
+    BJT: [...bjtGenerators, ...makeSupplementalGenerators("BJT"), ...advancedGeneratorGroups.BJT],
   };
 
   Object.entries(generatorGroups).forEach(([exam, generators]) => {

@@ -12,6 +12,7 @@ asset_names = [
     "katakana-vocab-data.js",
     "reading-data.js",
     "reading-generated-data.js",
+    "reading-advanced-guides.js",
     "quiz-engine.js",
     "reading-renderer.js",
     "session-store.js",

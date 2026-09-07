@@ -58,9 +58,11 @@ const readingData = [{
   id: "reading-1",
   passage: "長い本文はアプリ本体から復元します。",
   choices: ["一", "二", "三", "四"],
+  answer: 0,
 }];
 const readingSession = {
   number: 1,
+  index: 0,
   questions: [{
     ...readingData[0],
     sessionChoices: [
@@ -77,6 +79,21 @@ assert.equal(savedReading.session.questions[0].passage, undefined, "정적 지�
 const hydratedReading = SessionStore.hydrateReading(savedReading.session, readingData);
 assert.equal(hydratedReading.questions[0].passage, readingData[0].passage);
 assert.equal(hydratedReading.questions[0].sessionChoices[0].correct, true);
+assert.equal(SessionStore.hydrateReading(savedReading.session, [{
+  ...readingData[0], choices: ["五", "六", "七", "八"],
+}]), null, "업데이트 전 선택지를 새 지문과 섞어 복원하면 안 됩니다.");
+assert.equal(SessionStore.hydrateReading(savedReading.session, [{
+  ...readingData[0], answer: 1,
+}]), null, "정답이 변경된 문제에 과거 정답 판정을 적용하면 안 됩니다.");
+for (const index of [-1, 1, 0.5, undefined]) {
+  assert.equal(SessionStore.hydrateReading({ ...savedReading.session, index }, readingData), null);
+}
+const duplicateChoices = structuredClone(savedReading.session);
+duplicateChoices.questions[0].sessionChoices[1] = duplicateChoices.questions[0].sessionChoices[0];
+assert.equal(SessionStore.hydrateReading(duplicateChoices, readingData), null);
+assert.equal(SessionStore.hydrateReading({
+  ...savedReading.session, hintShown: true, hintChoiceIndex: 8,
+}, readingData), null);
 
 assert.equal(store.clear(), true);
 assert.equal(store.load(), null);

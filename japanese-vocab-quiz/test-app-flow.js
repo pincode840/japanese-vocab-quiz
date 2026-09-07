@@ -90,7 +90,7 @@ const ids = [
   "general-question-count-hint", "question-count-panel", "sentence-question-count",
   "sentence-question-count-hint",
   "quiz-session-label", "quiz-progress-text",
-  "live-accuracy", "exam-timer", "exam-time-left", "progress-bar", "quiz-prompt", "quiz-word",
+  "live-accuracy", "live-score-detail", "result-score-detail", "exam-timer", "exam-time-left", "progress-bar", "quiz-prompt", "quiz-word",
   "day-label", "exam-mistake-badge", "answer-grid", "kana-composer", "kana-answer", "kana-grid", "kana-backspace", "kana-clear", "kana-submit",
   "feedback", "feedback-icon", "feedback-title", "feedback-selected", "feedback-reading",
   "feedback-meaning", "feedback-sentence-reading", "feedback-translation", "feedback-source", "retry-note", "next-button", "result-session-number", "result-message",
@@ -99,7 +99,7 @@ const ids = [
   "reading-record-standard", "reading-standard-sessions", "reading-standard-last-accuracy", "reading-standard-total-accuracy",
   "reading-difficulty-furigana", "reading-difficulty-standard", "reading-question-count",
   "reading-resume-panel", "reading-resume-summary", "reading-resume-button", "reading-discard-session-button", "reading-start-button",
-  "reading-session-label", "reading-progress-text", "reading-live-accuracy", "reading-progress-bar", "reading-exam-badge", "reading-type-badge",
+  "reading-session-label", "reading-progress-text", "reading-live-accuracy", "reading-live-score-detail", "reading-result-score-detail", "reading-progress-bar", "reading-exam-badge", "reading-type-badge",
   "reading-passage", "reading-question", "reading-answer-grid", "reading-feedback", "reading-feedback-icon", "reading-feedback-title",
   "reading-feedback-selected", "reading-feedback-answer", "reading-feedback-explanation", "reading-next-button",
   "reading-result-session-number", "reading-result-message", "reading-result-accuracy", "reading-result-correct", "reading-result-wrong", "reading-result-total", "reading-return-button",
@@ -355,6 +355,8 @@ while (!elements.get("result-screen").classList.contains("is-active") && guard <
 assert.ok(elements.get("result-screen").classList.contains("is-active"), "모든 단어를 익히면 결과 화면이 열려야 합니다.");
 assert.equal(elements.get("result-wrong").textContent, 1);
 assert.equal(elements.get("result-mastered").textContent, 480);
+assert.equal(elements.get("result-accuracy").textContent, "99.79%", "재출제를 포함한 480/481을 정밀하게 표시해야 합니다.");
+assert.equal(elements.get("result-score-detail").textContent, "정답 480 / 채점 481회 · 재도전 포함");
 const firstPracticeProgress = JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1"));
 assert.equal(
   Object.hasOwn(firstPracticeProgress.mistakeCounts, legacyKanjiReadingId),
@@ -536,6 +538,7 @@ while (!elements.get("result-screen").classList.contains("is-active") && guard <
 assert.ok(elements.get("result-screen").classList.contains("is-active"), "선택한 문장 문제를 풀면 결과 화면이 열려야 합니다.");
 assert.equal(elements.get("result-mastered").textContent, 10);
 assert.equal(elements.get("result-wrong").textContent, 2);
+assert.equal(elements.get("result-accuracy").textContent, "83.33%", "문장 첫 오답과 재도전의 기존 채점 규칙을 유지해야 합니다.");
 
 elements.get("return-button").click();
 elements.get("mode-sentence-kanji").checked = false;
@@ -687,6 +690,7 @@ assert.ok(elements.get("result-screen").classList.contains("is-active"), "시험
 assert.equal(elements.get("result-mastered").textContent, 100);
 assert.equal(elements.get("result-correct").textContent, 99);
 assert.equal(elements.get("result-wrong").textContent, 1);
+assert.equal(elements.get("result-accuracy").textContent, "99%");
 const savedExamProgress = JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1"));
 const n3ExamCooldowns = Object.entries(savedExamProgress.examCooldowns).filter(
   ([key]) => key.startsWith("n3:kanji-to-reading:"),
@@ -930,6 +934,7 @@ while (!elements.get("reading-result-screen").classList.contains("is-active") &&
 assert.ok(elements.get("reading-result-screen").classList.contains("is-active"), "선택한 독해 문제를 모두 풀면 결과 화면이 열려야 합니다.");
 assert.equal(elements.get("reading-result-total").textContent, 10);
 assert.equal(elements.get("reading-result-wrong").textContent, 1);
+assert.equal(elements.get("reading-result-accuracy").textContent, "90%");
 assert.equal(JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1")).readingStats.furigana.completedSessions, 1);
 
 elements.get("reading-return-button").click();
@@ -988,7 +993,7 @@ assert.match(elements.get("reading-feedback-title").textContent, /후리가나�
 pressKey(String(standardWrongIndexes[1] + 1), `Digit${standardWrongIndexes[1] + 1}`);
 assert.match(elements.get("reading-feedback-title").textContent, /오답/);
 assert.equal(elements.get("reading-next-button").hidden, false, "후리가나 표시 후 다시 틀리면 최종 오답 처리해야 합니다.");
-assert.equal(elements.get("reading-live-accuracy").textContent, "67%");
+assert.equal(elements.get("reading-live-accuracy").textContent, "66.67%");
 
 guard = 0;
 while (!elements.get("reading-result-screen").classList.contains("is-active") && guard < 15) {
@@ -1014,5 +1019,157 @@ elements.get("feature-switch-button").click();
 elements.get("feature-vocab-button").click();
 assert.ok(elements.get("start-screen").classList.contains("is-active"), "기능 변경 메뉴에서 기존 단어 연습으로 돌아갈 수 있어야 합니다.");
 assert.equal(elements.get("brand-title").textContent, "한자 읽기 퀴즈");
+
+// Verify actual UI + saved scores across different denominators, not just the formula.
+elements.get("feature-switch-button").click();
+elements.get("feature-reading-button").click();
+elements.get("reading-difficulty-standard").checked = false;
+elements.get("reading-difficulty-furigana").checked = true;
+for (const [count, expected] of [[10, "90%"], [20, "95%"], [100, "99%"], [600, "99.83%"]]) {
+  elements.get("reading-question-count").value = String(count);
+  elements.get("reading-start-button").click();
+  assert.equal(elements.get("reading-live-accuracy").textContent, "—");
+  for (let index = 0; index < count; index += 1) {
+    if (count === 600 && index === 300) {
+      elements.get("home-button").click();
+      elements.get("reading-resume-button").click();
+      assert.equal(elements.get("reading-live-score-detail").textContent, "정답 300 / 채점 300회");
+    }
+    const buttons = elements.get("reading-answer-grid").querySelectorAll("button");
+    const shouldBeCorrect = index < count - 1;
+    buttons.find((button) => (button.dataset.correct === "true") === shouldBeCorrect).click();
+    if (index === count - 1) {
+      assert.equal(elements.get("reading-live-accuracy").textContent, expected);
+      assert.equal(elements.get("reading-live-score-detail").textContent, `정답 ${count - 1} / 채점 ${count}회`);
+    }
+    elements.get("reading-next-button").click();
+  }
+  assert.equal(elements.get("reading-result-accuracy").textContent, expected);
+  const saved = JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1"));
+  assert.equal(`${saved.readingHistory.at(-1).accuracy}%`, expected);
+  elements.get("reading-return-button").click();
+  assert.equal(elements.get("reading-furigana-last-accuracy").textContent, expected);
+}
+assert.equal(elements.get("reading-furigana-total-accuracy").textContent, "99.32%", "크기가 다른 회차는 채점 횟수로 가중해 누적 정답률을 계산합니다: 735/740");
+
+function reloadApplication() {
+  // Simulate a new page without retaining old DOM handlers or timer callbacks.
+  elements.forEach((element) => { element.listeners = {}; });
+  Object.keys(documentListeners).forEach((key) => { documentListeners[key] = []; });
+  intervalCallbacks.clear();
+  delete require.cache[require.resolve("./app.js")];
+  require("./app.js");
+}
+
+// Rounded historical percentages must also be repaired from their raw counts.
+const legacyScores = JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1"));
+legacyScores.readingStats.furigana.lastAccuracy = 100;
+legacyScores.readingHistory.at(-1).accuracy = 100;
+legacyScores.sessionStats["n3:kanji-to-kana"] = {
+  completedSessions: 7, totalCorrect: 2, totalAttempts: 3, lastAccuracy: 67,
+};
+legacyScores.history.push({
+  difficulty: "n3", mode: "kanji-to-kana", session: 7, correct: 2, wrong: 1, accuracy: 67,
+});
+storage.set("jlpt-vocab-quiz-progress-v1", JSON.stringify(legacyScores));
+reloadApplication();
+assert.equal(elements.get("reading-furigana-last-accuracy").textContent, "99.83%");
+elements.get("feature-switch-button").click();
+elements.get("feature-vocab-button").click();
+elements.get("difficulty-basic").checked = false;
+elements.get("difficulty-n2").checked = false;
+elements.get("difficulty-n3").checked = true;
+elements.get("mode-katakana-meaning").checked = false;
+elements.get("mode-kanji-reading").checked = true;
+elements.get("difficulty-n3").dispatch("change");
+assert.equal(elements.get("kanji-kana-last-accuracy").textContent, "66.67%");
+
+// A late submit must count once as a timeout, even before a delayed timer callback.
+for (const [modeId, seconds] of [["mode-kanji-reading", 7], ["mode-kanji-kana", 10], ["mode-sentence-kanji", 13]]) {
+  for (const id of ["mode-kanji-reading", "mode-kanji-kana", "mode-reading-kanji", "mode-sentence-kanji", "mode-katakana-meaning"]) {
+    elements.get(id).checked = id === modeId;
+  }
+  elements.get("exam-mode").checked = true;
+  elements.get("exam-mode").dispatch("change");
+  elements.get("start-button").click();
+  if (modeId === "mode-kanji-kana") enterCurrentKanaReading();
+  elapseWithoutTimerCallbacks(seconds * 1000);
+  if (modeId === "mode-kanji-kana") elements.get("kana-submit").click();
+  else if (modeId === "mode-sentence-kanji") correctButtonForCurrentSentence().click();
+  else correctButtonForCurrentWord().click();
+  runTimerCallbacks();
+  assert.match(elements.get("feedback-title").textContent, /시간이 초과/);
+  assert.equal(elements.get("live-accuracy").textContent, "0%");
+  const snapshot = JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1")).session;
+  assert.equal(snapshot.correct, 0);
+  assert.equal(snapshot.wrong, 1);
+  assert.equal(snapshot.attempts, 1);
+  elements.get("home-button").click();
+  elements.get("discard-session-button").click();
+}
+
+// Home / reload / resume retains the deadline rather than restarting the clock.
+elements.get("mode-sentence-kanji").checked = false;
+elements.get("mode-kanji-reading").checked = true;
+elements.get("mode-kanji-reading").dispatch("change");
+elements.get("start-button").click();
+elapseWithoutTimerCallbacks(2000);
+elements.get("home-button").click();
+elapseWithoutTimerCallbacks(1000);
+elements.get("resume-button").click();
+assert.equal(elements.get("exam-time-left").textContent, 4);
+elapseWithoutTimerCallbacks(1000);
+reloadApplication();
+assert.equal(elements.get("exam-time-left").textContent, 3);
+elements.get("home-button").click();
+elapseWithoutTimerCallbacks(3000);
+elements.get("resume-button").click();
+assert.match(elements.get("feedback-title").textContent, /시간이 초과/);
+assert.equal(elements.get("live-score-detail").textContent, "정답 0 / 채점 1회");
+elements.get("next-button").click();
+assert.equal(elements.get("exam-time-left").textContent, 7, "다음 새 문제에는 전체 제한시간을 줍니다.");
+elapseWithoutTimerCallbacks(6999);
+correctButtonForCurrentWord().click();
+assert.equal(elements.get("feedback-title").textContent, "정답이에요", "기한 직전의 답은 정상적으로 채점합니다.");
+assert.equal(elements.get("live-accuracy").textContent, "50%");
+
+elements.get("home-button").click();
+elements.get("discard-session-button").click();
+elements.get("exam-mode").checked = false;
+elements.get("mode-kanji-reading").checked = false;
+elements.get("mode-sentence-kanji").checked = true;
+elements.get("mode-sentence-kanji").dispatch("change");
+elements.get("sentence-question-count").value = "10";
+elements.get("start-button").click();
+const hintCorrectButton = correctButtonForCurrentSentence();
+const hintWrongButton = elements.get("answer-grid").querySelectorAll("button").find((button) => button !== hintCorrectButton);
+hintWrongButton.click();
+elements.get("home-button").click();
+const originalWordChoices = globalThis.QuizEngine.buildChoicesByWord;
+globalThis.QuizEngine.buildChoicesByWord = (data, correct, count) => originalWordChoices(
+  data.filter((item) => item.id !== hintWrongButton.dataset.itemId), correct, count,
+);
+elements.get("resume-button").click();
+globalThis.QuizEngine.buildChoicesByWord = originalWordChoices;
+assert.equal(elements.get("feedback-title").textContent, "한 번 더 생각해 보세요");
+assert.match(elements.get("quiz-word").innerHTML, /<ruby>/, "선택지가 바뀌어도 이어하기 후 문장 힌트는 유지되어야 합니다.");
+correctButtonForCurrentSentence().click();
+assert.equal(elements.get("live-accuracy").textContent, "50%", "복원만으로 추가 오답을 기록하면 안 됩니다.");
+
+// Incompatible saved answers fail safely, with completed history untouched.
+elements.get("home-button").click();
+elements.get("discard-session-button").click();
+elements.get("feature-switch-button").click();
+elements.get("feature-reading-button").click();
+elements.get("reading-question-count").value = "10";
+elements.get("reading-start-button").click();
+const incompatible = JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1"));
+incompatible.session.questions[0].sessionChoices[0].text = "업데이트 전 선택지";
+storage.set("jlpt-vocab-quiz-active-session-v1", JSON.stringify(incompatible));
+const completedBeforeInvalidRestore = storage.get("jlpt-vocab-quiz-progress-v1");
+reloadApplication();
+assert.equal(storage.has("jlpt-vocab-quiz-active-session-v1"), false);
+assert.match(elements.get("app-error").textContent, /완료한 학습 기록은 유지/);
+assert.equal(storage.get("jlpt-vocab-quiz-progress-v1"), completedBeforeInvalidRestore);
 
 console.log("app interaction flow tests passed");

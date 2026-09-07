@@ -56,15 +56,26 @@
   function hydrateReading(snapshot, readingData) {
     const byId = new Map(readingData.map((item) => [item.id, item]));
     const savedQuestions = Array.isArray(snapshot.questions) ? snapshot.questions : [];
-    if (!savedQuestions.length || savedQuestions.some((item) => !byId.has(item.id))) return null;
+    if (!savedQuestions.length || savedQuestions.some((item) => !item || !byId.has(item.id))) return null;
+    if (!Number.isInteger(snapshot.index) || snapshot.index < 0 || snapshot.index >= savedQuestions.length) return null;
 
     const questions = savedQuestions.map((item) => ({
       ...byId.get(item.id),
       sessionChoices: item.sessionChoices,
     }));
-    if (questions.some((item) => !Array.isArray(item.sessionChoices) || item.sessionChoices.length !== 4)) {
+    // Content updates can reuse an ID. Never combine a new passage with old
+    // shuffled answers: both the answer texts and the correct flag must match.
+    if (questions.some((item) => !Array.isArray(item.sessionChoices)
+      || item.sessionChoices.length !== 4
+      || new Set(item.sessionChoices.map((choice) => choice?.text)).size !== 4
+      || item.sessionChoices.some((choice) => !choice
+        || !item.choices.includes(choice.text)
+        || choice.correct !== (choice.text === item.choices[item.answer])))) {
       return null;
     }
+    if (snapshot.hintShown && (!Number.isInteger(snapshot.hintChoiceIndex)
+      || snapshot.hintChoiceIndex < 0 || snapshot.hintChoiceIndex >= 4
+      || questions[snapshot.index].sessionChoices[snapshot.hintChoiceIndex].correct)) return null;
     return { ...snapshot, questions };
   }
 

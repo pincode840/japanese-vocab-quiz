@@ -300,6 +300,14 @@ assert.equal(insertedAt, 3);
 assert.deepEqual(queue, ["a", "b", "c", "wrong", "d"], "오답은 세 문제 뒤에 다시 나와야 합니다.");
 assert.equal(engine.accuracy(16, 20), 80);
 assert.equal(engine.accuracy(0, 0), null);
+for (const [correct, attempts, expected] of [
+  [9, 10, 90], [19, 20, 95], [49, 50, 98], [99, 100, 99],
+  [599, 600, 99.83], [2, 3, 66.67], [10, 11, 90.91],
+  [0, 10, 0], [600, 600, 100], [999999, 1000000, 99.99],
+]) assert.equal(engine.accuracy(correct, attempts), expected, `${correct}/${attempts} 정답률`);
+for (const [correct, attempts] of [[-1, 10], [11, 10], [NaN, 10], [1, Infinity], [1, -1]]) {
+  assert.equal(engine.accuracy(correct, attempts), null, "유효하지 않은 점수는 표시하지 않습니다.");
+}
 assert.deepEqual(
   engine.kanaReadings("まいとし／まいねん"),
   ["まいとし", "まいねん"],

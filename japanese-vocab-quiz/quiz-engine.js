@@ -23,7 +23,12 @@
   ];
 
   function accuracy(correct, attempts) {
-    return attempts ? Math.round((correct / attempts) * 100) : null;
+    if (!Number.isFinite(correct) || !Number.isFinite(attempts)
+      || attempts <= 0 || correct < 0 || correct > attempts) return null;
+    // Round only the displayed percentage, never the underlying answer counts.
+    // Reserve 100% for a genuinely perfect score, including long-term totals.
+    const percentage = Math.round((correct / attempts) * 10000) / 100;
+    return Math.min(percentage, correct < attempts ? 99.99 : 100);
   }
 
   function normalizedReading(reading) {

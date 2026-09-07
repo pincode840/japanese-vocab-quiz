@@ -272,6 +272,7 @@
         </div>
         <div class="live-score" aria-label="현재 정답률">
           정답률 <strong id="live-accuracy">—</strong>
+          <span id="live-score-detail" class="score-detail">정답 0 / 채점 0회</span>
         </div>
         <div id="exam-timer" class="exam-timer" aria-live="polite" hidden>
           남은 시간 <strong id="exam-time-left">7</strong>초
@@ -328,6 +329,7 @@
           <span>이번 정답률</span>
           <strong id="result-accuracy">0%</strong>
         </div>
+        <p id="result-score-detail" class="score-detail"></p>
         <dl class="result-details">
           <div><dt>정답</dt><dd id="result-correct">0</dd></div>
           <div><dt>오답</dt><dd id="result-wrong">0</dd></div>
@@ -422,7 +424,10 @@
           <span id="reading-session-label" class="eyebrow">독해 1회차</span>
           <span id="reading-progress-text" class="progress-copy">1 / 20</span>
         </div>
-        <div class="live-score" aria-label="현재 정답률">정답률 <strong id="reading-live-accuracy">—</strong></div>
+        <div class="live-score" aria-label="현재 정답률">
+          정답률 <strong id="reading-live-accuracy">—</strong>
+          <span id="reading-live-score-detail" class="score-detail">정답 0 / 채점 0회</span>
+        </div>
       </div>
       <div class="progress-track" aria-hidden="true"><div id="reading-progress-bar" class="progress-bar"></div></div>
 
@@ -459,6 +464,7 @@
           <span>이번 정답률</span>
           <strong id="reading-result-accuracy">0%</strong>
         </div>
+        <p id="reading-result-score-detail" class="score-detail"></p>
         <dl class="result-details">
           <div><dt>정답</dt><dd id="reading-result-correct">0</dd></div>
           <div><dt>오답</dt><dd id="reading-result-wrong">0</dd></div>

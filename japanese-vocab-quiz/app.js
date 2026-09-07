@@ -129,6 +129,7 @@
     quizSessionLabel: document.getElementById("quiz-session-label"),
     quizProgressText: document.getElementById("quiz-progress-text"),
     liveAccuracy: document.getElementById("live-accuracy"),
+    liveScoreDetail: document.getElementById("live-score-detail"),
     examTimer: document.getElementById("exam-timer"),
     examTimeLeft: document.getElementById("exam-time-left"),
     progressBar: document.getElementById("progress-bar"),
@@ -157,6 +158,7 @@
     resultSessionNumber: document.getElementById("result-session-number"),
     resultMessage: document.getElementById("result-message"),
     resultAccuracy: document.getElementById("result-accuracy"),
+    resultScoreDetail: document.getElementById("result-score-detail"),
     resultCorrect: document.getElementById("result-correct"),
     resultWrong: document.getElementById("result-wrong"),
     resultMastered: document.getElementById("result-mastered"),
@@ -181,6 +183,7 @@
     readingSessionLabel: document.getElementById("reading-session-label"),
     readingProgressText: document.getElementById("reading-progress-text"),
     readingLiveAccuracy: document.getElementById("reading-live-accuracy"),
+    readingLiveScoreDetail: document.getElementById("reading-live-score-detail"),
     readingProgressBar: document.getElementById("reading-progress-bar"),
     readingExamBadge: document.getElementById("reading-exam-badge"),
     readingTypeBadge: document.getElementById("reading-type-badge"),
@@ -197,6 +200,7 @@
     readingResultSessionNumber: document.getElementById("reading-result-session-number"),
     readingResultMessage: document.getElementById("reading-result-message"),
     readingResultAccuracy: document.getElementById("reading-result-accuracy"),
+    readingResultScoreDetail: document.getElementById("reading-result-score-detail"),
     readingResultCorrect: document.getElementById("reading-result-correct"),
     readingResultWrong: document.getElementById("reading-result-wrong"),
     readingResultTotal: document.getElementById("reading-result-total"),
@@ -464,10 +468,30 @@
         });
       }
       normalized.wrongAnswerCountsVersion = 1;
+      refreshRecordedAccuracies(normalized);
       return normalized;
     } catch (_error) {
       return defaultProgress();
     }
+  }
+
+  function refreshRecordedAccuracies(saved) {
+    // Older versions stored rounded percentages. Recompute from raw counts when
+    // available, without estimating or rewriting records whose counts are missing.
+    const refreshHistory = (history, getStat) => (Array.isArray(history) ? history : [])
+      .filter((entry) => entry && typeof entry === "object")
+      .map((entry) => {
+        const score = engine.accuracy(entry.correct, entry.correct + entry.wrong);
+        if (score === null) return entry;
+        const stat = getStat(entry);
+        if (stat && stat.completedSessions === entry.session) stat.lastAccuracy = score;
+        return { ...entry, accuracy: score };
+      });
+    saved.history = refreshHistory(saved.history, (entry) => saved.sessionStats[
+      sessionScopeKey(entry.difficulty || "n5n4", entry.mode || "kanji-to-reading")
+    ]);
+    saved.readingHistory = refreshHistory(saved.readingHistory, (entry) => saved.readingStats[entry.difficulty]);
+    if (saved.history.length) saved.lastAccuracy = saved.history[saved.history.length - 1].accuracy;
   }
 
   function saveProgress() {
@@ -541,6 +565,7 @@
         currentMisses: Number(value.currentMisses) || 0,
         hintSelectedId: value.hintSelectedId || null,
         kanaAnswer: value.kanaAnswer || "",
+        examDeadline: value.examDeadline,
       });
     }
     return true;
@@ -565,7 +590,11 @@
     const restored = saved.kind === "reading"
       ? restoreReadingSession(saved)
       : restoreVocabSession(saved);
-    if (!restored) clearActiveSession();
+    if (!restored) {
+      clearActiveSession();
+      elements.appError.hidden = false;
+      elements.appError.textContent = "저장된 진행 정보가 현재 문제와 맞지 않아 이어갈 수 없습니다. 완료한 학습 기록은 유지됩니다. 새 회차를 시작해 주세요.";
+    }
     return restored;
   }
 
@@ -579,6 +608,10 @@
 
   function formatAccuracy(value) {
     return value === null ? "—" : `${value}%`;
+  }
+
+  function scoreDetail(correct, attempts, includesRetries = false) {
+    return `정답 ${correct} / 채점 ${attempts}회${includesRetries ? " · 재도전 포함" : ""}`;
   }
 
   function statsFor(difficulty, mode) {
@@ -646,7 +679,7 @@
       clearInterval(examTimerId);
       examTimerId = null;
     }
-    if (session) session.examDeadline = null;
+    // Stopping UI updates must not give extra exam time when returning home or resuming.
     elements.examTimer.classList.remove("is-urgent");
   }
 
@@ -661,16 +694,22 @@
     return WORD_TIME_LIMIT;
   }
 
-  function startExamTimer() {
+  function startExamTimer(savedDeadline = null) {
     stopExamTimer();
     if (!session?.examMode) {
       elements.examTimer.hidden = true;
       return;
     }
-    session.timeRemaining = examTimeLimit(session.mode);
-    session.examDeadline = Date.now() + session.timeRemaining * 1000;
+    session.examDeadline = Number.isFinite(savedDeadline) && savedDeadline > 0
+      ? savedDeadline
+      : Date.now() + examTimeLimit(session.mode) * 1000;
+    session.timeRemaining = Math.max(0, Math.ceil((session.examDeadline - Date.now()) / 1000));
     elements.examTimer.hidden = false;
     renderExamTime();
+    if (session.timeRemaining === 0) {
+      answerQuestion(null, true);
+      return;
+    }
     examTimerId = setInterval(() => {
       if (!session || session.answered) {
         stopExamTimer();
@@ -864,6 +903,7 @@
     elements.readingLiveAccuracy.textContent = formatAccuracy(
       engine.accuracy(readingSession.correct, readingSession.attempts),
     );
+    elements.readingLiveScoreDetail.textContent = scoreDetail(readingSession.correct, readingSession.attempts);
     elements.readingProgressBar.style.width = `${(completed / readingSession.questions.length) * 100}%`;
   }
 
@@ -1036,6 +1076,7 @@
 
     elements.readingResultSessionNumber.textContent = readingSession.number;
     elements.readingResultAccuracy.textContent = `${accuracy}%`;
+    elements.readingResultScoreDetail.textContent = scoreDetail(readingSession.correct, readingSession.attempts);
     elements.readingResultCorrect.textContent = readingSession.correct;
     elements.readingResultWrong.textContent = readingSession.wrong;
     elements.readingResultTotal.textContent = readingSession.questions.length;
@@ -1474,9 +1515,13 @@
   }
 
   function renderSentenceHint(selectedItem, selectedButton) {
-    if (!selectedItem || !selectedButton) return;
-    selectedButton.disabled = true;
-    selectedButton.classList.add("is-wrong");
+    if (!selectedItem) return;
+    // Restoring a practice question can shuffle away the previous distractor.
+    // The learner must still receive the earned hint before the second attempt.
+    if (selectedButton) {
+      selectedButton.disabled = true;
+      selectedButton.classList.add("is-wrong");
+    }
     elements.quizWord.innerHTML = session.current.sentenceFurigana.replace(
       "___",
       '<span class="sentence-blank" aria-hidden="true">＿＿＿</span>',
@@ -1526,7 +1571,7 @@
       ? elements.kanaGrid.querySelector("button")
       : elements.answerGrid.querySelector("button");
     firstInput?.focus();
-    startExamTimer();
+    startExamTimer(resumeState?.examDeadline);
     saveActiveSession("vocab");
   }
 
@@ -1691,8 +1736,19 @@
   }
 
   function answerQuestion(selectedId, timedOut = false, constructedAnswer = null) {
-    if (session.answered) return;
-    if (session.examMode) stopExamTimer();
+    if (!session || session.answered || session.completed) return;
+    if (session.examMode) {
+      // Browser timer callbacks can be delayed. Check the real deadline at submission
+      // too, so a late click/key press cannot be scored as a correct answer.
+      timedOut = timedOut || (Number.isFinite(session.examDeadline) && Date.now() >= session.examDeadline);
+      if (timedOut) {
+        selectedId = null;
+        constructedAnswer = null;
+        session.timeRemaining = 0;
+        renderExamTime();
+      }
+      stopExamTimer();
+    }
     session.attempts += 1;
     const context = createAnswerContext(selectedId, timedOut, constructedAnswer);
 
@@ -1716,6 +1772,7 @@
     const currentPosition = Math.min(completed + 1, session.total);
     elements.quizProgressText.textContent = `${currentPosition} / ${session.total}`;
     elements.liveAccuracy.textContent = formatAccuracy(engine.accuracy(session.correct, session.attempts));
+    elements.liveScoreDetail.textContent = scoreDetail(session.correct, session.attempts, !session.examMode);
     elements.progressBar.style.width = `${(completed / session.total) * 100}%`;
   }
 
@@ -1771,6 +1828,7 @@
   function renderCompletedSession(sessionAccuracy, newlyProtectedCount) {
     elements.resultSessionNumber.textContent = session.number;
     elements.resultAccuracy.textContent = `${sessionAccuracy}%`;
+    elements.resultScoreDetail.textContent = scoreDetail(session.correct, session.attempts, !session.examMode);
     elements.resultCorrect.textContent = session.correct;
     elements.resultWrong.textContent = session.wrong;
     elements.resultMastered.textContent = session.total;

@@ -1069,6 +1069,15 @@ button:focus-visible {
   font-size: 17px;
 }
 
+.score-detail {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
 .exam-timer {
   min-width: 110px;
   padding: 7px 11px;

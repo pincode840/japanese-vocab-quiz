@@ -140,6 +140,7 @@
     answerGrid: document.getElementById("answer-grid"),
     kanaComposer: document.getElementById("kana-composer"),
     kanaAnswer: document.getElementById("kana-answer"),
+    kanaEditStatus: document.getElementById("kana-edit-status"),
     kanaGrid: document.getElementById("kana-grid"),
     kanaBackspace: document.getElementById("kana-backspace"),
     kanaClear: document.getElementById("kana-clear"),
@@ -565,6 +566,9 @@
         currentMisses: Number(value.currentMisses) || 0,
         hintSelectedId: value.hintSelectedId || null,
         kanaAnswer: value.kanaAnswer || "",
+        kanaCursor: value.kanaCursor,
+        kanaSelection: value.kanaSelection,
+        kanaTiles: value.kanaTiles,
         examDeadline: value.examDeadline,
       });
     }
@@ -1257,8 +1261,8 @@
     elements.quizSessionLabel.textContent = `${session.number}회차 · ${difficultyLabels[session.difficulty]} · ${modeLabel}${examLabel} · ${choiceLabel}`;
     elements.keyboardHint.textContent = session.mode === "kanji-to-kana"
       ? session.examMode
-        ? "숫자키 1–9로 히라가나 선택 · Backspace로 지우기 · 제한시간 안에 Enter로 제출"
-        : "숫자키 1–9로 히라가나 선택 · Backspace로 지우기 · Enter로 제출"
+        ? "숫자키 1–9로 입력 · ←/→로 위치 이동 · Backspace로 지우기 · 제한시간 안에 Enter로 제출"
+        : "숫자키 1–9로 입력 · ←/→로 위치 이동 · Backspace로 지우기 · Enter로 제출"
       : session.examMode
         ? `숫자키 1–${session.choiceCount} 또는 숫자패드로 선택 · 제한시간 안에 답하세요`
         : `숫자키 1–${session.choiceCount} 또는 숫자패드로 선택 · Enter로 다음`;
@@ -1313,6 +1317,8 @@
       completedQuestions: 0,
       correctIds: new Set(),
       kanaAnswer: "",
+      kanaCursor: 0,
+      kanaSelection: null,
       current: null,
       currentMisses: 0,
       hintSelectedId: null,
@@ -1349,36 +1355,77 @@
     return engine.shuffle([...required, ...distractors]);
   }
 
+  function currentKanaEditState() {
+    return engine.kanaEditState(session?.kanaAnswer, session?.kanaCursor, session?.kanaSelection);
+  }
+
+  function kanaPositionButton(index, state, unavailable) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "kana-cursor";
+    button.dataset.kanaCursor = String(index);
+    button.disabled = unavailable;
+    const active = !unavailable && state.selection === null && state.cursor === index;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-label", index === 0 ? "맨 앞에 입력" : `${index}번째 글자 뒤에 입력`);
+    button.setAttribute("aria-pressed", String(active));
+    button.addEventListener("click", () => updateKanaEditor("move", index, true));
+    return button;
+  }
+
   function renderKanaAnswer() {
-    const answer = session?.kanaAnswer || "";
-    elements.kanaAnswer.textContent = answer || "히라가나를 선택하세요";
-    elements.kanaAnswer.classList.toggle("is-empty", !answer);
+    const state = currentKanaEditState();
+    const { answer, cursor, selection } = state;
     const unavailable = !session || session.answered;
-    elements.kanaBackspace.disabled = unavailable || !answer;
+    elements.kanaAnswer.replaceChildren();
+    elements.kanaAnswer.classList.toggle("is-empty", !answer);
+    [...answer].forEach((character, index) => {
+      const unit = document.createElement("span");
+      unit.className = "kana-unit";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "kana-character";
+      button.dataset.kanaIndex = String(index);
+      button.textContent = character;
+      button.disabled = unavailable;
+      button.classList.toggle("is-selected", !unavailable && selection === index);
+      button.setAttribute("aria-label", `${index + 1}번째 글자 ${character} 선택하여 수정`);
+      button.setAttribute("aria-pressed", String(!unavailable && selection === index));
+      button.addEventListener("click", () => updateKanaEditor("select", index, true));
+      unit.append(kanaPositionButton(index, state, unavailable), button);
+      elements.kanaAnswer.append(unit);
+    });
+    elements.kanaAnswer.append(kanaPositionButton(answer.length, state, unavailable));
+    if (!answer) {
+      const placeholder = document.createElement("span");
+      placeholder.textContent = "히라가나를 선택하세요";
+      elements.kanaAnswer.append(placeholder);
+    }
+    elements.kanaEditStatus.textContent = unavailable
+      ? `제출한 읽기: ${answer || "입력 없음"}`
+      : selection !== null
+        ? `${selection + 1}번째 글자 ‘${answer[selection]}’ 선택 · 타일로 교체하거나 선택 글자를 지우세요.`
+        : `${cursor === 0 ? "맨 앞" : `${cursor}번째 글자 뒤`}에 입력 · 글자를 누르면 선택, 글자 사이 표시를 누르면 끼워 넣기`;
+    elements.kanaBackspace.textContent = selection === null ? "앞 글자 지우기" : "선택 글자 지우기";
+    elements.kanaBackspace.disabled = unavailable || (selection === null && cursor === 0);
     elements.kanaClear.disabled = unavailable || !answer;
     elements.kanaSubmit.disabled = unavailable || !answer;
   }
 
-  function appendKana(character) {
+  function updateKanaEditor(action, value = null, focusEditor = false) {
     if (!session || session.answered || session.mode !== "kanji-to-kana") return;
-    if (session.kanaAnswer.length >= 20) return;
-    session.kanaAnswer += character;
+    const next = engine.editKana(currentKanaEditState(), action, value);
+    session.kanaAnswer = next.answer;
+    session.kanaCursor = next.cursor;
+    session.kanaSelection = next.selection;
     renderKanaAnswer();
     saveActiveSession("vocab");
-  }
-
-  function removeLastKana() {
-    if (!session || session.answered || session.mode !== "kanji-to-kana") return;
-    session.kanaAnswer = session.kanaAnswer.slice(0, -1);
-    renderKanaAnswer();
-    saveActiveSession("vocab");
-  }
-
-  function clearKanaAnswer() {
-    if (!session || session.answered || session.mode !== "kanji-to-kana") return;
-    session.kanaAnswer = "";
-    renderKanaAnswer();
-    saveActiveSession("vocab");
+    if (focusEditor) {
+      // Rendering replaces the buttons. Restore focus to the chosen edit position.
+      [...elements.kanaAnswer.querySelectorAll("button")].find((button) => next.selection === null
+        ? button.dataset.kanaCursor === String(next.cursor)
+        : button.dataset.kanaIndex === String(next.selection))?.focus();
+    }
   }
 
   function submitKanaAnswer() {
@@ -1484,13 +1531,20 @@
     });
   }
 
-  function renderKanaOptions(item) {
+  function renderKanaOptions(item, savedTiles = null) {
     elements.kanaGrid.replaceChildren();
     if (session.mode !== "kanji-to-kana") return;
-    buildKanaTiles(item).forEach((character, index) => {
+    // Restore the palette too, so editing and number-key positions remain stable.
+    // Older or incompatible snapshots get a fresh, complete nine-character palette.
+    const reusableTiles = Array.isArray(savedTiles) && savedTiles.length === 9
+      && new Set(savedTiles).size === 9
+      && savedTiles.every((character) => HIRAGANA_POOL.includes(character))
+      && requiredKanaCharacters(item.reading).every((character) => savedTiles.includes(character));
+    session.kanaTiles = reusableTiles ? [...savedTiles] : buildKanaTiles(item);
+    session.kanaTiles.forEach((character, index) => {
       const button = createNumberedButton(index, character, "ja", "kana-tile");
       button.dataset.kana = character;
-      button.addEventListener("click", () => appendKana(character));
+      button.addEventListener("click", () => updateKanaEditor("insert", character));
       elements.kanaGrid.append(button);
     });
     renderKanaAnswer();
@@ -1552,11 +1606,14 @@
     session.hintSelectedId = resumeState?.hintSelectedId || null;
     session.answered = false;
     session.kanaAnswer = resumeState?.kanaAnswer || "";
+    const editState = engine.kanaEditState(session.kanaAnswer, resumeState?.kanaCursor, resumeState?.kanaSelection);
+    session.kanaCursor = editState.cursor;
+    session.kanaSelection = editState.selection;
     const context = currentQuestionContext(session.current);
     renderQuestionHeading(context);
     renderQuestionMetadata(context);
     renderAnswerOptions(context);
-    renderKanaOptions(context.item);
+    renderKanaOptions(context.item, resumeState?.kanaTiles);
     resetQuestionFeedback(context.item);
 
     if (context.isSentenceToKanji && session.currentMisses > 0 && session.hintSelectedId) {
@@ -1910,11 +1967,20 @@
         elements.kanaGrid.querySelectorAll("button")[numberKey - 1]?.click();
       } else if (event.key === "Backspace") {
         event.preventDefault?.();
-        removeLastKana();
-      } else if (event.key === "Escape" || event.key === "Delete") {
+        updateKanaEditor("backspace");
+      } else if (event.key === "Delete") {
         event.preventDefault?.();
-        clearKanaAnswer();
+        updateKanaEditor("delete");
+      } else if (event.key === "Escape") {
+        event.preventDefault?.();
+        updateKanaEditor("clear");
+      } else if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+        event.preventDefault?.();
+        const actions = { ArrowLeft: "left", ArrowRight: "right", Home: "home", End: "end" };
+        updateKanaEditor(actions[event.key], null, true);
       } else if (event.key === "Enter" || event.code === "NumpadEnter") {
+        // Native button activation lets keyboard users choose an edit position with Enter.
+        if (event.target?.dataset?.kanaIndex !== undefined || event.target?.dataset?.kanaCursor !== undefined) return;
         event.preventDefault?.();
         submitKanaAnswer();
       }
@@ -2080,8 +2146,8 @@
     elements.readingReturnButton.addEventListener("click", returnToStart);
     elements.readingDifficultyFurigana.addEventListener("change", renderReadingStartScreen);
     elements.readingDifficultyStandard.addEventListener("change", renderReadingStartScreen);
-    elements.kanaBackspace.addEventListener("click", removeLastKana);
-    elements.kanaClear.addEventListener("click", clearKanaAnswer);
+    elements.kanaBackspace.addEventListener("click", () => updateKanaEditor("backspace"));
+    elements.kanaClear.addEventListener("click", () => updateKanaEditor("clear"));
     elements.kanaSubmit.addEventListener("click", submitKanaAnswer);
     elements.modeKanjiReading.addEventListener("change", syncModeControls);
     elements.modeKanjiKana.addEventListener("change", syncModeControls);

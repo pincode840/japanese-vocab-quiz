@@ -35,6 +35,43 @@
     return reading.replace(/[、,/]/g, " · ").replace(/\s+/g, " ").trim();
   }
 
+  function kanaEditState(answer = "", cursor = null, selection = null) {
+    const text = String(answer || "");
+    const selected = Number.isInteger(selection) && selection >= 0 && selection < text.length
+      ? selection : null;
+    return {
+      answer: text,
+      cursor: selected ?? (Number.isInteger(cursor) ? Math.max(0, Math.min(cursor, text.length)) : text.length),
+      selection: selected,
+    };
+  }
+
+  // A selected character is replaced; an insertion cursor adds text between characters.
+  // Keep this independent of the DOM so touch, keyboard, and restored sessions agree.
+  function editKana(state, action, value = null) {
+    const { answer, cursor, selection } = kanaEditState(state.answer, state.cursor, state.selection);
+    if (action === "select") return kanaEditState(answer, cursor, value);
+    if (action === "move") return kanaEditState(answer, value);
+    if (action === "left") return kanaEditState(answer, selection ?? cursor - 1);
+    if (action === "right") return kanaEditState(answer, selection === null ? cursor + 1 : selection + 1);
+    if (action === "home") return kanaEditState(answer, 0);
+    if (action === "end") return kanaEditState(answer, answer.length);
+    if (action === "clear") return kanaEditState("", 0);
+    if (action === "insert") {
+      if (typeof value !== "string" || !/^[ぁ-ゖー]$/.test(value)
+        || (answer.length >= 20 && selection === null)) return { answer, cursor, selection };
+      const suffix = cursor + (selection === null ? 0 : 1);
+      return kanaEditState(answer.slice(0, cursor) + value + answer.slice(suffix), cursor + 1);
+    }
+    if (action === "backspace" || action === "delete") {
+      const index = selection ?? (action === "backspace" ? cursor - 1 : cursor);
+      if (index >= 0 && index < answer.length) {
+        return kanaEditState(answer.slice(0, index) + answer.slice(index + 1), index);
+      }
+    }
+    return { answer, cursor, selection };
+  }
+
   function kanaReadings(reading) {
     return [...new Set(
       String(reading || "")
@@ -247,6 +284,8 @@
 
   return {
     accuracy,
+    kanaEditState,
+    editKana,
     normalizedReading,
     kanaReadings,
     toHiragana,

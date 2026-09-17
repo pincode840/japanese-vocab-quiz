@@ -290,10 +290,11 @@
 
         <div id="answer-grid" class="answer-grid" aria-label="읽기 선택지"></div>
         <div id="kana-composer" class="kana-composer" hidden>
-          <div id="kana-answer" class="kana-answer" lang="ja" aria-live="polite">히라가나를 선택하세요</div>
+          <div id="kana-answer" class="kana-answer" role="group" aria-label="입력한 히라가나 편집" aria-describedby="kana-edit-status">히라가나를 선택하세요</div>
+          <p id="kana-edit-status" class="kana-edit-status" aria-live="polite"></p>
           <div id="kana-grid" class="kana-grid" aria-label="히라가나 9개"></div>
           <div class="kana-actions">
-            <button id="kana-backspace" class="secondary-button" type="button">한 글자 지우기</button>
+            <button id="kana-backspace" class="secondary-button" type="button">앞 글자 지우기</button>
             <button id="kana-clear" class="secondary-button" type="button">전체 지우기</button>
             <button id="kana-submit" class="kana-submit" type="button" disabled>정답 제출</button>
           </div>

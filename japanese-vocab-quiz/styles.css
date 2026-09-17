@@ -1256,18 +1256,20 @@ button:focus-visible {
 }
 
 .kana-answer {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   min-height: 68px;
-  margin-bottom: 14px;
-  padding: 10px 14px;
-  place-items: center;
+  margin-bottom: 6px;
+  padding: 10px 8px;
   color: var(--ink);
   background: rgba(255, 253, 248, 0.88);
   border: 2px solid var(--ink);
   border-radius: 14px;
   font-size: clamp(27px, 7vw, 42px);
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   word-break: break-all;
 }
 
@@ -1277,6 +1279,77 @@ button:focus-visible {
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0;
+}
+
+.kana-unit {
+  display: inline-flex;
+  align-items: center;
+}
+
+.kana-character,
+.kana-cursor {
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.kana-character {
+  min-width: 44px;
+  font-size: clamp(27px, 7vw, 38px);
+}
+
+.kana-character:hover:not(:disabled),
+.kana-character.is-selected {
+  color: var(--accent-dark);
+  background: var(--danger-soft);
+  border-color: var(--accent);
+}
+
+.kana-cursor {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.kana-cursor::after {
+  content: "";
+  width: 2px;
+  height: 24px;
+  background: var(--line);
+}
+
+.kana-cursor.is-active::after,
+.kana-cursor:hover:not(:disabled)::after {
+  width: 3px;
+  background: var(--accent);
+}
+
+.kana-cursor.is-active {
+  background: var(--danger-soft);
+}
+
+.kana-character:disabled,
+.kana-cursor:disabled {
+  cursor: default;
+}
+
+.kana-cursor:disabled::after {
+  visibility: hidden;
+}
+
+.kana-edit-status {
+  min-height: 2.8em;
+  margin: 0 0 12px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .kana-grid {

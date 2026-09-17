@@ -91,7 +91,7 @@ const ids = [
   "sentence-question-count-hint",
   "quiz-session-label", "quiz-progress-text",
   "live-accuracy", "live-score-detail", "result-score-detail", "exam-timer", "exam-time-left", "progress-bar", "quiz-prompt", "quiz-word",
-  "day-label", "exam-mistake-badge", "answer-grid", "kana-composer", "kana-answer", "kana-grid", "kana-backspace", "kana-clear", "kana-submit",
+  "day-label", "exam-mistake-badge", "answer-grid", "kana-composer", "kana-answer", "kana-edit-status", "kana-grid", "kana-backspace", "kana-clear", "kana-submit",
   "feedback", "feedback-icon", "feedback-title", "feedback-selected", "feedback-reading",
   "feedback-meaning", "feedback-sentence-reading", "feedback-translation", "feedback-source", "retry-note", "next-button", "result-session-number", "result-message",
   "result-accuracy", "result-correct", "result-wrong", "result-mastered", "return-button", "keyboard-hint",
@@ -193,8 +193,8 @@ function runTimerCallbacks() {
 
 require("./app.js");
 
-function pressKey(key, code = key) {
-  const event = { key, code, preventDefault() { this.defaultPrevented = true; } };
+function pressKey(key, code = key, target = null) {
+  const event = { key, code, target, preventDefault() { this.defaultPrevented = true; } };
   for (const handler of documentListeners.keydown || []) handler(event);
   return event;
 }
@@ -272,6 +272,22 @@ function enterCurrentKanaReading() {
     tile.click();
   }
   return reading;
+}
+
+function composedKanaText() {
+  return elements.get("kana-answer").querySelectorAll("button")
+    .filter((button) => button.dataset.kanaIndex !== undefined)
+    .map((button) => button.textContent).join("");
+}
+
+function kanaEditorButton(field, index) {
+  return elements.get("kana-answer").querySelectorAll("button")
+    .find((button) => button.dataset[field] === String(index));
+}
+
+function typeKanaTile(character) {
+  elements.get("kana-grid").querySelectorAll("button")
+    .find((button) => button.dataset.kana === character).click();
 }
 
 elements.get("mistake-menu-button").click();
@@ -776,22 +792,77 @@ assert.equal(elements.get("kana-composer").hidden, false);
 assert.equal(elements.get("kana-grid").querySelectorAll("button").length, 9, "히라가나 타일은 정확히 9개여야 합니다.");
 const kanaNineEvent = pressKey("9", "Digit9");
 assert.equal(kanaNineEvent.defaultPrevented, true, "숫자키 9로 아홉 번째 히라가나를 선택할 수 있어야 합니다.");
-assert.notEqual(elements.get("kana-answer").textContent, "히라가나를 선택하세요");
+assert.notEqual(composedKanaText(), "");
 const kanaBackspaceEvent = pressKey("Backspace", "Backspace");
 assert.equal(kanaBackspaceEvent.defaultPrevented, true);
-assert.equal(elements.get("kana-answer").textContent, "히라가나를 선택하세요");
+assert.equal(composedKanaText(), "");
 const correctKanaReading = enterCurrentKanaReading();
-assert.equal(elements.get("kana-answer").textContent, correctKanaReading);
+assert.equal(composedKanaText(), correctKanaReading);
+
+// Touch editing: delete/replace a selected character, or insert at a gap.
+elements.get("kana-clear").click();
+const originalEditTiles = elements.get("kana-grid").querySelectorAll("button").map((button) => button.dataset.kana);
+const [editA, editB, editC] = originalEditTiles;
+[editA, editB, editA].forEach(typeKanaTile);
+kanaEditorButton("kanaIndex", 1).click();
+assert.equal(kanaEditorButton("kanaIndex", 1)["aria-pressed"], "true");
+assert.equal(elements.get("kana-backspace").textContent, "선택 글자 지우기");
+elements.get("kana-backspace").click();
+assert.equal(composedKanaText(), editA + editA);
+typeKanaTile(editC);
+assert.equal(composedKanaText(), editA + editC + editA, "지운 글자 위치에 입력해야 합니다.");
+kanaEditorButton("kanaIndex", 1).click();
+typeKanaTile(editB);
+assert.equal(composedKanaText(), editA + editB + editA, "선택한 글자만 교체해야 합니다.");
+kanaEditorButton("kanaCursor", 1).click();
+typeKanaTile(editC);
+assert.equal(composedKanaText(), editA + editC + editB + editA, "글자 사이 커서에 끼워 넣어야 합니다.");
+pressKey("Home");
+assert.equal(elements.get("kana-backspace").disabled, true);
+pressKey("Backspace");
+assert.equal(composedKanaText(), editA + editC + editB + editA);
+pressKey("Delete");
+assert.equal(composedKanaText(), editC + editB + editA, "Delete는 커서 뒤 한 글자만 지워야 합니다.");
+pressKey("End");
+pressKey("Delete");
+assert.equal(composedKanaText(), editC + editB + editA);
+pressKey("ArrowLeft");
+pressKey("Backspace");
+assert.equal(composedKanaText(), editC + editA);
+kanaEditorButton("kanaIndex", 0).click();
+assert.equal(pressKey("Enter", "Enter", kanaEditorButton("kanaIndex", 0)).defaultPrevented, undefined,
+  "편집 버튼의 Enter는 제출하지 않고 버튼 선택 동작을 허용해야 합니다.");
+assert.equal(elements.get("feedback").hidden, true);
+elements.get("home-button").click();
+elements.get("resume-button").click();
+assert.equal(composedKanaText(), editC + editA);
+assert.equal(kanaEditorButton("kanaIndex", 0)["aria-pressed"], "true", "선택한 글자도 이어하기에서 유지해야 합니다.");
+assert.deepEqual(elements.get("kana-grid").querySelectorAll("button").map((button) => button.dataset.kana), originalEditTiles,
+  "이어하기는 타일 구성과 숫자키 순서도 유지해야 합니다.");
+pressKey("Delete");
+assert.equal(composedKanaText(), editA);
+assert.equal(kanaEditorButton("kanaCursor", 0)["aria-pressed"], "true");
+typeKanaTile(editB);
+assert.equal(composedKanaText(), editB + editA);
+elements.get("home-button").click();
+elements.get("resume-button").click();
+assert.equal(kanaEditorButton("kanaCursor", 1)["aria-pressed"], "true", "글자 사이 입력 위치도 유지해야 합니다.");
+pressKey("Escape");
+assert.equal(composedKanaText(), "");
+assert.equal(elements.get("kana-submit").disabled, true);
+enterCurrentKanaReading();
 pressKey("Enter", "Enter");
 assert.equal(elements.get("feedback-title").textContent, "정답이에요");
 assert.match(elements.get("feedback-reading").textContent, /^정답 읽기/);
+assert.ok(elements.get("kana-answer").querySelectorAll("button").every((button) => button.disabled),
+  "제출한 답은 편집할 수 없어야 합니다.");
 
 elements.get("next-button").click();
 const nextKanaCorrect = kanaReadingForTest(currentKanaItem().reading);
 const firstKanaTile = elements.get("kana-grid").querySelectorAll("button")[0];
 firstKanaTile.click();
-if (elements.get("kana-answer").textContent === nextKanaCorrect) firstKanaTile.click();
-const wrongKanaAnswer = elements.get("kana-answer").textContent;
+if (composedKanaText() === nextKanaCorrect) firstKanaTile.click();
+const wrongKanaAnswer = composedKanaText();
 elements.get("kana-submit").click();
 assert.equal(elements.get("feedback-title").textContent, "아쉬워요, 정답을 확인하세요");
 assert.equal(elements.get("feedback-selected").textContent, `선택한 답  ${wrongKanaAnswer}`);
@@ -806,6 +877,13 @@ assert.equal(elements.get("quiz-progress-text").textContent, "1 / 100");
 assert.equal(elements.get("exam-time-left").textContent, 10, "히라가나 조합 시험 제한시간은 10초여야 합니다.");
 assert.equal(elements.get("kana-grid").querySelectorAll("button").length, 9);
 assert.match(elements.get("quiz-session-label").textContent, /히라가나 9개/);
+tickTimers(2);
+const examEditKana = elements.get("kana-grid").querySelectorAll("button")[0].dataset.kana;
+typeKanaTile(examEditKana);
+kanaEditorButton("kanaIndex", 0).click();
+elements.get("kana-backspace").click();
+typeKanaTile(examEditKana);
+assert.equal(elements.get("exam-time-left").textContent, 8, "편집으로 시험 제한시간이 초기화되면 안 됩니다.");
 elements.get("home-button").click();
 elements.get("exam-mode").checked = false;
 elements.get("exam-mode").dispatch("change");

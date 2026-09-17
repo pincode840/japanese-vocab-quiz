@@ -42,6 +42,9 @@ const vocabSession = {
   correctIds: new Set(["word-1"]),
   current: { id: "word-1", word: "学校" },
   answered: false,
+  kanaAnswer: "ひらがな",
+  kanaCursor: 1,
+  kanaSelection: 1,
 };
 assert.equal(store.save("vocab", vocabSession), true);
 const savedVocab = store.load();
@@ -53,6 +56,9 @@ const hydratedVocab = SessionStore.hydrateVocab(savedVocab.session);
 assert.ok(hydratedVocab.baseIds instanceof Set);
 assert.ok(hydratedVocab.masteredIds.has("word-1"));
 assert.equal(hydratedVocab.current, null);
+assert.equal(hydratedVocab.kanaAnswer, "ひらがな");
+assert.equal(hydratedVocab.kanaCursor, 1);
+assert.equal(hydratedVocab.kanaSelection, 1);
 
 const readingData = [{
   id: "reading-1",

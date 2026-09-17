@@ -385,4 +385,28 @@ cleanStreaks[reviewKey] = 1;
 engine.updateCleanReview(cleanStreaks, practiceCooldowns, [reviewKey], [reviewKey], 6);
 assert.equal(cleanStreaks[reviewKey], 0, "한 번이라도 틀리면 무오답 연속 횟수가 초기화되어야 합니다.");
 
+let edit = engine.kanaEditState("がっこう");
+assert.deepEqual(edit, { answer: "がっこう", cursor: 4, selection: null });
+edit = engine.editKana(edit, "select", 1);
+edit = engine.editKana(edit, "backspace");
+assert.deepEqual(edit, { answer: "がこう", cursor: 1, selection: null });
+edit = engine.editKana(edit, "insert", "っ");
+assert.deepEqual(edit, { answer: "がっこう", cursor: 2, selection: null });
+edit = engine.editKana(engine.editKana(edit, "select", 0), "insert", "か");
+assert.equal(edit.answer, "かっこう");
+edit = engine.editKana(engine.editKana(edit, "move", 3), "insert", "ょ");
+assert.equal(edit.answer, "かっこょう");
+edit = engine.editKana(engine.editKana(edit, "left"), "delete");
+assert.equal(edit.answer, "かっこう");
+assert.deepEqual(engine.kanaEditState("かな", -5, 99), { answer: "かな", cursor: 0, selection: null });
+assert.deepEqual(engine.kanaEditState("かな", 99), { answer: "かな", cursor: 2, selection: null });
+assert.deepEqual(engine.editKana(engine.kanaEditState("", 0), "backspace"), engine.kanaEditState("", 0));
+assert.equal(engine.editKana(edit, "insert", "A").answer, edit.answer);
+assert.equal(engine.editKana(edit, "insert", "あい").answer, edit.answer);
+const fullAnswer = engine.kanaEditState("あ".repeat(20));
+assert.equal(engine.editKana(fullAnswer, "insert", "い").answer.length, 20);
+assert.equal(engine.editKana(engine.editKana(fullAnswer, "select", 10), "insert", "い").answer, "あ".repeat(10) + "い" + "あ".repeat(9));
+assert.equal(engine.editKana(engine.kanaEditState("いいい", 1, 1), "delete").answer, "いい");
+assert.deepEqual(engine.editKana(edit, "clear"), { answer: "", cursor: 0, selection: null });
+
 console.log("quiz logic tests passed");

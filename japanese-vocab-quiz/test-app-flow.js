@@ -91,7 +91,7 @@ const ids = [
   "sentence-question-count-hint",
   "quiz-session-label", "quiz-progress-text",
   "live-accuracy", "live-score-detail", "result-score-detail", "exam-timer", "exam-time-left", "progress-bar", "quiz-prompt", "quiz-word",
-  "day-label", "exam-mistake-badge", "answer-grid", "kana-composer", "kana-answer", "kana-edit-status", "kana-grid", "kana-backspace", "kana-clear", "kana-submit",
+  "day-label", "exam-mistake-badge", "answer-grid", "kana-composer", "kana-layout-toggle", "kana-answer", "kana-edit-status", "kana-grid", "kana-backspace", "kana-clear", "kana-submit",
   "feedback", "feedback-icon", "feedback-title", "feedback-selected", "feedback-reading",
   "feedback-meaning", "feedback-sentence-reading", "feedback-translation", "feedback-source", "retry-note", "next-button", "result-session-number", "result-message",
   "result-accuracy", "result-correct", "result-wrong", "result-mastered", "return-button", "keyboard-hint",
@@ -110,7 +110,7 @@ for (const id of [
   "home-button", "feature-switch-button", "feature-switch-backdrop", "feature-switch-close", "feature-vocab-button", "feature-reading-button",
   "mistake-menu-button", "mistake-menu-backdrop", "mistake-menu-close",
   "mistake-tab-basic", "mistake-tab-n3", "mistake-tab-n2", "mistake-tab-katakana",
-  "resume-button", "discard-session-button", "start-button", "next-button", "return-button", "kana-backspace", "kana-clear", "kana-submit",
+  "resume-button", "discard-session-button", "start-button", "next-button", "return-button", "kana-layout-toggle", "kana-backspace", "kana-clear", "kana-submit",
   "reading-resume-button", "reading-discard-session-button", "reading-start-button", "reading-next-button", "reading-return-button",
 ]) elements.get(id).tagName = "BUTTON";
 elements.get("start-screen").classList.add("is-active");
@@ -789,6 +789,14 @@ elements.get("start-button").click();
 assert.match(elements.get("quiz-prompt").textContent, /히라가나를 순서대로/);
 assert.equal(elements.get("answer-grid").hidden, true);
 assert.equal(elements.get("kana-composer").hidden, false);
+const layoutToggle = elements.get("kana-layout-toggle");
+assert.equal(layoutToggle["aria-pressed"], "false");
+assert.equal(elements.get("kana-composer").classList.contains("is-actions-right"), false);
+layoutToggle.click();
+assert.equal(layoutToggle.textContent, "버튼 위치: 오른쪽");
+assert.equal(layoutToggle["aria-pressed"], "true");
+assert.equal(elements.get("kana-composer").classList.contains("is-actions-right"), true);
+assert.equal(JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1")).kanaActionsRight, true);
 assert.equal(elements.get("kana-grid").querySelectorAll("button").length, 9, "히라가나 타일은 정확히 9개여야 합니다.");
 const kanaNineEvent = pressKey("9", "Digit9");
 assert.equal(kanaNineEvent.defaultPrevented, true, "숫자키 9로 아홉 번째 히라가나를 선택할 수 있어야 합니다.");
@@ -807,6 +815,16 @@ const [editA, editB, editC] = originalEditTiles;
 kanaEditorButton("kanaIndex", 1).click();
 assert.equal(kanaEditorButton("kanaIndex", 1)["aria-pressed"], "true");
 assert.equal(elements.get("kana-backspace").textContent, "선택 글자 지우기");
+const beforeLayoutChange = storage.get("jlpt-vocab-quiz-active-session-v1");
+assert.equal(pressKey("Enter", "Enter", layoutToggle).defaultPrevented, undefined);
+layoutToggle.click();
+assert.equal(layoutToggle.textContent, "버튼 위치: 아래");
+assert.equal(layoutToggle["aria-pressed"], "false");
+assert.equal(elements.get("kana-composer").classList.contains("is-actions-right"), false);
+assert.equal(storage.get("jlpt-vocab-quiz-active-session-v1"), beforeLayoutChange,
+  "위치 전환으로 답안, 커서, 선택 글자, 타일 순서나 채점 상태를 바꾸면 안 됩니다.");
+layoutToggle.click();
+assert.equal(kanaEditorButton("kanaIndex", 1)["aria-pressed"], "true");
 elements.get("kana-backspace").click();
 assert.equal(composedKanaText(), editA + editA);
 typeKanaTile(editC);
@@ -856,6 +874,11 @@ assert.equal(elements.get("feedback-title").textContent, "정답이에요");
 assert.match(elements.get("feedback-reading").textContent, /^정답 읽기/);
 assert.ok(elements.get("kana-answer").querySelectorAll("button").every((button) => button.disabled),
   "제출한 답은 편집할 수 없어야 합니다.");
+const answeredBeforeLayoutChange = storage.get("jlpt-vocab-quiz-active-session-v1");
+assert.equal(pressKey("Enter", "Enter", layoutToggle).defaultPrevented, undefined);
+layoutToggle.click();
+assert.equal(storage.get("jlpt-vocab-quiz-active-session-v1"), answeredBeforeLayoutChange,
+  "정답 확인 화면에서 위치 전환 시 다음 문제로 넘어가면 안 됩니다.");
 
 elements.get("next-button").click();
 const nextKanaCorrect = kanaReadingForTest(currentKanaItem().reading);
@@ -878,6 +901,11 @@ assert.equal(elements.get("exam-time-left").textContent, 10, "히라가나 조�
 assert.equal(elements.get("kana-grid").querySelectorAll("button").length, 9);
 assert.match(elements.get("quiz-session-label").textContent, /히라가나 9개/);
 tickTimers(2);
+const examBeforeLayoutChange = storage.get("jlpt-vocab-quiz-active-session-v1");
+layoutToggle.click();
+assert.equal(elements.get("exam-time-left").textContent, 8);
+assert.equal(storage.get("jlpt-vocab-quiz-active-session-v1"), examBeforeLayoutChange,
+  "시험 중 위치 전환으로 마감 시간이나 답안이 변경되면 안 됩니다.");
 const examEditKana = elements.get("kana-grid").querySelectorAll("button")[0].dataset.kana;
 typeKanaTile(examEditKana);
 kanaEditorButton("kanaIndex", 0).click();
@@ -1151,6 +1179,8 @@ legacyScores.history.push({
 });
 storage.set("jlpt-vocab-quiz-progress-v1", JSON.stringify(legacyScores));
 reloadApplication();
+assert.equal(layoutToggle["aria-pressed"], "true", "새로고침 후에도 오른쪽 배치 설정을 복원해야 합니다.");
+assert.equal(elements.get("kana-composer").classList.contains("is-actions-right"), true);
 assert.equal(elements.get("reading-furigana-last-accuracy").textContent, "99.83%");
 elements.get("feature-switch-button").click();
 elements.get("feature-vocab-button").click();

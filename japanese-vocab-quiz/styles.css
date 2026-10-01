@@ -1352,6 +1352,23 @@ button:focus-visible {
   line-height: 1.4;
 }
 
+.kana-layout-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 9px;
+}
+
+.kana-layout-toggle[aria-pressed="true"] {
+  color: var(--accent-dark);
+  border-color: var(--accent);
+  background: var(--danger-soft);
+}
+
+.kana-controls {
+  display: grid;
+  gap: 11px;
+}
+
 .kana-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1387,7 +1404,45 @@ button:focus-visible {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  margin-top: 11px;
+}
+
+.kana-composer.is-actions-right .kana-controls {
+  grid-template-columns: minmax(0, 1fr) minmax(84px, 24%);
+  align-items: stretch;
+}
+
+.kana-composer.is-actions-right .kana-actions {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: repeat(3, minmax(44px, 1fr));
+}
+
+/* Keep three kana columns and a usable action column on narrow touch screens. */
+@media (max-width: 520px) {
+  .kana-composer.is-actions-right .kana-controls {
+    gap: 8px;
+  }
+
+  .kana-composer.is-actions-right .kana-grid {
+    gap: 6px;
+  }
+
+  .kana-composer.is-actions-right .kana-tile {
+    min-width: 0;
+    padding-inline: 2px;
+    font-size: 20px;
+  }
+
+  .kana-composer.is-actions-right .kana-tile .answer-number {
+    width: 16px;
+    height: 16px;
+    margin-right: 3px;
+    font-size: 9px;
+  }
+
+  .kana-composer.is-actions-right .kana-actions button {
+    padding-inline: 4px;
+    overflow-wrap: anywhere;
+  }
 }
 
 .secondary-button,

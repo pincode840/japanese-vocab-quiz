@@ -139,6 +139,7 @@
     examMistakeBadge: document.getElementById("exam-mistake-badge"),
     answerGrid: document.getElementById("answer-grid"),
     kanaComposer: document.getElementById("kana-composer"),
+    kanaLayoutToggle: document.getElementById("kana-layout-toggle"),
     kanaAnswer: document.getElementById("kana-answer"),
     kanaEditStatus: document.getElementById("kana-edit-status"),
     kanaGrid: document.getElementById("kana-grid"),
@@ -384,6 +385,7 @@
       sessionStats: defaultSessionStats(),
       readingStats: defaultReadingStats(),
       readingHistory: [],
+      kanaActionsRight: false,
     };
   }
 
@@ -411,6 +413,7 @@
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
       if (!saved || typeof saved !== "object") return defaultProgress();
       const normalized = { ...defaultProgress(), ...saved };
+      normalized.kanaActionsRight = saved.kanaActionsRight === true;
       normalized.sessionStats = normalizeSessionStats(saved.sessionStats, normalized.history, saved);
       const savedReadingStats = saved.readingStats && typeof saved.readingStats === "object"
         ? saved.readingStats
@@ -1355,6 +1358,21 @@
     return engine.shuffle([...required, ...distractors]);
   }
 
+  function renderKanaLayout() {
+    const right = progress.kanaActionsRight === true;
+    elements.kanaComposer.classList.toggle("is-actions-right", right);
+    elements.kanaLayoutToggle.setAttribute("aria-pressed", String(right));
+    elements.kanaLayoutToggle.textContent = `버튼 위치: ${right ? "오른쪽" : "아래"}`;
+  }
+
+  function toggleKanaLayout() {
+    // Layout is a browser preference, not quiz state: do not rebuild the question,
+    // touch its timer, or change the current answer/cursor when switching sides.
+    progress.kanaActionsRight = !progress.kanaActionsRight;
+    renderKanaLayout();
+    saveProgress();
+  }
+
   function currentKanaEditState() {
     return engine.kanaEditState(session?.kanaAnswer, session?.kanaCursor, session?.kanaSelection);
   }
@@ -1939,6 +1957,9 @@
       }
       return;
     }
+    // Let the layout button's native Enter action toggle layout instead of submitting.
+    if (event.target === elements.kanaLayoutToggle
+      && (event.key === "Enter" || event.code === "NumpadEnter")) return;
     if (screens.readingQuiz.classList.contains("is-active") && readingSession) {
       const readingNumberKey = /^[1-4]$/.test(event.key)
         ? Number(event.key)
@@ -2146,6 +2167,8 @@
     elements.readingReturnButton.addEventListener("click", returnToStart);
     elements.readingDifficultyFurigana.addEventListener("change", renderReadingStartScreen);
     elements.readingDifficultyStandard.addEventListener("change", renderReadingStartScreen);
+    renderKanaLayout();
+    elements.kanaLayoutToggle.addEventListener("click", toggleKanaLayout);
     elements.kanaBackspace.addEventListener("click", () => updateKanaEditor("backspace"));
     elements.kanaClear.addEventListener("click", () => updateKanaEditor("clear"));
     elements.kanaSubmit.addEventListener("click", submitKanaAnswer);

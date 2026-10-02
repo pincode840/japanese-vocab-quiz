@@ -71,6 +71,7 @@ class MiniElement {
 }
 
 const ids = [
+  "kana-palette-picker", "kana-palette-nine", "kana-palette-all",
   "start-screen", "quiz-screen", "result-screen", "reading-start-screen", "reading-quiz-screen", "reading-result-screen", "home-button",
   "brand-eyebrow", "brand-title", "feature-switch-button", "feature-switch-layer", "feature-switch-backdrop", "feature-switch-close", "feature-vocab-button", "feature-reading-button",
   "mistake-menu-button", "mistake-menu-layer", "mistake-menu-backdrop", "mistake-menu-close",
@@ -783,6 +784,8 @@ elements.get("difficulty-basic").checked = true;
 elements.get("mode-kanji-kana").dispatch("change");
 assert.equal(elements.get("start-selection-label").textContent, "N5·N4 · 한자→히라가나 조합");
 assert.equal(elements.get("choice-count-picker").hidden, true, "히라가나 조합 모드는 선택지 수 설정을 숨겨야 합니다.");
+assert.equal(elements.get("kana-palette-picker").hidden, false);
+assert.equal(elements.get("kana-palette-nine").checked, true);
 assert.equal(elements.get("record-kanji-kana").classList.contains("is-selected"), true);
 elements.get("general-question-count").value = "10";
 elements.get("start-button").click();
@@ -1279,5 +1282,96 @@ reloadApplication();
 assert.equal(storage.has("jlpt-vocab-quiz-active-session-v1"), false);
 assert.match(elements.get("app-error").textContent, /완료한 학습 기록은 유지/);
 assert.equal(storage.get("jlpt-vocab-quiz-progress-v1"), completedBeforeInvalidRestore);
+
+// The full palette is a per-round input option, not a different grading mode.
+elements.get("feature-switch-button").click();
+elements.get("feature-vocab-button").click();
+for (const id of ["mode-kanji-reading", "mode-kanji-kana", "mode-reading-kanji", "mode-sentence-kanji", "mode-katakana-meaning"]) {
+  elements.get(id).checked = id === "mode-kanji-kana";
+}
+elements.get("exam-mode").checked = false;
+elements.get("mode-kanji-kana").dispatch("change");
+elements.get("kana-palette-nine").checked = false;
+elements.get("kana-palette-all").checked = true;
+elements.get("kana-palette-all").dispatch("change");
+elements.get("general-question-count").value = "10";
+elements.get("start-button").click();
+const fullKanaTiles = () => elements.get("kana-grid").querySelectorAll("button");
+const fullKanaCharacters = fullKanaTiles().map((button) => button.dataset.kana);
+assert.ok(fullKanaCharacters.length > 80);
+assert.equal(new Set(fullKanaCharacters).size, fullKanaCharacters.length);
+for (const character of [..."あんがぢづぱゔぁゃっーゐゑゎゕゖ"]) assert.ok(fullKanaCharacters.includes(character));
+assert.equal(elements.get("kana-composer").classList.contains("is-full-palette"), true);
+assert.match(elements.get("quiz-session-label").textContent, /전체 히라가나/);
+assert.doesNotMatch(elements.get("keyboard-hint").textContent, /숫자키/);
+pressKey("1", "Digit1");
+assert.equal(composedKanaText(), "", "전체 표에는 의미 없는 숫자 단축키가 없어야 합니다.");
+typeKanaTile("ぱ");
+typeKanaTile("ゃ");
+kanaEditorButton("kanaIndex", 0).click();
+typeKanaTile("が");
+assert.equal(composedKanaText(), "がゃ");
+const fullEnterEvent = pressKey("Enter", "Enter", fullKanaTiles()[0]);
+assert.equal(fullEnterEvent.defaultPrevented, undefined, "전체 표에서 Enter는 타일을 활성화해야 합니다.");
+assert.equal(elements.get("feedback").hidden, true);
+const beforeFullLayout = composedKanaText();
+layoutToggle.click();
+assert.equal(composedKanaText(), beforeFullLayout);
+reloadApplication();
+assert.equal(elements.get("kana-palette-all").checked, true, "전체 표 선택 설정을 새로고침 후 복원해야 합니다.");
+assert.equal(composedKanaText(), beforeFullLayout);
+elements.get("home-button").click();
+// A later preference change must not change an existing full-palette round.
+elements.get("kana-palette-all").checked = false;
+elements.get("kana-palette-nine").checked = true;
+elements.get("kana-palette-nine").dispatch("change");
+reloadApplication();
+assert.equal(elements.get("kana-palette-nine").checked, true);
+assert.deepEqual(fullKanaTiles().map((button) => button.dataset.kana), fullKanaCharacters);
+assert.equal(composedKanaText(), beforeFullLayout);
+elements.get("kana-clear").click();
+enterCurrentKanaReading();
+elements.get("kana-submit").click();
+assert.equal(elements.get("feedback-title").textContent, "정답이에요");
+assert.ok(fullKanaTiles().every((button) => button.disabled));
+elements.get("next-button").click();
+assert.deepEqual(fullKanaTiles().map((button) => button.dataset.kana), fullKanaCharacters,
+  "모든 문제에서 전체 표의 순서가 같아야 합니다.");
+for (let remaining = 0; remaining < 9; remaining += 1) {
+  enterCurrentKanaReading();
+  elements.get("kana-submit").click();
+  elements.get("next-button").click();
+}
+assert.equal(elements.get("result-accuracy").textContent, "100%");
+assert.equal(JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1")).history.at(-1).kanaPaletteMode, "all");
+elements.get("return-button").click();
+elements.get("kana-palette-nine").checked = false;
+elements.get("kana-palette-all").checked = true;
+elements.get("kana-palette-all").dispatch("change");
+elements.get("exam-mode").checked = true;
+elements.get("exam-mode").dispatch("change");
+elements.get("start-button").click();
+assert.equal(elements.get("exam-time-left").textContent, 10);
+assert.equal(fullKanaTiles().length, fullKanaCharacters.length);
+tickTimers(10);
+assert.match(elements.get("feedback-title").textContent, /시간이 초과/);
+assert.equal(JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1")).session.wrong, 1);
+elements.get("home-button").click();
+elements.get("discard-session-button").click();
+elements.get("exam-mode").checked = false;
+elements.get("kana-palette-all").checked = false;
+elements.get("kana-palette-nine").checked = true;
+elements.get("kana-palette-nine").dispatch("change");
+elements.get("exam-mode").dispatch("change");
+elements.get("start-button").click();
+assert.equal(fullKanaTiles().length, 9);
+assert.equal(elements.get("kana-composer").classList.contains("is-full-palette"), false);
+// Old snapshots without the new field must still restore the original nine tiles.
+const oldKanaSnapshot = JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1"));
+delete oldKanaSnapshot.session.kanaPaletteMode;
+storage.set("jlpt-vocab-quiz-active-session-v1", JSON.stringify(oldKanaSnapshot));
+reloadApplication();
+assert.equal(fullKanaTiles().length, 9);
+assert.match(elements.get("quiz-session-label").textContent, /히라가나 9개/);
 
 console.log("app interaction flow tests passed");

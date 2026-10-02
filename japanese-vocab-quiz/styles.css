@@ -1445,6 +1445,42 @@ button:focus-visible {
   }
 }
 
+.kana-composer.is-full-palette .kana-grid {
+  display: block;
+  max-height: 440px;
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.kana-palette-group + .kana-palette-group {
+  margin-top: 16px;
+}
+
+.kana-palette-label {
+  margin: 0 0 7px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  text-align: left;
+}
+
+.kana-full-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.kana-composer.is-full-palette .kana-tile {
+  min-width: 0;
+  min-height: 44px;
+  padding: 4px 0;
+}
+
+.kana-composer.is-full-palette.is-actions-right .kana-actions {
+  align-self: start;
+}
+
 .secondary-button,
 .kana-submit {
   min-height: 43px;

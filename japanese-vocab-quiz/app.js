@@ -42,6 +42,16 @@
     "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん"
     + "がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっゔー",
   )];
+  // Fixed groups make the full keyboard predictable; never reveal which letters
+  // belong to the current answer by shuffling or filtering this palette.
+  const KANA_GROUPS = [
+    { label: "기본 히라가나", letters: "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん" },
+    { label: "탁음·반탁음", letters: "がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゔ" },
+    { label: "작은 글자·장음", letters: "ぁぃぅぇぉゃゅょっゎゕゖー" },
+    { label: "옛 표기", letters: "ゐゑ" },
+  ];
+  const ALL_KANA = KANA_GROUPS.flatMap((group) => [...group.letters]);
+  const kanaPaletteLabel = (mode) => mode === "all" ? "전체 히라가나" : "히라가나 9개";
 
   const screens = {
     start: document.getElementById("start-screen"),
@@ -115,6 +125,9 @@
     choiceCount6: document.getElementById("choice-count-6"),
     choiceCount8: document.getElementById("choice-count-8"),
     choiceCountPicker: document.getElementById("choice-count-picker"),
+    kanaPalettePicker: document.getElementById("kana-palette-picker"),
+    kanaPaletteNine: document.getElementById("kana-palette-nine"),
+    kanaPaletteAll: document.getElementById("kana-palette-all"),
     generalQuestionCountPanel: document.getElementById("general-question-count-panel"),
     generalQuestionCount: document.getElementById("general-question-count"),
     generalQuestionCountHint: document.getElementById("general-question-count-hint"),
@@ -386,6 +399,7 @@
       readingStats: defaultReadingStats(),
       readingHistory: [],
       kanaActionsRight: false,
+      kanaPaletteMode: "nine",
     };
   }
 
@@ -414,6 +428,7 @@
       if (!saved || typeof saved !== "object") return defaultProgress();
       const normalized = { ...defaultProgress(), ...saved };
       normalized.kanaActionsRight = saved.kanaActionsRight === true;
+      normalized.kanaPaletteMode = saved.kanaPaletteMode === "all" ? "all" : "nine";
       normalized.sessionStats = normalizeSessionStats(saved.sessionStats, normalized.history, saved);
       const savedReadingStats = saved.readingStats && typeof saved.readingStats === "object"
         ? saved.readingStats
@@ -558,6 +573,8 @@
     if (!referencedIds.length || referencedIds.some((id) => !validIds.has(id))) return false;
 
     session = window.QuizSessionStore.hydrateVocab(value);
+    // Old saved rounds used nine tiles, regardless of the current start preference.
+    session.kanaPaletteMode = value.kanaPaletteMode === "all" ? "all" : "nine";
     setFeatureBrand("vocab");
     configureSessionLabels();
     showScreen("quiz");
@@ -1131,7 +1148,7 @@
       const historyDifficulty = difficultyLabels[entry.difficulty] || difficultyLabels.n5n4;
       const examLabel = entry.examMode ? " · 시험" : "";
       const choiceLabel = entry.mode === "kanji-to-kana"
-        ? "히라가나 9개"
+        ? kanaPaletteLabel(entry.kanaPaletteMode)
         : `${entry.choiceCount || 4}지선다`;
       label.textContent = `${entry.session}회차 · ${historyDifficulty} · ${historyMode}${examLabel} · ${choiceLabel}`;
       score.textContent = `정답률 ${entry.accuracy}%`;
@@ -1260,7 +1277,7 @@
   function configureSessionLabels() {
     const modeLabel = modeLabels[session.mode];
     const examLabel = session.examMode ? " · 시험 모드" : "";
-    const choiceLabel = session.mode === "kanji-to-kana" ? "히라가나 9개" : `${session.choiceCount}지선다`;
+    const choiceLabel = session.mode === "kanji-to-kana" ? kanaPaletteLabel(session.kanaPaletteMode) : `${session.choiceCount}지선다`;
     elements.quizSessionLabel.textContent = `${session.number}회차 · ${difficultyLabels[session.difficulty]} · ${modeLabel}${examLabel} · ${choiceLabel}`;
     elements.keyboardHint.textContent = session.mode === "kanji-to-kana"
       ? session.examMode
@@ -1269,12 +1286,16 @@
       : session.examMode
         ? `숫자키 1–${session.choiceCount} 또는 숫자패드로 선택 · 제한시간 안에 답하세요`
         : `숫자키 1–${session.choiceCount} 또는 숫자패드로 선택 · Enter로 다음`;
+    if (session.mode === "kanji-to-kana" && session.kanaPaletteMode === "all") {
+      elements.keyboardHint.textContent = "전체 표에서 글자 선택 · Tab/Space로 타일 선택 · ←/→로 입력 위치 이동 · Backspace로 지우기 · Enter로 제출";
+    }
   }
 
   function startSession() {
     const mode = selectedMode();
     const difficulty = selectedDifficulty();
-    const choiceCount = mode === "kanji-to-kana" ? 9 : selectedChoiceCount();
+    const kanaPaletteMode = elements.kanaPaletteAll.checked ? "all" : "nine";
+    const choiceCount = mode === "kanji-to-kana" ? (kanaPaletteMode === "all" ? ALL_KANA.length : 9) : selectedChoiceCount();
     const examMode = elements.examMode.checked;
     const maximumSize = datasetForMode(difficulty, mode).length;
     const sessionStat = statsFor(difficulty, mode);
@@ -1309,6 +1330,7 @@
       examMode,
       practiceRound,
       choiceCount,
+      kanaPaletteMode,
       total: items.length,
       baseIds: new Set(items.map((item) => item.id)),
       queue: items.map((item) => item.id),
@@ -1552,6 +1574,37 @@
   function renderKanaOptions(item, savedTiles = null) {
     elements.kanaGrid.replaceChildren();
     if (session.mode !== "kanji-to-kana") return;
+    const all = session.kanaPaletteMode === "all";
+    elements.kanaComposer.classList.toggle("is-full-palette", all);
+    elements.kanaGrid.setAttribute("aria-label", kanaPaletteLabel(session.kanaPaletteMode));
+    if (all) {
+      session.kanaTiles = [...ALL_KANA];
+      KANA_GROUPS.forEach((group) => {
+        const section = document.createElement("div");
+        section.className = "kana-palette-group";
+        section.setAttribute("role", "group");
+        section.setAttribute("aria-label", group.label);
+        const label = document.createElement("p");
+        label.className = "kana-palette-label";
+        label.textContent = group.label;
+        const grid = document.createElement("div");
+        grid.className = "kana-full-grid";
+        [...group.letters].forEach((character) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "kana-tile";
+          button.lang = "ja";
+          button.textContent = character;
+          button.dataset.kana = character;
+          button.addEventListener("click", () => updateKanaEditor("insert", character));
+          grid.append(button);
+        });
+        section.append(label, grid);
+        elements.kanaGrid.append(section);
+      });
+      renderKanaAnswer();
+      return;
+    }
     // Restore the palette too, so editing and number-key positions remain stable.
     // Older or incompatible snapshots get a fresh, complete nine-character palette.
     const reusableTiles = Array.isArray(savedTiles) && savedTiles.length === 9
@@ -1878,6 +1931,7 @@
       mode: session.mode,
       examMode: session.examMode,
       choiceCount: session.choiceCount,
+      kanaPaletteMode: session.kanaPaletteMode,
       accuracy: sessionAccuracy,
       correct: session.correct,
       wrong: session.wrong,
@@ -1984,6 +2038,7 @@
 
     if (!session.answered && session.mode === "kanji-to-kana") {
       if (numberKey !== null) {
+        if (session.kanaPaletteMode === "all") return;
         event.preventDefault?.();
         elements.kanaGrid.querySelectorAll("button")[numberKey - 1]?.click();
       } else if (event.key === "Backspace") {
@@ -2002,6 +2057,7 @@
       } else if (event.key === "Enter" || event.code === "NumpadEnter") {
         // Native button activation lets keyboard users choose an edit position with Enter.
         if (event.target?.dataset?.kanaIndex !== undefined || event.target?.dataset?.kanaCursor !== undefined) return;
+        if (session.kanaPaletteMode === "all" && event.target?.dataset?.kana !== undefined) return;
         event.preventDefault?.();
         submitKanaAnswer();
       }
@@ -2026,6 +2082,7 @@
     elements.questionCountPanel.hidden = !sentenceMode;
     elements.generalQuestionCountPanel.hidden = sentenceMode;
     elements.choiceCountPicker.hidden = kanaMode;
+    elements.kanaPalettePicker.hidden = !kanaMode;
     elements.difficultyPicker.hidden = katakanaMode;
     elements.katakanaModeNote.hidden = !katakanaMode;
     elements.difficultyBasic.disabled = false;
@@ -2168,6 +2225,14 @@
     elements.readingDifficultyFurigana.addEventListener("change", renderReadingStartScreen);
     elements.readingDifficultyStandard.addEventListener("change", renderReadingStartScreen);
     renderKanaLayout();
+    elements.kanaPaletteNine.checked = progress.kanaPaletteMode !== "all";
+    elements.kanaPaletteAll.checked = progress.kanaPaletteMode === "all";
+    [elements.kanaPaletteNine, elements.kanaPaletteAll].forEach((input) => {
+      input.addEventListener("change", () => {
+        progress.kanaPaletteMode = elements.kanaPaletteAll.checked ? "all" : "nine";
+        saveProgress();
+      });
+    });
     elements.kanaLayoutToggle.addEventListener("click", toggleKanaLayout);
     elements.kanaBackspace.addEventListener("click", () => updateKanaEditor("backspace"));
     elements.kanaClear.addEventListener("click", () => updateKanaEditor("clear"));

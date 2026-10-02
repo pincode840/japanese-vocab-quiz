@@ -173,7 +173,7 @@
             <input id="mode-kanji-kana" name="quiz-mode" type="radio" value="kanji-to-kana">
             <span class="mode-copy">
               <strong>한자 → 히라가나 조합</strong>
-              <small>9개의 히라가나를 순서대로 눌러 한자의 읽기 완성하기</small>
+              <small>9개 선택지 또는 전체 히라가나로 한자의 읽기 완성하기</small>
             </span>
           </label>
           <label class="mode-option is-wide" for="mode-sentence-kanji">
@@ -227,6 +227,18 @@
               <strong>8개</strong>
               <small>집중</small>
             </span>
+          </label>
+        </fieldset>
+
+        <fieldset id="kana-palette-picker" class="mode-picker" hidden>
+          <legend>히라가나 선택 방식</legend>
+          <label class="mode-option" for="kana-palette-nine">
+            <input id="kana-palette-nine" name="kana-palette" type="radio" value="nine" checked>
+            <span class="mode-copy"><strong>9개 선택지</strong><small>정답 글자가 포함된 9개 타일</small></span>
+          </label>
+          <label class="mode-option" for="kana-palette-all">
+            <input id="kana-palette-all" name="kana-palette" type="radio" value="all">
+            <span class="mode-copy"><strong>전체 히라가나</strong><small>오십음·탁음·반탁음·작은 글자에서 직접 찾기</small></span>
           </label>
         </fieldset>
 

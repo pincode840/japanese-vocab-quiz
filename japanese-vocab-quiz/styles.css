@@ -1454,6 +1454,25 @@ button:focus-visible {
   border-radius: 12px;
 }
 
+/* Double the measured 15px desktop scrollbar only inside the kana palette. */
+.kana-composer.is-full-palette .kana-grid::-webkit-scrollbar {
+  width: 30px;
+}
+
+.kana-composer.is-full-palette .kana-grid::-webkit-scrollbar-track {
+  background: var(--paper-deep);
+  border-radius: 12px;
+}
+
+.kana-composer.is-full-palette .kana-grid::-webkit-scrollbar-thumb {
+  background: var(--ink-soft);
+  border-radius: 12px;
+}
+
+.kana-composer.is-full-palette .kana-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--ink);
+}
+
 .kana-palette-group + .kana-palette-group {
   margin-top: 16px;
 }

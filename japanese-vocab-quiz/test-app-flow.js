@@ -420,6 +420,8 @@ elements.get("difficulty-n2").checked = true;
 elements.get("difficulty-n2").dispatch("change");
 assert.equal(elements.get("start-selection-label").textContent, "N2 · 읽기→한자");
 assert.equal(elements.get("next-session-number").textContent, 1, "다른 난이도·모드는 1회차부터 시작해야 합니다.");
+elements.get("general-question-count").value = "100";
+elements.get("general-question-count").dispatch("change");
 elements.get("start-button").click();
 assert.equal(elements.get("quiz-prompt").textContent, "이 읽기에 알맞은 단어는 무엇일까요?");
 assert.match(elements.get("quiz-session-label").textContent, /읽기→한자/);
@@ -765,7 +767,21 @@ while (!elements.get("result-screen").classList.contains("is-active") && guard <
 assert.ok(elements.get("result-screen").classList.contains("is-active"));
 assert.equal(elements.get("result-correct").textContent, 100);
 elements.get("return-button").click();
-assert.equal(elements.get("start-button").disabled, true, "3회독 보호로 100문제를 채울 수 없으면 시험 시작을 막아야 합니다.");
+assert.equal(elements.get("start-button").disabled, false, "확장된 N2 단어 중 아직 풀지 않은 단어로 시험을 계속할 수 있어야 합니다.");
+// The original 100-sentence pool still exercises the insufficient-pool guard.
+elements.get("mode-kanji-reading").checked = false;
+elements.get("mode-sentence-kanji").checked = true;
+elements.get("mode-sentence-kanji").dispatch("change");
+elements.get("start-button").click();
+guard = 0;
+while (!elements.get("result-screen").classList.contains("is-active") && guard < 110) {
+  correctButtonForCurrentSentence().click();
+  elements.get("next-button").click();
+  guard += 1;
+}
+assert.ok(elements.get("result-screen").classList.contains("is-active"));
+elements.get("return-button").click();
+assert.equal(elements.get("start-button").disabled, true, "문장 100개 모두 보호 중이면 시험 시작을 막아야 합니다.");
 assert.match(elements.get("exam-mode-note").textContent, /출제 가능한 문제가 0개/);
 
 elements.get("exam-mode").checked = false;

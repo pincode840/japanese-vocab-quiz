@@ -1,4 +1,6 @@
 import json
+import re
+import unicodedata
 from pathlib import Path
 
 
@@ -7,6 +9,13 @@ sentence_source = Path("n2_sentences.json")
 translation_source = Path("n2_sentence_translations.json")
 furigana_source = Path("n2_sentence_furigana.json")
 output = Path("japanese-vocab-quiz/n2-vocab-data.js")
+workbook_source = Path("n2_workbook_vocab.json")
+
+
+def word_key(word):
+    """Collapse confirmed spelling variants, not unrelated homophones."""
+    normalized = unicodedata.normalize("NFKC", word).strip()
+    return {"さびる": "錆びる"}.get(normalized, normalized)
 
 items = json.loads(source.read_text(encoding="utf-8"))
 sentences = json.loads(sentence_source.read_text(encoding="utf-8"))
@@ -50,6 +59,49 @@ exported = [
     for index, item in enumerate(items, start=1)
 ]
 
+# Keep the original 100 records (and their IDs/sentences) unchanged so saved
+# progress survives the import. Workbook IDs use source positions, not sorting.
+workbook = json.loads(workbook_source.read_text(encoding="utf-8"))
+workbook_items = workbook["items"]
+if sum(len(item["positions"]) for item in workbook_items) != workbook["sourceItemCount"]:
+    raise ValueError("N2 연습장 원본 항목 수와 위치 정보가 일치하지 않습니다.")
+positions = [(pos["day"], pos["number"]) for item in workbook_items for pos in item["positions"]]
+if set(positions) != {(day, number) for day in range(1, 46) for number in range(1, 26)} or len(positions) != 1125:
+    raise ValueError("N2 연습장 45일분의 원본 항목에 누락 또는 중복이 있습니다.")
+if len({item["id"] for item in workbook_items}) != len(workbook_items):
+    raise ValueError("N2 연습장 ID가 중복되어 있습니다.")
+seen_words = {word_key(item["word"]) for item in exported}
+skipped = 0
+for item in workbook_items:
+    if not all(isinstance(item.get(key), str) and item[key].strip()
+               for key in ("id", "word", "reading", "meaning")):
+        raise ValueError(f"N2 연습장 필수 정보 누락: {item.get('id')}")
+    if not re.fullmatch(r"n2-workbook-\d{4}", item["id"]):
+        raise ValueError(f"N2 연습장 ID 형식 오류: {item['id']}")
+    if not all(re.fullmatch(r"[ぁ-ゖー]+", reading.strip()) for reading in item["reading"].split("/")):
+        raise ValueError(f"N2 연습장 읽기 형식 오류: {item['word']}")
+    if not item["positions"] or any(
+        not 2 <= pos["page"] <= 91 or pos["day"] != pos["page"] // 2
+        or not 1 <= pos["number"] <= 25 for pos in item["positions"]
+    ):
+        raise ValueError(f"N2 연습장 출처 위치 오류: {item['word']}")
+    key = word_key(item["word"])
+    if key in seen_words:
+        skipped += 1
+        continue
+    seen_words.add(key)
+    position = item["positions"][0]
+    # This problem-only workbook contains no example sentences. Do not invent
+    # sentence fields: the app's sentence mode selects complete examples only.
+    exported.append({
+        **{key: item[key] for key in ("id", "word", "reading", "meaning")},
+        "level": "N2",
+        "day": position["day"],
+        "source": f"한끝 N2 단어연습장 · DAY {position['day']:02d} · p.{position['page']}",
+    })
+if len({item["id"] for item in exported}) != len(exported):
+    raise ValueError("기존 단어와 신규 단어의 ID가 충돌합니다.")
+
 javascript = "globalThis.N2_VOCAB_DATA = " + json.dumps(
     exported,
     ensure_ascii=False,
@@ -57,3 +109,4 @@ javascript = "globalThis.N2_VOCAB_DATA = " + json.dumps(
 ) + ";\n"
 output.write_text(javascript, encoding="utf-8")
 print(f"exported {len(exported)} N2 words to {output}")
+print(f"workbook: {len(workbook_items) - skipped} added, {skipped} duplicates skipped")

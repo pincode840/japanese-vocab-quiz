@@ -2161,7 +2161,7 @@
 
   function init() {
     const invalidCoreData = datasets.n5n4.length !== 480
-      || datasets.n2.length !== 100
+      || datasets.n2.length < 100
       || datasets.n3.length < 500
       || datasets.katakana.length !== 100
       || Object.values(datasets).some((quizData) => quizData.some(

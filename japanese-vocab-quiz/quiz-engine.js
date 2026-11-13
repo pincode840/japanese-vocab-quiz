@@ -157,18 +157,19 @@
 
   function buildChoices(data, correctItem, choiceCountOrRandom = 4, random = Math.random) {
     const settings = resolveChoiceSettings(choiceCountOrRandom, random, data.length);
-    const correctReading = normalizedReading(correctItem.reading);
     const sameDay = shuffle(data.filter((item) => item.day === correctItem.day && item.id !== correctItem.id), settings.random);
     const others = shuffle(data.filter((item) => item.day !== correctItem.day), settings.random);
     const pool = [...sameDay, ...others];
     const choices = [correctItem];
-    const usedReadings = new Set([correctReading]);
+    // A word may accept multiple readings (e.g. 包む: くるむ / つつむ).
+    // Exclude any overlap, not just identical formatted reading strings.
+    const usedReadings = new Set(kanaReadings(correctItem.reading));
 
     for (const candidate of pool) {
-      const candidateReading = normalizedReading(candidate.reading);
-      if (!usedReadings.has(candidateReading)) {
+      const candidateReadings = kanaReadings(candidate.reading);
+      if (!candidateReadings.some((reading) => usedReadings.has(reading))) {
         choices.push(candidate);
-        usedReadings.add(candidateReading);
+        candidateReadings.forEach((reading) => usedReadings.add(reading));
       }
       if (choices.length === settings.choiceCount) break;
     }
@@ -177,7 +178,7 @@
 
   function buildChoicesByWord(data, correctItem, choiceCountOrRandom = 4, random = Math.random) {
     const settings = resolveChoiceSettings(choiceCountOrRandom, random, data.length);
-    const correctReading = normalizedReading(correctItem.reading);
+    const correctReadings = new Set(kanaReadings(correctItem.reading));
     const sameDay = shuffle(data.filter((item) => item.day === correctItem.day && item.id !== correctItem.id), settings.random);
     const others = shuffle(data.filter((item) => item.day !== correctItem.day), settings.random);
     const pool = [...sameDay, ...others];
@@ -185,7 +186,9 @@
     const usedWords = new Set([correctItem.word]);
 
     for (const candidate of pool) {
-      const hasSameReading = normalizedReading(candidate.reading) === correctReading;
+      const hasSameReading = kanaReadings(candidate.reading).some(
+        (reading) => correctReadings.has(reading),
+      );
       if (!hasSameReading && !usedWords.has(candidate.word)) {
         choices.push(candidate);
         usedWords.add(candidate.word);

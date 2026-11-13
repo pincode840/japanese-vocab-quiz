@@ -155,11 +155,33 @@ assert.ok(
   data.filter((item) => item.sentenceFurigana.includes("<ruby>")).length >= 300,
   "N5·N4 예문의 한자에는 원본 Word 후리가나가 표시되어야 합니다.",
 );
-assert.equal(n2Data.length, 100, "N2 PDF 선별 단어는 100개여야 합니다.");
-assert.equal(new Set(n2Data.map((item) => item.id)).size, 100, "N2 단어 ID는 중복되면 안 됩니다.");
-assert.equal(new Set(n2Data.map((item) => item.word)).size, 100, "N2 한자 단어는 중복되면 안 됩니다.");
+assert.equal(n2Data.length, 1161, "N2는 기존 100개와 중복을 제외한 신규 1,061개입니다.");
+assert.equal(new Set(n2Data.map((item) => item.id)).size, n2Data.length, "N2 단어 ID는 중복되면 안 됩니다.");
+assert.equal(new Set(n2Data.map((item) => item.word)).size, n2Data.length, "N2 단어는 중복되면 안 됩니다.");
+const originalN2 = require("../n2_vocab_curated.json");
+originalN2.forEach((item, index) => {
+  const retained = n2Data[index];
+  assert.equal(retained.id, `n2-${String(index + 1).padStart(3, "0")}`, "기존 학습 기록 ID를 보존해야 합니다.");
+  for (const key of ["word", "reading", "meaning", "source"]) assert.equal(retained[key], item[key]);
+});
+const workbookN2 = require("../n2_workbook_vocab.json");
+assert.equal(workbookN2.sourceItemCount, 1125);
+assert.equal(workbookN2.items.length, 1124, "원본의 包む 중복을 합쳐야 합니다.");
+assert.equal(workbookN2.items.reduce((sum, item) => sum + item.positions.length, 0), 1125);
+assert.ok(!n2Data.some((item) => item.word === "さびる"), "기존 錆びる와 표기만 다른 단어를 중복 추가하지 않습니다.");
+workbookN2.items.forEach((item) => {
+  const canonical = item.word === "さびる" ? "錆びる" : item.word;
+  assert.equal(n2Data.filter((entry) => entry.word === canonical).length, 1, `${item.word}는 누락·중복 없이 포함되어야 합니다.`);
+  assert.ok(item.reading.split("/").every((reading) => /^[ぁ-ゖー]+$/.test(reading.trim())));
+  assert.match(item.meaning, /[가-힣]/);
+});
+assert.deepEqual(engine.kanaReadings(n2Data.find((item) => item.word === "包む").reading), ["くるむ", "つつむ"]);
+assert.ok(engine.kanaReadings(n2Data.find((item) => item.word === "抱く").reading).includes("いだく"));
+assert.ok(n2Data.every((item) => item.level === "N2" && item.word && item.reading && item.meaning && item.source));
+const n2SentenceData = n2Data.filter((item) => item.sentence);
+assert.equal(n2SentenceData.length, 100, "단어 전용 자료 추가가 기존 문장 문제 수를 바꾸면 안 됩니다.");
 assert.ok(
-  n2Data.every(
+  n2SentenceData.every(
     (item) => item.level === "N2"
       && item.word
       && item.reading
@@ -170,8 +192,23 @@ assert.ok(
       && item.sentenceFurigana.includes("<ruby>")
       && item.sentenceTranslation,
   ),
-  "모든 N2 단어에 읽기, 뜻, PDF 분류, 후리가나와 문장 해석이 있어야 합니다.",
+  "기존 N2 문장 문제에는 후리가나와 문장 해석이 있어야 합니다.",
 );
+
+// Alternate readings and katakana/hiragana equivalents must not create a
+// second valid answer in either direction of the multiple-choice quiz.
+const alternateReadingFixture = [
+  { id: "a", word: "直に", reading: "じきに / じかに" },
+  { id: "b", word: "じかに", reading: "じかに" },
+  ...["はな", "そら", "やま", "うみ", "いぬ", "ねこ", "とり"].map((reading, index) => ({ id: `f${index}`, word: reading, reading })),
+];
+for (const builder of [engine.buildChoices, engine.buildChoicesByWord]) {
+  for (const count of [4, 6, 8]) {
+    const choices = builder(alternateReadingFixture, alternateReadingFixture[0], count, () => 0.42);
+    assert.equal(choices.length, count);
+    assert.ok(!choices.some((item) => item.id === "b"), "별도 표기인 정답 읽기를 오답으로 내면 안 됩니다.");
+  }
+}
 
 assert.equal(katakanaData.length, 100, "카타카나 기초 단어는 100개여야 합니다.");
 assert.equal(new Set(katakanaData.map((item) => item.id)).size, 100, "카타카나 단어 ID는 중복되면 안 됩니다.");

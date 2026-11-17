@@ -1392,7 +1392,7 @@ reloadApplication();
 assert.equal(fullKanaTiles().length, 9);
 assert.match(elements.get("quiz-session-label").textContent, /히라가나 9개/);
 
-// Combined mode grades a word exactly once, only after reading AND meaning.
+// Wrong readings fail immediately; correct readings advance to meaning.
 elements.get("home-button").click();
 elements.get("discard-session-button").click();
 for (const id of ["mode-kanji-reading", "mode-kanji-kana", "mode-reading-kanji", "mode-sentence-kanji", "mode-katakana-meaning"]) elements.get(id).checked = false;
@@ -1411,30 +1411,42 @@ for (const [difficultyId, count] of [["difficulty-basic", 4], ["difficulty-n3", 
   for (const n of [4, 6, 8]) elements.get(`choice-count-${n}`).checked = n === count;
   elements.get(difficultyId).dispatch("change");
   elements.get("general-question-count").value = "10";
-  for (const [readingCorrect, meaningCorrect] of [[true, true], [false, true], [true, false], [false, false]]) {
+  for (const [readingCorrect, meaningCorrect] of [[true, true], [false, false], [true, false]]) {
     elements.get("start-button").click();
     assert.equal(elements.get("answer-grid").querySelectorAll("button").length, count);
     assert.match(elements.get("quiz-prompt").textContent, /1 \/ 2/);
     const word = elements.get("quiz-word").textContent;
     answerComboStep(readingCorrect);
-    assert.equal(comboSnapshot().attempts, 0, "읽기만 선택했을 때는 채점하지 않습니다.");
-    assert.equal(comboSnapshot().wrong, 0);
-    assert.equal(comboSnapshot().correct, 0);
-    assert.equal(elements.get("feedback").hidden, true, "뜻을 고르기 전에 읽기 정답 여부를 공개하지 않습니다.");
-    for (const handler of documentListeners.keydown || []) handler({ key: "1", code: "Digit1", repeat: true, preventDefault() {} });
-    assert.equal(comboSnapshot().attempts, 0, "숫자키를 계속 누르고 있어도 뜻이 자동 제출되면 안 됩니다.");
-    assert.match(elements.get("quiz-prompt").textContent, /2 \/ 2/);
-    assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지");
-    const chosenReading = comboSnapshot().readingAnswerId;
-    reloadApplication();
-    assert.equal(elements.get("quiz-word").textContent, word);
-    assert.equal(comboSnapshot().readingAnswerId, chosenReading, "선택한 읽기를 새로고침 후에도 유지합니다.");
-    assert.match(elements.get("quiz-prompt").textContent, /2 \/ 2/);
-    answerComboStep(meaningCorrect);
+    if (readingCorrect) {
+      assert.equal(comboSnapshot().attempts, 0, "읽기만 맞힌 상태에서는 아직 채점하지 않습니다.");
+      assert.equal(comboSnapshot().wrong, 0);
+      assert.equal(comboSnapshot().correct, 0);
+      assert.equal(elements.get("feedback").hidden, true, "읽기를 맞히면 뜻까지 선택해야 최종 채점합니다.");
+      for (const handler of documentListeners.keydown || []) handler({ key: "1", code: "Digit1", repeat: true, preventDefault() {} });
+      assert.equal(comboSnapshot().attempts, 0, "숫자키를 계속 누르고 있어도 뜻이 자동 제출되면 안 됩니다.");
+      assert.match(elements.get("quiz-prompt").textContent, /2 \/ 2/);
+      assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지");
+      const chosenReading = comboSnapshot().readingAnswerId;
+      reloadApplication();
+      assert.equal(elements.get("quiz-word").textContent, word);
+      assert.equal(comboSnapshot().readingAnswerId, chosenReading, "선택한 읽기를 새로고침 후에도 유지합니다.");
+      assert.match(elements.get("quiz-prompt").textContent, /2 \/ 2/);
+      answerComboStep(meaningCorrect);
+    } else {
+      assert.equal(comboSnapshot().attempts, 1, "읽기 오답은 즉시 채점합니다.");
+      assert.equal(comboSnapshot().wrong, 1);
+      assert.equal(comboSnapshot().answered, true);
+      assert.equal(elements.get("feedback").hidden, false);
+      assert.equal(elements.get("answer-grid")["aria-label"], "읽기 선택지", "뜻 선택지를 표시하지 않습니다.");
+      assert.match(elements.get("feedback-selected").textContent, /뜻 진행하지 않음 \(읽기 오답\)/);
+      assert.equal(elements.get("next-button").hidden, false);
+      pressKey("1");
+      assert.equal(comboSnapshot().attempts, 1, "읽기 오답 뒤 중복 입력으로 다시 채점하지 않습니다.");
+    }
     const saved = comboSnapshot();
     assert.equal(saved.attempts, 1);
     assert.equal(saved.correct, readingCorrect && meaningCorrect ? 1 : 0);
-    assert.equal(saved.wrong, readingCorrect && meaningCorrect ? 0 : 1, "두 답을 모두 틀려도 오답은 한 번입니다.");
+    assert.equal(saved.wrong, readingCorrect && meaningCorrect ? 0 : 1, "한 문제는 오답 한 번만 기록합니다.");
     assert.match(elements.get("feedback-reading").textContent, /정답 읽기/);
     assert.match(elements.get("feedback-meaning").textContent, /^뜻/);
     if (saved.wrong) {
@@ -1485,5 +1497,27 @@ elements.get("next-button").click();
 assert.match(elements.get("quiz-prompt").textContent, /1 \/ 2/, "다음 문제는 읽기 단계부터 시작합니다.");
 tickTimers(7);
 assert.equal(comboSnapshot().wrong, 2, "읽기를 고르지 않은 시간 초과도 한 번만 오답 처리합니다.");
+elements.get("next-button").click();
+answerComboStep(false);
+assert.equal(comboSnapshot().wrong, 3, "시험에서도 읽기 오답은 즉시 채점합니다.");
+assert.equal(comboSnapshot().completedQuestions, 3);
+tickTimers(10);
+assert.equal(comboSnapshot().wrong, 3, "읽기 오답 후 타이머가 중복 오답을 만들지 않습니다.");
+reloadApplication();
+assert.equal(comboSnapshot().wrong, 3);
+assert.match(elements.get("quiz-prompt").textContent, /1 \/ 2/);
+
+// A pre-update snapshot with a wrong reading must fail once on restore.
+const legacyCombinedSnapshot = JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1"));
+const legacyWrongReading = globalThis.N2_VOCAB_DATA.find((item) => item.id !== legacyCombinedSnapshot.session.currentId);
+legacyCombinedSnapshot.session.readingAnswerId = legacyWrongReading.id;
+storage.set("jlpt-vocab-quiz-active-session-v1", JSON.stringify(legacyCombinedSnapshot));
+reloadApplication();
+assert.equal(comboSnapshot().wrong, 4);
+assert.equal(comboSnapshot().answered, true);
+assert.equal(elements.get("answer-grid")["aria-label"], "읽기 선택지");
+assert.match(elements.get("feedback-selected").textContent, /뜻 진행하지 않음/);
+reloadApplication();
+assert.equal(comboSnapshot().wrong, 4, "구버전 회차 복구 후 다시 새로고침해도 오답이 중복되지 않습니다.");
 
 console.log("app interaction flow tests passed");

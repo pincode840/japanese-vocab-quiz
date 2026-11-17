@@ -1390,9 +1390,11 @@
   }
 
   // Meaning choices are used only in the second step of a combined question.
-  // The whole question is scored once, after both answers (or a timeout).
+  // A wrong reading ends the question; only a correct reading opens step two.
   function isMeaningMode(mode) {
-    return mode === "katakana-to-meaning" || (isCombinedMode(mode) && Boolean(session?.readingAnswerId));
+    return mode === "katakana-to-meaning"
+      || (isCombinedMode(mode) && Boolean(session?.readingAnswerId)
+        && session.readingAnswerId === session.current?.id);
   }
 
   function buildChoices(correctItem) {
@@ -1546,7 +1548,7 @@
     elements.combinedStepStatus.hidden = !isCombinedMode(session.mode);
     elements.combinedStepStatus.textContent = session.readingAnswerId
       ? `선택한 읽기: ${normalizedReading(findItem(session.readingAnswerId).reading)} · 뜻까지 선택하면 채점합니다.`
-      : "읽기와 뜻을 모두 맞혀야 정답입니다.";
+      : "읽기를 맞히면 뜻 단계로 넘어갑니다. 읽기가 틀리면 바로 오답 처리됩니다.";
     elements.quizWord.textContent = context.isSentenceToKanji
       ? context.item.sentence.replace("___", "＿＿＿")
       : context.isReadingToKanji
@@ -1740,6 +1742,12 @@
       : elements.answerGrid.querySelector("button");
     firstInput?.focus();
     startExamTimer(resumeState?.examDeadline);
+    // Older versions could save a wrong reading while waiting for a meaning.
+    // Apply the new rule once on resume, preserving the original exam deadline.
+    if (!session.answered && isCombinedMode(session.mode) && session.readingAnswerId
+      && session.readingAnswerId !== session.current.id) {
+      answerQuestion(session.readingAnswerId);
+    }
     saveActiveSession("vocab");
   }
 
@@ -1767,9 +1775,11 @@
       const readingResult = readingItem
         ? `${normalizedReading(readingItem.reading)} (${readingItem.id === session.current.id ? "맞음" : "틀림"})`
         : "미선택";
-      const meaningResult = selectedItem
-        ? `${selectedItem.meaning} (${selectedItem.id === session.current.id ? "맞음" : "틀림"})`
-        : "미선택";
+      const meaningResult = readingItem && readingItem.id !== session.current.id
+        ? "진행하지 않음 (읽기 오답)"
+        : selectedItem
+          ? `${selectedItem.meaning} (${selectedItem.id === session.current.id ? "맞음" : "틀림"})`
+          : "미선택";
       selectedAnswer = `읽기 ${readingResult} · 뜻 ${meaningResult}${timedOut ? " · 시간 초과" : ""}`;
     }
     const buttons = [...elements.answerGrid.querySelectorAll("button")];
@@ -1930,17 +1940,19 @@
         renderExamTime();
       }
     }
-    // Selecting a reading is not a grading attempt and must not stop/reset the
-    // exam deadline. Persist this intermediate step for refresh and resume.
+    // Only a correct reading advances without grading or resetting the timer.
+    // A wrong reading falls through to the shared single-attempt error path.
     if (isCombinedMode(session.mode) && !session.readingAnswerId && !timedOut) {
       if (!findItem(selectedId)) return;
       session.readingAnswerId = selectedId;
-      const question = currentQuestionContext(session.current);
-      renderQuestionHeading(question);
-      renderAnswerOptions(question);
-      saveActiveSession("vocab");
-      elements.answerGrid.querySelector("button")?.focus();
-      return;
+      if (selectedId === session.current.id) {
+        const question = currentQuestionContext(session.current);
+        renderQuestionHeading(question);
+        renderAnswerOptions(question);
+        saveActiveSession("vocab");
+        elements.answerGrid.querySelector("button")?.focus();
+        return;
+      }
     }
     if (session.examMode) stopExamTimer();
     session.attempts += 1;

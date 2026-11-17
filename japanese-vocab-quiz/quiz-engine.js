@@ -202,12 +202,18 @@
     const settings = resolveChoiceSettings(choiceCountOrRandom, random, data.length);
     const pool = shuffle(data.filter((item) => item.id !== correctItem.id), settings.random);
     const choices = [correctItem];
-    const usedMeanings = new Set([correctItem.meaning]);
+    // JLPT entries often list multiple senses. "주다" and "주다, 부여하다"
+    // must not appear together as a right answer and a distractor.
+    const meaningParts = (meaning) => String(meaning).normalize("NFKC")
+      .replace(/\([^)]*\)/g, "")
+      .split(/[,/;·]/).map((part) => part.replace(/\s+/g, "").trim()).filter(Boolean);
+    const usedMeanings = new Set(meaningParts(correctItem.meaning));
 
     for (const candidate of pool) {
-      if (!usedMeanings.has(candidate.meaning)) {
+      const parts = meaningParts(candidate.meaning);
+      if (candidate.word !== correctItem.word && !parts.some((part) => usedMeanings.has(part))) {
         choices.push(candidate);
-        usedMeanings.add(candidate.meaning);
+        parts.forEach((part) => usedMeanings.add(part));
       }
       if (choices.length === settings.choiceCount) break;
     }

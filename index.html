@@ -79,11 +79,22 @@
       <div class="paper-card start-card">
         <p id="session-kicker" class="session-kicker">다음 학습</p>
         <h2 id="start-title"><span id="start-selection-label">N5·N4 · 한자→읽기</span><br><span id="next-session-number">1</span>회차를 시작할까요?</h2>
-        <p class="lead">난이도와 학습 방향을 선택하세요. 어느 모드에서든 틀린 단어는 몇 문제 뒤에 다시 나옵니다.</p>
+        <p class="lead">읽기부터 뜻까지, 오늘 필요한 연습을 선택하세요.</p>
+        <p id="selected-mode-stats" class="selected-mode-stats" aria-live="polite"></p>
 
+        <details class="setup-disclosure records-disclosure">
+          <summary>학습 기록 보기 <span>모드별 회차와 정답률</span></summary>
         <section class="mode-records" aria-labelledby="mode-records-title">
           <h3 id="mode-records-title">N5·N4 학습 모드별 기록</h3>
           <div class="mode-records-grid">
+            <article id="record-kanji-meaning" class="mode-record">
+              <strong>한자 → 읽기 + 뜻</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="kanji-meaning-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="kanji-meaning-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="kanji-meaning-total-accuracy">—</dd></div>
+              </dl>
+            </article>
             <article id="record-kanji-reading" class="mode-record is-selected">
               <strong>한자 → 읽기</strong>
               <dl>
@@ -126,72 +137,82 @@
             </article>
           </div>
         </section>
+        </details>
 
         <fieldset id="difficulty-picker" class="mode-picker difficulty-picker">
-          <legend>난이도 선택</legend>
+          <legend>01 · 난이도</legend>
           <label class="mode-option" for="difficulty-basic">
             <input id="difficulty-basic" name="quiz-difficulty" type="radio" value="n5n4" checked>
             <span class="mode-copy">
               <strong>N5 · N4</strong>
-              <small>기초 한자 단어 480개</small>
+              <small>기초 · 480개</small>
             </span>
           </label>
           <label class="mode-option" for="difficulty-n3">
             <input id="difficulty-n3" name="quiz-difficulty" type="radio" value="n3">
             <span class="mode-copy">
               <strong>N3</strong>
-              <small>제공 PDF 한자 어휘 1,323개 · 문장 예문 500개</small>
+              <small>중급 · 1,323개</small>
             </span>
           </label>
           <label class="mode-option" for="difficulty-n2">
             <input id="difficulty-n2" name="quiz-difficulty" type="radio" value="n2">
             <span class="mode-copy">
               <strong>N2</strong>
-              <small>PDF 어휘 1,161개 · 문장 빈칸 100개</small>
+              <small>중상급 · 1,161개</small>
             </span>
           </label>
         </fieldset>
         <p id="katakana-mode-note" class="exam-mode-note is-practice-note" hidden>카타카나 모드는 JLPT 난이도와 별도로 정리한 기초 외래어 100개에서 출제됩니다.</p>
 
-        <fieldset class="mode-picker">
-          <legend>학습 모드 선택</legend>
+        <fieldset class="mode-picker learning-mode-picker">
+          <legend>02 · 학습 방식</legend>
           <label class="mode-option" for="mode-kanji-reading">
             <input id="mode-kanji-reading" name="quiz-mode" type="radio" value="kanji-to-reading" checked>
             <span class="mode-copy">
               <strong>한자 → 읽기</strong>
-              <small>한자를 보고 읽는 법 고르기</small>
+              <small>히라가나 고르기</small>
+            </span>
+          </label>
+          <label class="mode-option" for="mode-kanji-meaning">
+            <input id="mode-kanji-meaning" name="quiz-mode" type="radio" value="kanji-to-reading-meaning">
+            <span class="mode-copy">
+              <strong>한자 → 읽기 + 뜻</strong>
+              <small>읽기와 뜻을 모두 맞혀야 정답</small>
             </span>
           </label>
           <label class="mode-option" for="mode-reading-kanji">
             <input id="mode-reading-kanji" name="quiz-mode" type="radio" value="reading-to-kanji">
             <span class="mode-copy">
               <strong>읽기 → 한자</strong>
-              <small>읽는 법을 보고 알맞은 단어 고르기</small>
+              <small>알맞은 한자 고르기</small>
             </span>
           </label>
           <label class="mode-option is-wide" for="mode-kanji-kana">
             <input id="mode-kanji-kana" name="quiz-mode" type="radio" value="kanji-to-kana">
             <span class="mode-copy">
-              <strong>한자 → 히라가나 조합</strong>
-              <small>9개 선택지 또는 전체 히라가나로 한자의 읽기 완성하기</small>
+              <strong>히라가나 조합</strong>
+              <small>글자 타일로 읽기 완성</small>
             </span>
           </label>
           <label class="mode-option is-wide" for="mode-sentence-kanji">
             <input id="mode-sentence-kanji" name="quiz-mode" type="radio" value="sentence-to-kanji">
             <span class="mode-copy">
               <strong>문장 빈칸 → 한자</strong>
-              <small>선택한 난이도의 예문 빈칸에 알맞은 한자 단어 고르기</small>
+              <small>예문 속 빈칸 채우기</small>
             </span>
           </label>
           <label class="mode-option is-wide" for="mode-katakana-meaning">
             <input id="mode-katakana-meaning" name="quiz-mode" type="radio" value="katakana-to-meaning">
             <span class="mode-copy">
               <strong>카타카나 → 뜻</strong>
-              <small>카타카나 단어 100개를 보고 알맞은 한국어 뜻 고르기</small>
+              <small>외래어의 뜻 고르기</small>
             </span>
           </label>
         </fieldset>
 
+        <details class="setup-disclosure settings-disclosure">
+          <summary>세부 설정 <span id="settings-summary">일반 연습 · 4개 선택지</span></summary>
         <div class="exam-mode-panel">
           <div>
             <strong>시험 모드</strong>
@@ -242,14 +263,16 @@
           </label>
         </fieldset>
 
+        </details>
+
         <div id="general-question-count-panel" class="question-count-picker">
-          <label for="general-question-count">일반 문제 수</label>
+          <label for="general-question-count">03 · 문제 수</label>
           <input id="general-question-count" type="number" min="10" max="480" step="1" value="480" inputmode="numeric">
           <small id="general-question-count-hint">10~480개 사이에서 선택 · N5·N4 단어에서 출제</small>
         </div>
 
         <div id="question-count-panel" class="question-count-picker" hidden>
-          <label for="sentence-question-count">문장 문제 수</label>
+          <label for="sentence-question-count">03 · 문장 문제 수</label>
           <input id="sentence-question-count" type="number" min="10" max="480" step="1" value="20" inputmode="numeric">
           <small id="sentence-question-count-hint">10~480개 사이에서 선택 · 능력단어 Word 예문에서 출제</small>
         </div>
@@ -266,13 +289,13 @@
         </section>
 
         <button id="start-button" class="primary-button" type="button">학습 시작</button>
-        <p class="helper">선택지 4·6·8개 · 문제 수 선택 · 오답 자동 재출제 · 무오답 2회 간격 반복 · 기록 자동 저장</p>
+        <p class="helper">진행 상황은 자동 저장됩니다. 틀린 단어는 다시 연습해요.</p>
         <p class="source-note">N3 추가 예문: <a href="https://tatoeba.org/ko/" target="_blank" rel="noreferrer">Tatoeba · CC BY 2.0 FR</a></p>
 
-        <div id="history-panel" class="history-panel" hidden>
-          <h3>최근 기록</h3>
+        <details id="history-panel" class="history-panel setup-disclosure" hidden>
+          <summary>최근 학습 기록</summary>
           <ol id="history-list" class="history-list"></ol>
-        </div>
+        </details>
       </div>
     </section>
 
@@ -298,6 +321,7 @@
         <p id="quiz-prompt" class="prompt">이 단어를 어떻게 읽을까요?</p>
         <h2 id="quiz-word" lang="ja">日本語</h2>
         <p id="day-label" class="day-label">7일차</p>
+        <p id="combined-step-status" class="combined-step-status" aria-live="polite" hidden></p>
         <p id="exam-mistake-badge" class="exam-mistake-badge" hidden></p>
 
         <div id="answer-grid" class="answer-grid" aria-label="읽기 선택지"></div>

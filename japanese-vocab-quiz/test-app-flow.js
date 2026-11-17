@@ -71,6 +71,8 @@ class MiniElement {
 }
 
 const ids = [
+  "combined-step-status",
+  "mode-kanji-meaning", "record-kanji-meaning", "kanji-meaning-sessions", "kanji-meaning-last-accuracy", "kanji-meaning-total-accuracy", "selected-mode-stats", "settings-summary",
   "kana-palette-picker", "kana-palette-nine", "kana-palette-all",
   "start-screen", "quiz-screen", "result-screen", "reading-start-screen", "reading-quiz-screen", "reading-result-screen", "home-button",
   "brand-eyebrow", "brand-title", "feature-switch-button", "feature-switch-layer", "feature-switch-backdrop", "feature-switch-close", "feature-vocab-button", "feature-reading-button",
@@ -1389,5 +1391,99 @@ storage.set("jlpt-vocab-quiz-active-session-v1", JSON.stringify(oldKanaSnapshot)
 reloadApplication();
 assert.equal(fullKanaTiles().length, 9);
 assert.match(elements.get("quiz-session-label").textContent, /히라가나 9개/);
+
+// Combined mode grades a word exactly once, only after reading AND meaning.
+elements.get("home-button").click();
+elements.get("discard-session-button").click();
+for (const id of ["mode-kanji-reading", "mode-kanji-kana", "mode-reading-kanji", "mode-sentence-kanji", "mode-katakana-meaning"]) elements.get(id).checked = false;
+elements.get("mode-kanji-meaning").checked = true;
+elements.get("exam-mode").checked = false;
+elements.get("mode-kanji-meaning").dispatch("change");
+const comboSnapshot = () => JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1")).session;
+const answerComboStep = (correct) => {
+  const right = correctButtonForCurrentWord();
+  const buttons = elements.get("answer-grid").querySelectorAll("button");
+  const target = correct ? right : buttons.find((button) => button !== right);
+  pressKey(String(buttons.indexOf(target) + 1));
+};
+for (const [difficultyId, count] of [["difficulty-basic", 4], ["difficulty-n3", 6], ["difficulty-n2", 8]]) {
+  for (const id of ["difficulty-basic", "difficulty-n3", "difficulty-n2"]) elements.get(id).checked = id === difficultyId;
+  for (const n of [4, 6, 8]) elements.get(`choice-count-${n}`).checked = n === count;
+  elements.get(difficultyId).dispatch("change");
+  elements.get("general-question-count").value = "10";
+  for (const [readingCorrect, meaningCorrect] of [[true, true], [false, true], [true, false], [false, false]]) {
+    elements.get("start-button").click();
+    assert.equal(elements.get("answer-grid").querySelectorAll("button").length, count);
+    assert.match(elements.get("quiz-prompt").textContent, /1 \/ 2/);
+    const word = elements.get("quiz-word").textContent;
+    answerComboStep(readingCorrect);
+    assert.equal(comboSnapshot().attempts, 0, "읽기만 선택했을 때는 채점하지 않습니다.");
+    assert.equal(comboSnapshot().wrong, 0);
+    assert.equal(comboSnapshot().correct, 0);
+    assert.equal(elements.get("feedback").hidden, true, "뜻을 고르기 전에 읽기 정답 여부를 공개하지 않습니다.");
+    for (const handler of documentListeners.keydown || []) handler({ key: "1", code: "Digit1", repeat: true, preventDefault() {} });
+    assert.equal(comboSnapshot().attempts, 0, "숫자키를 계속 누르고 있어도 뜻이 자동 제출되면 안 됩니다.");
+    assert.match(elements.get("quiz-prompt").textContent, /2 \/ 2/);
+    assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지");
+    const chosenReading = comboSnapshot().readingAnswerId;
+    reloadApplication();
+    assert.equal(elements.get("quiz-word").textContent, word);
+    assert.equal(comboSnapshot().readingAnswerId, chosenReading, "선택한 읽기를 새로고침 후에도 유지합니다.");
+    assert.match(elements.get("quiz-prompt").textContent, /2 \/ 2/);
+    answerComboStep(meaningCorrect);
+    const saved = comboSnapshot();
+    assert.equal(saved.attempts, 1);
+    assert.equal(saved.correct, readingCorrect && meaningCorrect ? 1 : 0);
+    assert.equal(saved.wrong, readingCorrect && meaningCorrect ? 0 : 1, "두 답을 모두 틀려도 오답은 한 번입니다.");
+    assert.match(elements.get("feedback-reading").textContent, /정답 읽기/);
+    assert.match(elements.get("feedback-meaning").textContent, /^뜻/);
+    if (saved.wrong) {
+      assert.ok(saved.queue.includes(saved.currentId), "어느 단계든 틀린 단어는 다시 출제합니다.");
+      assert.match(elements.get("feedback-selected").textContent, /읽기 .* · 뜻 /);
+      const p = JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1"));
+      assert.ok(p.wrongAnswerCounts[`${saved.difficulty}:kanji-to-reading-meaning:${saved.currentId}`] > 0);
+    }
+    elements.get("home-button").click();
+    elements.get("discard-session-button").click();
+  }
+}
+const readingStatsBeforeCombo = JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1")).sessionStats["n2:kanji-to-reading"];
+elements.get("start-button").click();
+for (let i = 0; i < 10; i += 1) {
+  answerComboStep(true);
+  answerComboStep(true);
+  elements.get("next-button").click();
+}
+assert.equal(elements.get("result-correct").textContent, 10);
+assert.equal(elements.get("result-accuracy").textContent, "100%");
+const afterCombo = JSON.parse(storage.get("jlpt-vocab-quiz-progress-v1"));
+assert.equal(afterCombo.sessionStats["n2:kanji-to-reading-meaning"].completedSessions, 1);
+assert.deepEqual(afterCombo.sessionStats["n2:kanji-to-reading"], readingStatsBeforeCombo, "기존 읽기 기록과 분리합니다.");
+elements.get("return-button").click();
+assert.equal(elements.get("kanji-meaning-sessions").textContent, "1회");
+assert.match(elements.get("selected-mode-stats").textContent, /완료 1회/);
+assert.match(elements.get("start-selection-label").textContent, /읽기\+뜻/);
+
+// The two steps share the existing seven-second word deadline, including resume.
+elements.get("exam-mode").checked = true;
+elements.get("exam-mode").dispatch("change");
+elements.get("start-button").click();
+assert.equal(elements.get("exam-time-left").textContent, 7);
+const combinedDeadline = comboSnapshot().examDeadline;
+tickTimers(2);
+answerComboStep(true);
+assert.equal(comboSnapshot().examDeadline, combinedDeadline);
+assert.equal(elements.get("exam-time-left").textContent, 5);
+reloadApplication();
+assert.equal(comboSnapshot().examDeadline, combinedDeadline);
+tickTimers(5);
+assert.equal(comboSnapshot().attempts, 1);
+assert.equal(comboSnapshot().wrong, 1);
+assert.equal(comboSnapshot().correct, 0);
+assert.match(elements.get("feedback-title").textContent, /시간이 초과/);
+elements.get("next-button").click();
+assert.match(elements.get("quiz-prompt").textContent, /1 \/ 2/, "다음 문제는 읽기 단계부터 시작합니다.");
+tickTimers(7);
+assert.equal(comboSnapshot().wrong, 2, "읽기를 고르지 않은 시간 초과도 한 번만 오답 처리합니다.");
 
 console.log("app interaction flow tests passed");

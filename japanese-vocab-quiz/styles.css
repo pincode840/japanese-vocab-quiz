@@ -12,7 +12,7 @@
   --danger: #a63f36;
   --danger-soft: #fbeae7;
   --focus: #2e76b5;
-  --shadow: 0 24px 70px rgba(38, 43, 49, 0.13);
+  --shadow: 0 10px 36px rgba(38, 43, 49, 0.06);
 }
 
 * {
@@ -23,10 +23,7 @@ body {
   margin: 0;
   min-height: 100vh;
   color: var(--ink);
-  background:
-    radial-gradient(circle at 12% 14%, rgba(201, 71, 59, 0.11), transparent 27rem),
-    radial-gradient(circle at 90% 86%, rgba(46, 118, 181, 0.10), transparent 30rem),
-    #eee9df;
+  background: #f3f5f7;
   font-family: "Noto Sans KR", "Noto Sans JP", "Yu Gothic", "Malgun Gothic", system-ui, sans-serif;
 }
 
@@ -396,10 +393,7 @@ button:focus-visible {
 .paper-card {
   position: relative;
   overflow: hidden;
-  background:
-    linear-gradient(90deg, transparent 0 38px, rgba(201, 71, 59, 0.08) 38px 39px, transparent 39px),
-    repeating-linear-gradient(0deg, rgba(23, 50, 77, 0.018) 0 1px, transparent 1px 28px),
-    var(--paper);
+  background: #fff;
   border: 1px solid rgba(117, 102, 80, 0.17);
   border-radius: 24px;
   box-shadow: var(--shadow);
@@ -411,7 +405,7 @@ button:focus-visible {
   pointer-events: none;
   border: 1px solid rgba(117, 102, 80, 0.08);
   border-radius: 15px;
-  content: "";
+  content: none;
 }
 
 .start-card,
@@ -1823,6 +1817,57 @@ button:focus-visible {
   .history-date {
     display: none;
   }
+}
+
+/* Setup hierarchy: essential choices stay visible; secondary controls and
+   historical detail use native, keyboard-accessible disclosures. */
+.start-card {
+  padding: 28px 32px;
+  text-align: left;
+}
+.start-card h2 { font-size: clamp(23px, 4vw, 30px); line-height: 1.4; margin: 6px 0; }
+.start-card .lead { margin: 0; font-size: 14px; }
+.selected-mode-stats { margin: 12px 0 16px; color: var(--ink-soft); font-size: 13px; }
+.combined-step-status { padding: 12px 16px; margin: 0 0 20px; border-radius: 10px; background: #edf3f9; color: var(--ink); font-size: 14px; line-height: 1.6; }
+.setup-disclosure { border: 1px solid #dfe5eb; border-radius: 12px; margin: 0 0 20px; background: #fafbfc; }
+.setup-disclosure > summary { cursor: pointer; padding: 13px 16px; font-size: 14px; font-weight: 700; }
+.setup-disclosure > summary span { margin-left: 10px; color: var(--ink-soft); font-size: 12px; font-weight: 400; }
+.setup-disclosure > summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 10px; }
+.setup-disclosure[open] > summary { border-bottom: 1px solid #dfe5eb; margin-bottom: 14px; }
+.setup-disclosure .mode-records { margin: 14px; }
+.settings-disclosure > :not(summary) { margin-left: 16px; margin-right: 16px; }
+.start-card .mode-picker legend { text-align: left; font-size: 13px; color: var(--ink); margin-bottom: 10px; }
+.start-card .learning-mode-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.start-card .mode-option.is-wide { grid-column: auto; }
+.start-card .mode-copy { min-height: 70px; height: 100%; border-radius: 10px; background: #fff; }
+.start-card .mode-copy strong { font-size: 14px; }
+.start-card .mode-copy small { font-size: 11px; line-height: 1.5; }
+.start-card .difficulty-picker .mode-copy small { word-break: keep-all; }
+.start-card .mode-option input:checked + .mode-copy { background: #edf3f9; border-color: #355c80; box-shadow: inset 0 0 0 1px #355c80; }
+.start-card .difficulty-picker { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.start-card .question-count-picker { margin: 0 0 18px; border-radius: 10px; }
+.start-card .primary-button { min-height: 52px; padding: 14px; border-radius: 12px; font-size: 17px; }
+.start-card .helper, .start-card .source-note { text-align: center; font-size: 11px; }
+.start-card .history-panel { margin-top: 20px; padding: 0; }
+.start-card .history-list { padding: 0 16px 16px; }
+.paper-card { background: #fff; }
+@media (max-width: 540px) {
+  .app-shell { width: calc(100% - 24px); padding-top: 18px; }
+  .start-card { padding: 22px 16px; }
+  .start-card .difficulty-picker .mode-copy { padding: 34px 8px 10px; text-align: center; min-height: 82px; }
+  .start-card .difficulty-picker input { left: calc(50% - 6px); top: 12px; }
+  .start-card .learning-mode-picker .mode-copy { padding: 12px 9px 12px 29px; }
+  .start-card .learning-mode-picker input { left: 9px; top: 15px; }
+  .start-card .learning-mode-picker .mode-copy strong { font-size: 13px; }
+  .setup-disclosure > summary span { display: block; margin: 5px 0 0 17px; }
+  .header-actions { gap: 5px; }
+  .mistake-menu-button { padding: 7px 9px; font-size: 12px; }
+}
+
+@media (max-width: 360px) {
+  .start-card .learning-mode-picker { grid-template-columns: 1fr; }
+  .start-card .learning-mode-picker .mode-copy { min-height: 58px; }
+  .records-disclosure > summary span { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -291,6 +291,22 @@ assert.equal(n2Data.find((item) => item.word === "錆びる").sentenceTranslatio
 const n3KanjiData = n3Data.filter((item) => /[一-龯々〆ヵヶ]/.test(item.word));
 for (const quizData of [data, n3KanjiData, n2Data]) {
   for (const item of quizData) {
+    for (const count of [4, 6, 8]) {
+      const choices = engine.buildChoicesByMeaning(quizData, item, count, () => 0.42);
+      assert.equal(choices.length, count, `${item.word} 뜻 선택지 수를 충족해야 합니다.`);
+      assert.equal(choices.filter((choice) => choice.meaning === item.meaning).length, 1);
+      assert.ok(choices.some((choice) => choice.id === item.id));
+    }
+  }
+}
+const synonymFixture = [
+  { id: "give", word: "与える", meaning: "주다, 부여하다" },
+  { id: "give2", word: "あげる", meaning: "주다" },
+  ...["걷다", "먹다", "마시다", "뛰다"].map((meaning, i) => ({ id: `m${i}`, word: `w${i}`, meaning })),
+];
+assert.ok(!engine.buildChoicesByMeaning(synonymFixture, synonymFixture[0], 4, () => 0.42).some((item) => item.id === "give2"));
+for (const quizData of [data, n3KanjiData, n2Data]) {
+  for (const item of quizData) {
     const choices = engine.buildChoices(quizData, item, () => 0.42);
     assert.equal(choices.length, 4, `${item.word} 선택지는 4개여야 합니다.`);
     assert.ok(choices.some((choice) => choice.id === item.id), `${item.word} 정답이 선택지에 있어야 합니다.`);

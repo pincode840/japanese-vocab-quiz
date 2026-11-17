@@ -3,6 +3,24 @@
 const assert = require("node:assert/strict");
 const ReadingRenderer = require("./reading-renderer.js");
 const SessionStore = require("./session-store.js");
+const fs = require("node:fs");
+const path = require("node:path");
+const { createHash } = require("node:crypto");
+
+// The deploy entry must request the exact content version of every asset.
+// This catches unrebuilt HTML and prevents mixed old/new cached app files.
+const readNormalized = (file) => fs.readFileSync(file, "utf8").replace(/\r\n/g, "\n");
+const shortHash = (content) => createHash("sha256").update(content).digest("hex").slice(0, 12);
+const deployHtml = readNormalized(path.join(__dirname, "../index.html"));
+const sourceHtml = readNormalized(path.join(__dirname, "index.html"));
+const sourceAssets = [...sourceHtml.matchAll(/(?:src|href)="([^"?]+\.(?:js|css))"/g)].map((match) => match[1]);
+assert.equal(sourceAssets.length, 12);
+const versions = sourceAssets.map((asset) => {
+  const version = shortHash(readNormalized(path.join(__dirname, asset)));
+  assert.ok(deployHtml.includes(`"japanese-vocab-quiz/${asset}?v=${version}"`), `${asset} 배포 URL에 현재 내용의 버전이 있어야 합니다.`);
+  return version;
+});
+assert.ok(deployHtml.includes(`앱 버전 ${shortHash(sourceHtml + versions.join(""))}`), "화면에 현재 배포 버전이 표시되어야 합니다.");
 
 const renderer = ReadingRenderer.create({
   図書館: "としょかん",

@@ -29,4 +29,4 @@ jobs:
           python export_n2_vocab_data.py
           python bundle_quiz_app.py
       - name: Verify generated page is current
-        run: git diff --exit-code -- index.html japanese-vocab-quiz/n2-vocab-data.js
+        run: git diff --exit-code -- index.html japanese-vocab-quiz/index.html japanese-vocab-quiz/n2-vocab-data.js

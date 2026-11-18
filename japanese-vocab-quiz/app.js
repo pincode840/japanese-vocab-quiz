@@ -155,6 +155,7 @@
     examTimeLeft: document.getElementById("exam-time-left"),
     progressBar: document.getElementById("progress-bar"),
     quizPrompt: document.getElementById("quiz-prompt"),
+    quizReadingContext: document.getElementById("quiz-reading-context"),
     combinedStepStatus: document.getElementById("combined-step-status"),
     quizWord: document.getElementById("quiz-word"),
     dayLabel: document.getElementById("day-label"),
@@ -271,7 +272,10 @@
     },
   };
 
-  let progress = loadProgress();
+  const progressStore = window.QuizSessionStore.createProgressStore(
+    localStorage, STORAGE_KEY, normalizeProgress, window.navigator?.locks,
+  );
+  let progress = progressStore.load();
   let session = null;
   let readingSession = null;
   let currentFeature = "vocab";
@@ -292,19 +296,27 @@
     return [...new Set(kanaReadings(reading).flatMap((candidate) => [...candidate]))];
   }
 
-  function hasKanaReading(item) {
+  function hasKanaReading(item, palette) {
     const readings = kanaReadings(item.reading);
-    return readings.length > 0 && requiredKanaCharacters(item.reading).length <= 9;
+    const allowed = palette === "all" ? ALL_KANA : HIRAGANA_POOL;
+    const required = requiredKanaCharacters(item.reading);
+    return readings.length > 0 && readings.every((reading) => reading.length <= 20)
+      && required.every((character) => allowed.includes(character))
+      && (palette === "all" || required.length <= 9);
   }
 
-  function datasetForMode(difficulty, mode) {
+  function selectedKanaPalette() {
+    return elements.kanaPaletteAll.checked ? "all" : "nine";
+  }
+
+  function datasetForMode(difficulty, mode, palette = "nine") {
     if (mode === "katakana-to-meaning") return datasets.katakana;
     const quizData = datasets[difficulty] || [];
     if (mode === "sentence-to-kanji") return quizData.filter(hasCompleteSentence);
     const generalData = difficulty === "n3"
       ? quizData.filter((item) => /[一-龯々〆ヵヶ]/.test(item.word))
       : quizData;
-    return mode === "kanji-to-kana" ? generalData.filter(hasKanaReading) : generalData;
+    return mode === "kanji-to-kana" ? generalData.filter((item) => hasKanaReading(item, palette)) : generalData;
   }
 
   function selectedDifficulty() {
@@ -438,9 +450,9 @@
     return mappings;
   }
 
-  function loadProgress() {
+  function normalizeProgress(serialized) {
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      const saved = JSON.parse(serialized);
       if (!saved || typeof saved !== "object") return defaultProgress();
       const normalized = { ...defaultProgress(), ...saved };
       normalized.kanaActionsRight = saved.kanaActionsRight === true;
@@ -529,38 +541,42 @@
     if (saved.history.length) saved.lastAccuracy = saved.history[saved.history.length - 1].accuracy;
   }
 
-  function saveProgress() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-    } catch (_error) {
-      // The quiz remains usable if storage is unavailable.
-    }
+  function updateProgress(mutate, onCommitted) {
+    let result;
+    progress = progressStore.update((saved) => {
+      result = mutate(saved);
+      return result;
+    }, onCommitted);
+    return result;
+  }
+
+  function newRunId() {
+    return window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   }
 
   function saveActiveSession(kind) {
     activeSessionStore.save(kind, kind === "reading" ? readingSession : session);
   }
 
-  function clearActiveSession() {
-    activeSessionStore.clear();
+  function clearActiveSession(kind, runId = null) {
+    activeSessionStore.clear(kind, runId);
     renderResumePanels();
   }
 
   function renderResumePanels() {
-    const saved = activeSessionStore.load();
-    const vocabSaved = saved?.kind === "vocab";
-    const readingSaved = saved?.kind === "reading";
+    const vocabSaved = activeSessionStore.load("vocab");
+    const readingSaved = activeSessionStore.load("reading");
     elements.resumePanel.hidden = !vocabSaved;
     elements.readingResumePanel.hidden = !readingSaved;
     if (vocabSaved) {
-      const value = saved.session;
+      const value = vocabSaved.session;
       const completed = value.examMode
         ? Number(value.completedQuestions) || 0
         : Array.isArray(value.masteredIds) ? value.masteredIds.length : 0;
       elements.resumeSummary.textContent = `${difficultyLabels[value.difficulty] || value.difficulty} · ${modeLabels[value.mode] || value.mode} · ${value.number}회차 · ${completed}/${value.total} 완료`;
     }
     if (readingSaved) {
-      const value = saved.session;
+      const value = readingSaved.session;
       const total = Array.isArray(value.questions) ? value.questions.length : 0;
       const completed = Math.min(total, (Number(value.index) || 0) + (value.answered ? 1 : 0));
       elements.readingResumeSummary.textContent = `${value.difficulty === "furigana" ? "후리가나 표시" : "후리가나 없음"} · ${value.number}회차 · ${completed}/${total} 완료`;
@@ -580,7 +596,7 @@
   function restoreVocabSession(saved) {
     const value = saved?.session;
     if (!value || !difficultyLabels[value.difficulty] || !modeLabels[value.mode]) return false;
-    const validIds = new Set(datasetForMode(value.difficulty, value.mode).map((item) => item.id));
+    const validIds = new Set(datasetForMode(value.difficulty, value.mode, value.kanaPaletteMode).map((item) => item.id));
     const referencedIds = [
       ...(Array.isArray(value.baseIds) ? value.baseIds : []),
       ...(Array.isArray(value.queue) ? value.queue : []),
@@ -589,6 +605,7 @@
     if (!referencedIds.length || referencedIds.some((id) => !validIds.has(id))) return false;
 
     session = window.QuizSessionStore.hydrateVocab(value);
+    session.runId ||= newRunId();
     // Old saved rounds used nine tiles, regardless of the current start preference.
     session.kanaPaletteMode = value.kanaPaletteMode === "all" ? "all" : "nine";
     setFeatureBrand("vocab");
@@ -617,6 +634,7 @@
     if (!value || !["furigana", "standard"].includes(value.difficulty)) return false;
     readingSession = window.QuizSessionStore.hydrateReading(value, readingData);
     if (!readingSession) return false;
+    readingSession.runId ||= newRunId();
     setFeatureBrand("reading");
     elements.readingSessionLabel.textContent = `독해 ${readingSession.number}회차 · ${readingSession.difficulty === "furigana" ? "후리가나 표시" : "후리가나 없음"}`;
     showScreen("readingQuiz");
@@ -626,23 +644,30 @@
   }
 
   function restoreActiveSession(expectedKind = null) {
-    const saved = activeSessionStore.load();
-    if (!saved || (expectedKind && saved.kind !== expectedKind)) return false;
+    progress = progressStore.load();
+    const saved = activeSessionStore.load(expectedKind);
+    if (!saved) return false;
+    const persisted = progressStore.loadPersisted();
+    const history = saved.kind === "reading" ? persisted.readingHistory : persisted.history;
+    if (saved.session.runId && history.some((entry) => entry.runId === saved.session.runId)) {
+      clearActiveSession(saved.kind, saved.session.runId);
+      return false;
+    }
     const restored = saved.kind === "reading"
       ? restoreReadingSession(saved)
       : restoreVocabSession(saved);
     if (!restored) {
-      clearActiveSession();
+      clearActiveSession(saved.kind, saved.session.runId);
       elements.appError.hidden = false;
       elements.appError.textContent = "저장된 진행 정보가 현재 문제와 맞지 않아 이어갈 수 없습니다. 완료한 학습 기록은 유지됩니다. 새 회차를 시작해 주세요.";
     }
     return restored;
   }
 
-  function discardSavedSession() {
-    session = null;
-    readingSession = null;
-    clearActiveSession();
+  function discardSavedSession(kind) {
+    if (kind === "vocab") session = null;
+    else readingSession = null;
+    clearActiveSession(kind);
     renderStartScreen();
     renderReadingStartScreen();
   }
@@ -665,13 +690,12 @@
     return `${difficulty}:${mode}:${itemId}`;
   }
 
-  function recordWrongAnswer(key) {
-    progress.wrongAnswerCounts[key] = (Number(progress.wrongAnswerCounts[key]) || 0) + 1;
-    if (!elements.mistakeMenuLayer.hidden) renderMistakeMenu();
+  function recordWrongAnswer(saved, key) {
+    saved.wrongAnswerCounts[key] = (Number(saved.wrongAnswerCounts[key]) || 0) + 1;
   }
 
-  function examEligibleItems(difficulty, mode, sessionNumber) {
-    return datasetForMode(difficulty, mode).filter((item) => {
+  function examEligibleItems(difficulty, mode, sessionNumber, palette) {
+    return datasetForMode(difficulty, mode, palette).filter((item) => {
       const eligibleFrom = Number(progress.examCooldowns[itemProgressKey(difficulty, mode, item.id)]) || 0;
       return sessionNumber >= eligibleFrom;
     });
@@ -681,37 +705,38 @@
     return mode !== "sentence-to-kanji";
   }
 
-  function practiceEligibleItems(difficulty, mode, practiceRound) {
-    return datasetForMode(difficulty, mode).filter((item) => engine.isReviewEligible(
+  function practiceEligibleItems(difficulty, mode, practiceRound, palette) {
+    return datasetForMode(difficulty, mode, palette).filter((item) => engine.isReviewEligible(
       progress.practiceCooldowns,
       itemProgressKey(difficulty, mode, item.id),
       practiceRound,
     ));
   }
 
-  function updatePracticeReviewProgress() {
-    if (session.examMode || !isPracticeWordMode(session.mode)) return 0;
+  function updatePracticeReviewProgress(saved, round) {
+    if (round.examMode || !isPracticeWordMode(round.mode)) return 0;
 
-    const itemKeys = [...session.baseIds].map((itemId) => itemProgressKey(
-      session.difficulty,
-      session.mode,
+    const itemKeys = [...round.baseIds].map((itemId) => itemProgressKey(
+      round.difficulty,
+      round.mode,
       itemId,
     ));
-    const mistakenKeys = [...session.mistakenIds].map((itemId) => itemProgressKey(
-      session.difficulty,
-      session.mode,
+    const mistakenKeys = [...round.mistakenIds].map((itemId) => itemProgressKey(
+      round.difficulty,
+      round.mode,
       itemId,
     ));
+    const practiceRound = (Number(saved.practiceSessionCount) || 0) + 1;
     const protectedKeys = engine.updateCleanReview(
-      progress.practiceCleanStreaks,
-      progress.practiceCooldowns,
+      saved.practiceCleanStreaks,
+      saved.practiceCooldowns,
       itemKeys,
       mistakenKeys,
-      session.practiceRound,
+      practiceRound,
       PRACTICE_CLEAN_STREAK_REQUIRED,
       PRACTICE_COOLDOWN_ROUNDS,
     );
-    progress.practiceSessionCount = session.practiceRound;
+    saved.practiceSessionCount = practiceRound;
     return protectedKeys.length;
   }
 
@@ -841,6 +866,7 @@
     if (readingSession) saveActiveSession("reading");
     session = null;
     readingSession = null;
+    progress = progressStore.load();
     setFeatureBrand(feature);
     const readingFeature = currentFeature === "reading";
     if (readingFeature) {
@@ -913,7 +939,8 @@
   }
 
   function startReadingSession() {
-    clearActiveSession();
+    progress = progressStore.load();
+    clearActiveSession("reading");
     const difficulty = selectedReadingDifficulty();
     const stat = readingStatsFor(difficulty);
     const requestedCount = Math.min(
@@ -922,6 +949,7 @@
     );
     elements.readingQuestionCount.value = String(requestedCount);
     readingSession = {
+      runId: newRunId(),
       number: stat.completedSessions + 1,
       difficulty,
       questions: selectBalancedReadingQuestions(requestedCount),
@@ -1095,25 +1123,36 @@
   }
 
   function completeReadingSession() {
-    readingSession.completed = true;
-    clearActiveSession();
-    const accuracy = engine.accuracy(readingSession.correct, readingSession.attempts) || 0;
-    const stat = readingStatsFor(readingSession.difficulty);
-    stat.completedSessions += 1;
-    stat.totalCorrect += readingSession.correct;
-    stat.totalAttempts += readingSession.attempts;
-    stat.lastAccuracy = accuracy;
-    progress.readingHistory.push({
-      session: readingSession.number,
-      difficulty: readingSession.difficulty,
-      accuracy,
-      correct: readingSession.correct,
-      wrong: readingSession.wrong,
-      total: readingSession.questions.length,
-      date: new Intl.DateTimeFormat("ko-KR", { month: "numeric", day: "numeric" }).format(new Date()),
+    const round = readingSession;
+    round.completed = true;
+    const accuracy = engine.accuracy(round.correct, round.attempts) || 0;
+    const date = new Intl.DateTimeFormat("ko-KR", { month: "numeric", day: "numeric" }).format(new Date());
+    const number = updateProgress((saved) => {
+      const existing = saved.readingHistory.find((entry) => entry.runId === round.runId);
+      if (existing) return existing.session;
+      const stat = saved.readingStats[round.difficulty];
+      stat.completedSessions += 1;
+      stat.totalCorrect += round.correct;
+      stat.totalAttempts += round.attempts;
+      stat.lastAccuracy = accuracy;
+      saved.readingHistory.push({
+        session: stat.completedSessions,
+        runId: round.runId,
+        difficulty: round.difficulty,
+        accuracy,
+        correct: round.correct,
+        wrong: round.wrong,
+        total: round.questions.length,
+        date,
+      });
+      saved.readingHistory = saved.readingHistory.slice(-20);
+      return stat.completedSessions;
+    }, (committedNumber) => {
+      clearActiveSession("reading", round.runId);
+      round.number = committedNumber;
+      if (readingSession === round) elements.readingResultSessionNumber.textContent = committedNumber;
     });
-    progress.readingHistory = progress.readingHistory.slice(-20);
-    saveProgress();
+    round.number = number;
 
     elements.readingResultSessionNumber.textContent = readingSession.number;
     elements.readingResultAccuracy.textContent = `${accuracy}%`;
@@ -1269,6 +1308,7 @@
   }
 
   function openMistakeMenu() {
+    progress = progressStore.load();
     selectedMistakeDifficulty = selectedDifficulty();
     renderMistakeMenu();
     elements.mistakeMenuLayer.hidden = false;
@@ -1287,7 +1327,9 @@
     const quizData = sourceItems || datasetForMode(difficulty, mode);
     const scopedMistakes = {};
     quizData.forEach((item) => {
-      scopedMistakes[item.id] = progress.mistakeCounts[itemProgressKey(difficulty, mode, item.id)] || 0;
+      const key = itemProgressKey(difficulty, mode, item.id);
+      // An immediate retry does not erase the fact that this item needs review.
+      scopedMistakes[item.id] = Math.max(progress.mistakeCounts[key] || 0, progress.wrongAnswerCounts[key] || 0);
     });
     return engine.selectSessionItems(
       quizData,
@@ -1314,20 +1356,21 @@
   }
 
   function startSession() {
+    progress = progressStore.load();
     const mode = selectedMode();
     const difficulty = selectedDifficulty();
-    const kanaPaletteMode = elements.kanaPaletteAll.checked ? "all" : "nine";
+    const kanaPaletteMode = selectedKanaPalette();
     const choiceCount = mode === "kanji-to-kana" ? (kanaPaletteMode === "all" ? ALL_KANA.length : 9) : selectedChoiceCount();
     const examMode = elements.examMode.checked;
-    const maximumSize = datasetForMode(difficulty, mode).length;
+    const maximumSize = datasetForMode(difficulty, mode, kanaPaletteMode).length;
     const sessionStat = statsFor(difficulty, mode);
     const sessionNumber = sessionStat.completedSessions + 1;
     const practiceRound = (Number(progress.practiceSessionCount) || 0) + 1;
     const practiceWordMode = !examMode && isPracticeWordMode(mode);
     const eligibleItems = examMode
-      ? examEligibleItems(difficulty, mode, sessionNumber)
+      ? examEligibleItems(difficulty, mode, sessionNumber, kanaPaletteMode)
       : practiceWordMode
-        ? practiceEligibleItems(difficulty, mode, practiceRound)
+        ? practiceEligibleItems(difficulty, mode, practiceRound, kanaPaletteMode)
         : null;
     if (examMode && eligibleItems.length < EXAM_QUESTION_COUNT) {
       syncModeControls();
@@ -1344,8 +1387,9 @@
       ? EXAM_QUESTION_COUNT
       : Math.min(maximumSize, Math.max(10, Math.round(Number(countInput.value) || maximumSize)));
     const items = selectSessionItems(mode, difficulty, requestedSize, eligibleItems);
-    clearActiveSession();
+    clearActiveSession("vocab");
     session = {
+      runId: newRunId(),
       number: sessionNumber,
       difficulty,
       mode,
@@ -1378,7 +1422,7 @@
   }
 
   function findItem(id) {
-    return datasetForMode(session.difficulty, session.mode).find((item) => item.id === id);
+    return datasetForMode(session.difficulty, session.mode, session.kanaPaletteMode).find((item) => item.id === id);
   }
 
   function normalizedReading(reading) {
@@ -1398,10 +1442,13 @@
   }
 
   function buildChoices(correctItem) {
-    const quizData = datasetForMode(session.difficulty, session.mode);
+    const quizData = datasetForMode(session.difficulty, session.mode, session.kanaPaletteMode);
+    if (session.mode === "sentence-to-kanji") {
+      return engine.buildSentenceChoices(quizData, correctItem, session.choiceCount);
+    }
     return isMeaningMode(session.mode)
       ? engine.buildChoicesByMeaning(quizData, correctItem, session.choiceCount)
-      : session.mode === "reading-to-kanji" || session.mode === "sentence-to-kanji"
+      : session.mode === "reading-to-kanji"
       ? engine.buildChoicesByWord(quizData, correctItem, session.choiceCount)
       : engine.buildChoices(quizData, correctItem, session.choiceCount);
   }
@@ -1424,9 +1471,9 @@
   function toggleKanaLayout() {
     // Layout is a browser preference, not quiz state: do not rebuild the question,
     // touch its timer, or change the current answer/cursor when switching sides.
-    progress.kanaActionsRight = !progress.kanaActionsRight;
+    const right = !progress.kanaActionsRight;
+    updateProgress((saved) => { saved.kanaActionsRight = right; });
     renderKanaLayout();
-    saveProgress();
   }
 
   function currentKanaEditState() {
@@ -1545,6 +1592,11 @@
         : "1 / 2 · 먼저 이 단어의 읽기를 고르세요.",
     };
     elements.quizPrompt.textContent = prompts[session.mode];
+    const readingContext = (session.mode === "kanji-to-reading" || context.isKanjiToKana || isCombinedMode(session.mode))
+      ? context.item.readingContext || ""
+      : "";
+    elements.quizReadingContext.hidden = !readingContext;
+    elements.quizReadingContext.textContent = readingContext;
     elements.combinedStepStatus.hidden = !isCombinedMode(session.mode);
     elements.combinedStepStatus.textContent = session.readingAnswerId
       ? `선택한 읽기: ${normalizedReading(findItem(session.readingAnswerId).reading)} · 뜻까지 선택하면 채점합니다.`
@@ -1582,8 +1634,13 @@
 
   function answerText(choice, context) {
     if (context.isMeaningMode) return choice.meaning;
-    if (context.isReadingToKanji || context.isSentenceToKanji) return choice.word;
+    if (context.isSentenceToKanji) return engine.sentenceChoiceText(choice);
+    if (context.isReadingToKanji) return choice.word;
     return normalizedReading(choice.reading);
+  }
+
+  function sentenceAnswerLabel(item) {
+    return `${engine.sentenceChoiceText(item)}（${engine.sentenceSurfaceReading(item)}）`;
   }
 
   function renderAnswerOptions(context) {
@@ -1697,7 +1754,7 @@
     elements.feedbackIcon.innerHTML = "<span>!</span>";
     elements.feedbackTitle.textContent = "한 번 더 생각해 보세요";
     elements.feedbackSelected.hidden = false;
-    elements.feedbackSelected.textContent = `선택한 답  ${selectedItem.word}（${normalizedReading(selectedItem.reading)}） · ${selectedItem.meaning}`;
+    elements.feedbackSelected.textContent = `선택한 답  ${sentenceAnswerLabel(selectedItem)} · ${selectedItem.meaning}`;
     elements.feedbackReading.textContent = "힌트  문장에 후리가나를 표시했어요.";
     elements.feedbackMeaning.textContent = "후리가나를 참고해서 다시 선택하세요.";
     elements.feedbackSentenceReading.hidden = true;
@@ -1781,6 +1838,8 @@
           ? `${selectedItem.meaning} (${selectedItem.id === session.current.id ? "맞음" : "틀림"})`
           : "미선택";
       selectedAnswer = `읽기 ${readingResult} · 뜻 ${meaningResult}${timedOut ? " · 시간 초과" : ""}`;
+    } else if (isSentenceToKanji && selectedItem) {
+      selectedAnswer = `${sentenceAnswerLabel(selectedItem)} · ${selectedItem.meaning}`;
     }
     const buttons = [...elements.answerGrid.querySelectorAll("button")];
     return {
@@ -1813,9 +1872,11 @@
     session.currentMisses = 1;
     session.hintSelectedId = selectedId;
     session.wrong += 1;
-    progress.mistakeCounts[progressKey] = (progress.mistakeCounts[progressKey] || 0) + 1;
-    recordWrongAnswer(progressKey);
-    saveProgress();
+    updateProgress((saved) => {
+      saved.mistakeCounts[progressKey] = (saved.mistakeCounts[progressKey] || 0) + 1;
+      recordWrongAnswer(saved, progressKey);
+    });
+    if (!elements.mistakeMenuLayer.hidden) renderMistakeMenu();
     renderSentenceHint(selectedItem, selectedButton);
     updateSessionHeader();
     saveActiveSession("vocab");
@@ -1849,7 +1910,7 @@
   function correctAnswerText(context) {
     if (isCombinedMode(session.mode)) return `정답 읽기  ${normalizedReading(session.current.reading)}`;
     if (context.isSentenceToKanji) {
-      return `정답  ${session.current.word}（${normalizedReading(session.current.reading)}）`;
+      return `정답  ${sentenceAnswerLabel(session.current)}`;
     }
     if (context.isKanjiToKana) return `정답 읽기  ${context.correctKanaAnswers.join(" / ")}`;
     if (context.isMeaningMode) return `정답 뜻  ${session.current.meaning}`;
@@ -1885,12 +1946,10 @@
     session.correct += 1;
     session.masteredIds.add(session.current.id);
     if (session.examMode) session.correctIds.add(session.current.id);
-    if (progress.mistakeCounts[context.progressKey]) {
-      progress.mistakeCounts[context.progressKey] = Math.max(
-        0,
-        progress.mistakeCounts[context.progressKey] - 1,
-      );
-    }
+    updateProgress((saved) => {
+      const count = saved.mistakeCounts[context.progressKey];
+      if (count) saved.mistakeCounts[context.progressKey] = Math.max(0, count - 1);
+    });
   }
 
   function recordIncorrectAnswer(context) {
@@ -1898,12 +1957,19 @@
     session.wrong += 1;
     session.masteredIds.delete(session.current.id);
     if (!session.examMode && !isSentenceToKanji) session.mistakenIds.add(session.current.id);
-    progress.mistakeCounts[progressKey] = (progress.mistakeCounts[progressKey] || 0) + 1;
-    recordWrongAnswer(progressKey);
+    const examMode = session.examMode;
+    const examMistakeCount = updateProgress((saved) => {
+      saved.mistakeCounts[progressKey] = (saved.mistakeCounts[progressKey] || 0) + 1;
+      recordWrongAnswer(saved, progressKey);
+      if (examMode) {
+        saved.examMistakeCounts[progressKey] = (saved.examMistakeCounts[progressKey] || 0) + 1;
+        return saved.examMistakeCounts[progressKey];
+      }
+      return 0;
+    });
+    if (!elements.mistakeMenuLayer.hidden) renderMistakeMenu();
 
-    if (session.examMode) {
-      progress.examMistakeCounts[progressKey] = (progress.examMistakeCounts[progressKey] || 0) + 1;
-      const examMistakeCount = progress.examMistakeCounts[progressKey];
+    if (examMode) {
       elements.examMistakeBadge.hidden = false;
       elements.examMistakeBadge.textContent = `⚠ 이 문제는 시험에서 ${examMistakeCount}회 틀렸습니다`;
       elements.retryNote.textContent = `시험 누적 오답 ${examMistakeCount}회가 기록되었습니다.`;
@@ -1969,7 +2035,6 @@
     renderAnsweredFeedback(context);
     if (context.isCorrect) recordCorrectAnswer(context);
     else recordIncorrectAnswer(context);
-    saveProgress();
     finishAnsweredQuestion();
   }
 
@@ -1982,41 +2047,45 @@
     elements.progressBar.style.width = `${(completed / session.total) * 100}%`;
   }
 
-  function recordCompletedSession(sessionAccuracy) {
-    const sessionStat = statsFor(session.difficulty, session.mode);
+  function recordCompletedSession(saved, round, sessionAccuracy, date) {
+    const existing = saved.history.find((entry) => entry.runId === round.runId);
+    if (existing) return { number: existing.session, newlyProtectedCount: 0 };
+    const sessionStat = saved.sessionStats[sessionScopeKey(round.difficulty, round.mode)];
     sessionStat.completedSessions += 1;
-    sessionStat.totalCorrect += session.correct;
-    sessionStat.totalAttempts += session.attempts;
+    sessionStat.totalCorrect += round.correct;
+    sessionStat.totalAttempts += round.attempts;
     sessionStat.lastAccuracy = sessionAccuracy;
+    const number = sessionStat.completedSessions;
 
     // Keep the previous aggregate fields for saved-data compatibility.
-    progress.completedSessions += 1;
-    progress.totalCorrect += session.correct;
-    progress.totalAttempts += session.attempts;
-    progress.lastAccuracy = sessionAccuracy;
+    saved.completedSessions += 1;
+    saved.totalCorrect += round.correct;
+    saved.totalAttempts += round.attempts;
+    saved.lastAccuracy = sessionAccuracy;
 
     // A correct exam answer is hidden for the next three completed rounds.
     // Store the first eligible round rather than repeatedly decrementing counters.
-    if (session.examMode) {
-      session.correctIds.forEach((itemId) => {
-        progress.examCooldowns[itemProgressKey(session.difficulty, session.mode, itemId)] = session.number + 4;
+    if (round.examMode) {
+      round.correctIds.forEach((itemId) => {
+        saved.examCooldowns[itemProgressKey(round.difficulty, round.mode, itemId)] = number + 4;
       });
     }
-    progress.seenIds = [...new Set([...(progress.seenIds || []), ...session.baseIds])];
-    progress.history.push({
-      session: session.number,
-      difficulty: session.difficulty,
-      mode: session.mode,
-      examMode: session.examMode,
-      choiceCount: session.choiceCount,
-      kanaPaletteMode: session.kanaPaletteMode,
+    saved.seenIds = [...new Set([...(saved.seenIds || []), ...round.baseIds])];
+    saved.history.push({
+      session: number,
+      runId: round.runId,
+      difficulty: round.difficulty,
+      mode: round.mode,
+      examMode: round.examMode,
+      choiceCount: round.choiceCount,
+      kanaPaletteMode: round.kanaPaletteMode,
       accuracy: sessionAccuracy,
-      correct: session.correct,
-      wrong: session.wrong,
-      date: new Intl.DateTimeFormat("ko-KR", { month: "numeric", day: "numeric" }).format(new Date()),
+      correct: round.correct,
+      wrong: round.wrong,
+      date,
     });
-    progress.history = progress.history.slice(-20);
-    saveProgress();
+    saved.history = saved.history.slice(-20);
+    return { number, newlyProtectedCount: updatePracticeReviewProgress(saved, round) };
   }
 
   function completedSessionMessage(newlyProtectedCount) {
@@ -2046,13 +2115,24 @@
 
   function completeSession() {
     stopExamTimer();
-    session.completed = true;
-    clearActiveSession();
+    const round = session;
+    round.completed = true;
     elements.examTimer.hidden = true;
-    const sessionAccuracy = engine.accuracy(session.correct, session.attempts) || 0;
-    const newlyProtectedCount = updatePracticeReviewProgress();
-    recordCompletedSession(sessionAccuracy);
-    renderCompletedSession(sessionAccuracy, newlyProtectedCount);
+    const sessionAccuracy = engine.accuracy(round.correct, round.attempts) || 0;
+    const date = new Intl.DateTimeFormat("ko-KR", { month: "numeric", day: "numeric" }).format(new Date());
+    const result = updateProgress(
+      (saved) => recordCompletedSession(saved, round, sessionAccuracy, date),
+      ({ number, newlyProtectedCount }) => {
+        clearActiveSession("vocab", round.runId);
+        round.number = number;
+        if (session === round) {
+          elements.resultSessionNumber.textContent = number;
+          elements.resultMessage.textContent = completedSessionMessage(newlyProtectedCount);
+        }
+      },
+    );
+    round.number = result.number;
+    renderCompletedSession(sessionAccuracy, result.newlyProtectedCount);
   }
 
   function returnToStart() {
@@ -2063,6 +2143,7 @@
     if (readingSession && !readingSession.completed) saveActiveSession("reading");
     session = null;
     readingSession = null;
+    progress = progressStore.load();
     if (currentFeature === "reading") {
       renderReadingStartScreen();
       showScreen("readingStart");
@@ -2173,7 +2254,8 @@
 
     const difficulty = selectedDifficulty();
     const mode = selectedMode();
-    const nextMaximum = datasetForMode(difficulty, mode).length;
+    const palette = selectedKanaPalette();
+    const nextMaximum = datasetForMode(difficulty, mode, palette).length;
 
     const syncCountInput = (input) => {
       const previousMaximum = Number(input.max) || nextMaximum;
@@ -2192,10 +2274,7 @@
       elements.sentenceQuestionCount.value = String(EXAM_QUESTION_COUNT);
     }
 
-    const generalMaximum = datasetForMode(
-      difficulty,
-      katakanaMode ? "katakana-to-meaning" : "kanji-to-reading",
-    ).length;
+    const generalMaximum = sentenceMode ? datasetForMode(difficulty, "kanji-to-reading").length : nextMaximum;
     const sentenceMaximum = datasetForMode(difficulty, "sentence-to-kanji").length;
     const generalSources = {
       n5n4: "N5·N4 단어",
@@ -2221,7 +2300,7 @@
     if (examMode) {
       elements.examModeNote.hidden = false;
       const nextSessionNumber = statsFor(difficulty, mode).completedSessions + 1;
-      const eligibleCount = examEligibleItems(difficulty, mode, nextSessionNumber).length;
+      const eligibleCount = examEligibleItems(difficulty, mode, nextSessionNumber, palette).length;
       const enoughQuestions = eligibleCount >= EXAM_QUESTION_COUNT;
       elements.startButton.disabled = !enoughQuestions;
       elements.examModeNote.textContent = enoughQuestions
@@ -2231,7 +2310,7 @@
       const practiceRound = (Number(progress.practiceSessionCount) || 0) + 1;
       const practiceWordMode = isPracticeWordMode(mode);
       const practiceEligibleCount = practiceWordMode
-        ? practiceEligibleItems(difficulty, mode, practiceRound).length
+        ? practiceEligibleItems(difficulty, mode, practiceRound, palette).length
         : nextMaximum;
       const coolingCount = practiceWordMode ? nextMaximum - practiceEligibleCount : 0;
       elements.startButton.disabled = practiceWordMode && practiceEligibleCount === 0;
@@ -2285,7 +2364,7 @@
     syncModeControls();
     elements.startButton.addEventListener("click", startSession);
     elements.resumeButton.addEventListener("click", () => restoreActiveSession("vocab"));
-    elements.discardSessionButton.addEventListener("click", discardSavedSession);
+    elements.discardSessionButton.addEventListener("click", () => discardSavedSession("vocab"));
     elements.homeButton.addEventListener("click", returnToStart);
     elements.featureSwitchButton.addEventListener("click", openFeatureSwitch);
     elements.featureSwitchClose.addEventListener("click", () => closeFeatureSwitch());
@@ -2303,7 +2382,7 @@
     elements.returnButton.addEventListener("click", returnToStart);
     elements.readingStartButton.addEventListener("click", startReadingSession);
     elements.readingResumeButton.addEventListener("click", () => restoreActiveSession("reading"));
-    elements.readingDiscardSessionButton.addEventListener("click", discardSavedSession);
+    elements.readingDiscardSessionButton.addEventListener("click", () => discardSavedSession("reading"));
     elements.readingNextButton.addEventListener("click", showNextReadingQuestion);
     elements.readingReturnButton.addEventListener("click", returnToStart);
     elements.readingDifficultyFurigana.addEventListener("change", renderReadingStartScreen);
@@ -2313,9 +2392,9 @@
     elements.kanaPaletteAll.checked = progress.kanaPaletteMode === "all";
     [elements.kanaPaletteNine, elements.kanaPaletteAll].forEach((input) => {
       input.addEventListener("change", () => {
-        progress.kanaPaletteMode = elements.kanaPaletteAll.checked ? "all" : "nine";
-        saveProgress();
-        renderStartScreen();
+        const palette = elements.kanaPaletteAll.checked ? "all" : "nine";
+        updateProgress((saved) => { saved.kanaPaletteMode = palette; });
+        syncModeControls();
       });
     });
     elements.kanaLayoutToggle.addEventListener("click", toggleKanaLayout);
@@ -2336,6 +2415,17 @@
     elements.difficultyN3.addEventListener("change", syncModeControls);
     elements.difficultyN2.addEventListener("change", syncModeControls);
     document.addEventListener("keydown", handleKeyboard);
+    window.addEventListener?.("storage", ({ key }) => {
+      if (key === STORAGE_KEY) {
+        progress = progressStore.load();
+        if (screens.start.classList.contains("is-active")) syncModeControls();
+        if (screens.readingStart.classList.contains("is-active")) renderReadingStartScreen();
+        if (!elements.mistakeMenuLayer.hidden) renderMistakeMenu();
+      } else if ([window.QuizSessionStore.STORAGE_KEY, window.QuizSessionStore.keyFor("vocab"),
+        window.QuizSessionStore.keyFor("reading")].includes(key)) {
+        renderResumePanels();
+      }
+    });
     restoreActiveSession();
   }
 

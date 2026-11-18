@@ -23,6 +23,7 @@ translations = json.loads(translation_source.read_text(encoding="utf-8"))
 furigana_sentences = json.loads(furigana_source.read_text(encoding="utf-8"))
 words = [item["word"] for item in items]
 sentence_by_word = {item["word"]: item["sentence"] for item in sentences}
+sentence_surface_by_word = {item["word"]: item["surface"] for item in sentences if item.get("surface")}
 translation_by_word = {item["word"]: item["translation"] for item in translations}
 furigana_by_word = {item["word"]: item["furigana"] for item in furigana_sentences}
 
@@ -53,6 +54,8 @@ exported = [
         "level": "N2",
         **item,
         "sentence": sentence_by_word[item["word"]],
+        **({"sentenceSurface": sentence_surface_by_word[item["word"]]}
+           if item["word"] in sentence_surface_by_word else {}),
         "sentenceFurigana": furigana_by_word[item["word"]],
         "sentenceTranslation": translation_by_word[item["word"]],
     }
@@ -94,7 +97,7 @@ for item in workbook_items:
     # This problem-only workbook contains no example sentences. Do not invent
     # sentence fields: the app's sentence mode selects complete examples only.
     exported.append({
-        **{key: item[key] for key in ("id", "word", "reading", "meaning")},
+        **{key: item[key] for key in ("id", "word", "reading", "meaning", "readingContext") if key in item},
         "level": "N2",
         "day": position["day"],
         "source": f"한끝 N2 단어연습장 · DAY {position['day']:02d} · p.{position['page']}",

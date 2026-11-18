@@ -23,14 +23,19 @@ for index, record in enumerate(load_records(), start=1):
         "reading": record["reading"],
         "meaning": record["meaning"],
         "sentence": sentence_item["sentence"],
+        # The blank may contain an inflected or differently spelled surface.
+        "sentenceSurface": sentence_item["blankSurface"],
         "sentenceFurigana": sentence_item["sentenceFurigana"],
         "sentenceTranslation": sentence_item["sentenceTranslation"],
+        **{key: sentence_item[key] for key in ("sentenceReading", "sentenceSurfaceReading")
+           if key in sentence_item},
     })
 
 if len(records) != 480 or len(sentence_by_id) != 480:
     raise ValueError("N5·N4 단어와 예문은 각각 480개여야 합니다.")
 if not all(
     item["sentence"].count("___") == 1
+    and item["sentenceSurface"].strip()
     and item["sentenceFurigana"].count("___") == 1
     and item["sentenceTranslation"]
     for item in records

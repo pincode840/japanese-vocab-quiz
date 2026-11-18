@@ -14,6 +14,9 @@ from janome.tokenizer import Tokenizer  # noqa: E402
 
 KANJI_PATTERN = re.compile(r"[一-龯々〆ヵヶ]")
 FURIGANA_OVERRIDES = {
+    "活気": {
+        "<ruby>市場<rt>しじょう</rt></ruby>": "<ruby>市場<rt>いちば</rt></ruby>",
+    },
     "怪しい": {
         "<ruby>夜中<rt>やちゅう</rt></ruby>": "<ruby>夜中<rt>よなか</rt></ruby>",
         "<ruby>人<rt>じん</rt></ruby>": "<ruby>人<rt>ひと</rt></ruby>",

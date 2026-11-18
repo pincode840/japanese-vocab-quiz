@@ -36,20 +36,16 @@ BLANK_OVERRIDES = {
     "d10-17": "０",
     "d11-10": "いたい",
     "d11-17": "かわいい",
-    "d12-8": "地下",
     "d13-6": "きれい",
     "d14-6": "ある",
     "d14-10": "いる",
     "d15-4": "掛け",
-    "d15-18": {"before": "んでいます"},
     "d16-10": "出かけ",
     "d16-11": "できる",
     "d17-19": "わから",
     "d18-20": "だんだん",
     "d19-16": "もちろん",
     "d20-1": "あいさつ",
-    "d20-13": "意思",
-    "d20-15": "以内",
     "d20-18": "受け付け",
     "d20-19": "噓",
     "d21-9": "押し入れ",
@@ -60,6 +56,11 @@ BLANK_OVERRIDES = {
 }
 
 SOURCE_SENTENCE_OVERRIDES = {
+    "d7-2": "四季の中で一番暑い夏には、水遊びをします。",
+    "d12-8": "銀行は駅に近いので、駅から歩いて二分で着きます。",
+    "d15-18": "彼は東京に住んでいます。",
+    "d20-13": "綺麗な石を発見しました。",
+    "d20-15": "３時以前に到着できますか。",
     "d26-6": "血を流しています。",
     "d27-4": "入学試験に合格しました。",
     "d27-9": "喉が腫れて病院に行きました。",
@@ -72,6 +73,9 @@ SOURCE_SENTENCE_OVERRIDES = {
 }
 
 TRANSLATION_OVERRIDES = {
+    "d7-2": "사계절 중 가장 더운 여름에는 물놀이를 합니다.",
+    "d12-8": "은행은 역에서 가까워 걸어서 2분이면 도착합니다.",
+    "d13-5": "다나카 씨는 우유를 싫어합니다.",
     "d26-8": "주의사항을 반드시 확인해 주세요.",
     "d26-16": "일기예보를 확인해 주세요.",
     "d27-3": "교통사고로 병원에 입원했습니다.",
@@ -92,6 +96,28 @@ TRANSLATION_OVERRIDES = {
 
 TOKEN_READING_OVERRIDES = {
     ("d28-2", "間"): "あいだ",
+}
+
+SENTENCE_SURFACE_READING_OVERRIDES = {
+    "d10-17": "ぜろ",
+    "d14-2": "あき",
+    "d15-4": "かけ",
+    "d15-10": "き",
+    "d16-10": "でかけ",
+    "d18-4": "いちど",
+}
+
+# Cases where regular suffix substitution cannot recover the right reading
+# (an irregular verb, a spelling variant, or a multi-reading headword).
+SENTENCE_READING_OVERRIDES = {
+    "d10-17": "ごからごをひくとぜろになります。",
+    "d13-6": "このこうえんはきれいです。",
+    "d14-2": "どあがあきます。",
+    "d15-4": "やまださんにでんわをかけた。",
+    "d15-10": "かのじょがきています。",
+    "d16-10": "ごはんもたべずにでかけた。",
+    "d17-19": "げんいんがわからない。",
+    "d18-4": "もういちどはなしてください。",
 }
 
 
@@ -464,6 +490,10 @@ def main():
                     record_id, source["translation"]
                 ),
                 "blankSurface": sentence[blank_start:blank_end],
+                **({"sentenceReading": SENTENCE_READING_OVERRIDES[record_id]}
+                   if record_id in SENTENCE_READING_OVERRIDES else {}),
+                **({"sentenceSurfaceReading": SENTENCE_SURFACE_READING_OVERRIDES[record_id]}
+                   if record_id in SENTENCE_SURFACE_READING_OVERRIDES else {}),
                 "matchMethod": method,
                 "source": source["source"],
             }
@@ -477,6 +507,8 @@ def main():
         raise ValueError("Each sentence must contain exactly one blank")
     if not all(item["sentenceFurigana"].count("___") == 1 for item in exported):
         raise ValueError("Each furigana sentence must contain exactly one blank")
+    if not all(item["blankSurface"].strip() for item in exported):
+        raise ValueError("Each sentence must contain the original contextual answer")
     if not all(item["sentenceTranslation"] for item in exported):
         raise ValueError("Each sentence must contain a Korean translation")
 

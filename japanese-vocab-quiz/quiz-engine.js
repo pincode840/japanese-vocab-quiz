@@ -92,10 +92,12 @@
   }
 
   function sentenceSurfaceReading(item) {
+    if (item?.sentenceSurfaceReading) return toHiragana(item.sentenceSurfaceReading);
     const reading = kanaReadings(item?.reading)[0] || normalizedReading(item?.reading || "");
     const word = String(item?.word || "");
     const surface = String(item?.sentenceSurface || word);
     if (!word || surface === word) return reading;
+    if (/^[ぁ-ゖァ-ヶー]+$/.test(surface)) return toHiragana(surface);
 
     let commonLength = 0;
     while (
@@ -198,19 +200,59 @@
     return shuffle(choices, settings.random);
   }
 
+  function sentenceChoiceText(item) {
+    return item.sentenceSurface || item.word;
+  }
+
+  // Reviewed words that fit the same blank must never be used as distractors.
+  // Add these per sentence: antonyms are useful distractors in other contexts.
+  const sentenceAlternativeWords = new Map([
+    ["d7-2", new Set(["夏休み", "春", "秋", "冬"])],
+    ["d12-8", new Set(["遠い"])],
+    ["d12-12", new Set(["近い"])],
+  ]);
+
+  function buildSentenceChoices(data, correctItem, choiceCount = 4, random = Math.random) {
+    const settings = resolveChoiceSettings(choiceCount, random, data.length);
+    const excludedWords = sentenceAlternativeWords.get(correctItem.id);
+    const targetMeanings = new Set(meaningKeys(correctItem.meaning));
+    const usedSurfaces = new Set([sentenceChoiceText(correctItem)]);
+    const choices = [correctItem];
+    for (const candidate of shuffle(data, settings.random)) {
+      if (choices.length >= settings.choiceCount) break;
+      const surface = sentenceChoiceText(candidate);
+      if (candidate.word === correctItem.word || usedSurfaces.has(surface)
+        || excludedWords?.has(candidate.word)
+        || meaningKeys(candidate.meaning).some((part) => targetMeanings.has(part))) continue;
+      choices.push(candidate);
+      usedSurfaces.add(surface);
+    }
+    return shuffle(choices, settings.random);
+  }
+
+  function meaningKeys(meaning) {
+    return String(meaning).normalize("NFKC")
+      .replace(/\([^)]*\)/g, "")
+      .split(/[,/;·]/)
+      .map((part) => {
+        const text = part.replace(/\s+/g, "");
+        // Treat common dictionary/nominal forms as the same distractor:
+        // 유치하다 / 유치함, 짙다 / 짙음. Grading still uses actual item IDs.
+        return text.replace(/(?:하다|함|다|음)$/u, "") || text;
+      })
+      .filter(Boolean);
+  }
+
   function buildChoicesByMeaning(data, correctItem, choiceCountOrRandom = 4, random = Math.random) {
     const settings = resolveChoiceSettings(choiceCountOrRandom, random, data.length);
     const pool = shuffle(data.filter((item) => item.id !== correctItem.id), settings.random);
     const choices = [correctItem];
     // JLPT entries often list multiple senses. "주다" and "주다, 부여하다"
     // must not appear together as a right answer and a distractor.
-    const meaningParts = (meaning) => String(meaning).normalize("NFKC")
-      .replace(/\([^)]*\)/g, "")
-      .split(/[,/;·]/).map((part) => part.replace(/\s+/g, "").trim()).filter(Boolean);
-    const usedMeanings = new Set(meaningParts(correctItem.meaning));
+    const usedMeanings = new Set(meaningKeys(correctItem.meaning));
 
     for (const candidate of pool) {
-      const parts = meaningParts(candidate.meaning);
+      const parts = meaningKeys(candidate.meaning);
       if (candidate.word !== correctItem.word && !parts.some((part) => usedMeanings.has(part))) {
         choices.push(candidate);
         parts.forEach((part) => usedMeanings.add(part));
@@ -299,10 +341,12 @@
     kanaReadings,
     toHiragana,
     sentenceSurfaceReading,
+    sentenceChoiceText,
     sentenceReading,
     shuffle,
     buildChoices,
     buildChoicesByWord,
+    buildSentenceChoices,
     buildChoicesByMeaning,
     selectSessionItems,
     insertRetry,

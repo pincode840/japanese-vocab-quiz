@@ -21,6 +21,10 @@
     term("午前九時", "ごぜんくじ"), term("午前十時", "ごぜんじゅうじ"), term("午前十一時", "ごぜんじゅういちじ"),
     term("午後一時", "ごごいちじ"), term("午後二時", "ごごにじ"), term("午後三時", "ごごさんじ"),
   ]);
+  const calendarDays = [
+    term("1日", "ついたち"), term("2日", "ふつか"), term("3日", "みっか"),
+    term("4日", "よっか"), term("5日", "いつか"), term("6日", "むいか"),
+  ];
   const facilities = register([
     term("市民図書館", "しみんとしょかん"), term("中央図書館", "ちゅうおうとしょかん"), term("駅前図書館", "えきまえとしょかん"),
     term("東町図書館", "ひがしまちとしょかん"), term("西町図書館", "にしまちとしょかん"), term("青葉図書館", "あおばとしょかん"),
@@ -219,7 +223,7 @@
     term("600円", "ろっぴゃくえん"), term("700円", "ななひゃくえん"), term("800円", "はっぴゃくえん"),
   ]);
 
-  function createQuestion(exam, number, type, passage, question, correct, distractors, explanation) {
+  function createQuestion(exam, number, type, passage, question, correct, distractors, explanation, readings = {}) {
     const baseChoices = [correct, ...distractors];
     const shift = number % baseChoices.length;
     const choices = baseChoices.slice(shift).concat(baseChoices.slice(0, shift));
@@ -232,7 +236,7 @@
       choices,
       answer: choices.indexOf(correct),
       explanation,
-      readings: {},
+      readings,
       origin: "original",
       generated: true,
     };
@@ -582,7 +586,7 @@
   Object.assign(common, {
     参加申込: "さんかもうしこみ", 申込締切: "もうしこみしめきり", 前日: "ぜんじつ", 午後五時: "ごごごじ",
     定員: "ていいん", 達した場合: "たっしたばあい", 早く終了します: "はやくしゅうりょうします",
-    人です: "にんです", 時間続きます: "じかんつづきます", 日だけ: "にちだけ", 相談時間: "そうだんじかん",
+    人です: "にんです", 時間続きます: "じかんつづきます", 相談時間: "そうだんじかん",
     分です: "ふんです", 管理番号: "かんりばんごう", 提出番号: "ていしゅつばんごう",
     始まります: "はじまります", 締切: "しめきり", 講座: "こうざ", 定員を超えて: "ていいんをこえて",
     荷物が多く: "にもつがおおく", 助け: "たすけ", 基本的: "きほんてき", 別の日: "べつのひ",
@@ -600,7 +604,7 @@
     建物内: "たてものない", 昇降機: "しょうこうき", 点検: "てんけん", 使用できません: "しようできません",
     上階: "じょうかい", 階段: "かいだん", 利用してください: "りようしてください", 荷物: "にもつ",
     必要な人: "ひつようなひと", 係員: "かかりいん", 声をかけて: "こえをかけて", 移動する: "いどうする",
-    通常: "つうじょう", 開きます: "ひらきます", 今月だけ: "こんげつだけ", 閉館します: "へいかんします",
+    通常: "つうじょう", 開きます: "ひらきます", 今月だけ: "こんげつだけ", に限り: "にかぎり", 閉館します: "へいかんします",
     最終受付: "さいしゅううけつけ", 終了時刻: "しゅうりょうじこく", 入館する: "にゅうかんする",
     参加券: "さんかけん", 開催日: "かいさいび", 三日前: "みっかまえ", 申し出れば: "もうしでれば",
     払い戻し: "はらいもどし", 受けられます: "うけられます", 以降: "いこう", 対応できません: "たいおうできません",
@@ -644,11 +648,16 @@
         const usualDay = pick(weekdays, variant);
         const specialDay = pick(weekdays, variant + 2);
         const closing = pick(times, variant + 3);
+        const date = pick(calendarDays, variant);
+        const specialDate = `今月${text(date)}（${text(specialDay)}）`;
+        // Calendar dates and durations can be read differently (1日 = ついたち
+        // here, not いちにち). Apply the reading only to this question.
+        const readings = { [date.text]: date.reading };
         return createQuestion(exam, number, "운영 시간 예외",
-          `${text(profile.place)}は通常${text(usualDay)}も開きますが、今月${variant + 1}日だけ${text(specialDay)}の${text(closing)}に閉館します。最終受付は終了時刻の三十分前です。`,
-          `今月の${text(specialDay)}に入館できる最も遅い時刻について、正しい説明はどれですか。`,
+          `${text(profile.place)}は通常${text(usualDay)}も開きますが、${specialDate}に限り、${text(closing)}に閉館します。最終受付は終了時刻の三十分前です。`,
+          `${specialDate}に入館できる最も遅い時刻について、正しい説明はどれですか。`,
           "閉館の三十分前までに受付を済ませる", ["閉館時刻に受付を始める", "通常どおり一日中利用する", "翌日まで受付を待つ"],
-          "최종 접수는 폐관 30분 전입니다.");
+          "최종 접수는 폐관 30분 전입니다.", readings);
       },
       (number, variant) => {
         const day = pick(weekdays, variant + 3);

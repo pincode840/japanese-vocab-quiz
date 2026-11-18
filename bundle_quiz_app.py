@@ -1,10 +1,11 @@
-from pathlib import Path
 from hashlib import sha256
+from pathlib import Path
+import re
 
 
 base = Path(__file__).resolve().parent
 assets_root = base / "japanese-vocab-quiz"
-source_html = (assets_root / "index.html").read_text(encoding="utf-8")
+nested_entry = assets_root / "index.html"
 asset_names = [
     "styles.css",
     "vocab-data.js",
@@ -28,6 +29,20 @@ def replace_once(document, marker, replacement):
     return document.replace(marker, replacement, 1)
 
 
+# The nested index is both an editable source and a public entry page. Remove
+# only previously generated build metadata so rebuilding is idempotent.
+source_html = re.sub(
+    r'((?:src|href)="[^"/?]+\.(?:js|css))\?v=[a-f0-9]{12}"',
+    r'\1"',
+    nested_entry.read_text(encoding="utf-8"),
+)
+source_html = re.sub(
+    r'(<small id="build-version">)앱 버전 [a-f0-9]{12}(</small>)',
+    r'\1개발 버전\2',
+    source_html,
+)
+
+
 # Content-addressed URLs prevent a fresh HTML document from reusing stale JS
 # or CSS from GitHub Pages' ten-minute cache. Normalize line endings through
 # read_text so Windows and Linux builds produce identical version identifiers.
@@ -48,25 +63,27 @@ source_html = replace_once(
 )
 
 
-# GitHub Pages uses a small entry document and separate cacheable assets.
-deploy_html = source_html
-deploy_html = replace_once(
-    deploy_html,
-    'href="styles.css"',
-    f'href="japanese-vocab-quiz/styles.css?v={asset_versions["styles.css"]}"',
-)
-for asset_name in asset_names[1:]:
-    deploy_html = replace_once(
-        deploy_html,
-        f'src="{asset_name}"',
-        f'src="japanese-vocab-quiz/{asset_name}?v={asset_versions[asset_name]}"',
-    )
+def write_deploy_page(output, prefix):
+    """Publish the same version under either URL without changing origin."""
+    deploy_html = source_html
+    for asset_name in asset_names:
+        attribute = "href" if asset_name.endswith(".css") else "src"
+        deploy_html = replace_once(
+            deploy_html,
+            f'{attribute}="{asset_name}"',
+            f'{attribute}="{prefix}{asset_name}?v={asset_versions[asset_name]}"',
+        )
+    size = len(deploy_html.encode("utf-8"))
+    if size > 80_000:
+        raise ValueError("Deploy entry HTML must remain below 80 KB")
+    if not output.exists() or output.read_text(encoding="utf-8") != deploy_html:
+        output.write_text(deploy_html, encoding="utf-8")
+    print(f"built split deploy page {output} ({size} bytes)")
 
-deploy_output = base / "index.html"
-deploy_output.write_text(deploy_html, encoding="utf-8")
-if deploy_output.stat().st_size > 80_000:
-    raise ValueError("Deploy entry HTML must remain below 80 KB")
-print(f"built split deploy page {deploy_output} ({deploy_output.stat().st_size} bytes)")
+
+# Both GitHub Pages entry paths use small documents and cacheable assets.
+write_deploy_page(base / "index.html", f"{assets_root.name}/")
+write_deploy_page(nested_entry, "")
 
 
 # Keep a portable single-file build for users who explicitly need offline use.
@@ -74,10 +91,10 @@ standalone_html = source_html
 standalone_html = replace_once(
     standalone_html,
     '  <link rel="stylesheet" href="styles.css">',
-    f"  <style>\n{(assets_root / 'styles.css').read_text(encoding='utf-8')}\n  </style>",
+    f"  <style>\n{asset_contents['styles.css']}\n  </style>",
 )
 for asset_name in asset_names[1:]:
-    script = (assets_root / asset_name).read_text(encoding="utf-8")
+    script = asset_contents[asset_name]
     standalone_html = replace_once(
         standalone_html,
         f'  <script src="{asset_name}"></script>',

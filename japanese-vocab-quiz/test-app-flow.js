@@ -93,7 +93,7 @@ const ids = [
   "general-question-count-hint", "question-count-panel", "sentence-question-count",
   "sentence-question-count-hint",
   "quiz-session-label", "quiz-progress-text",
-  "live-accuracy", "live-score-detail", "result-score-detail", "exam-timer", "exam-time-left", "progress-bar", "quiz-prompt", "quiz-word",
+  "live-accuracy", "live-score-detail", "result-score-detail", "exam-timer", "exam-time-left", "progress-bar", "quiz-prompt", "quiz-word", "quiz-reading-context",
   "day-label", "exam-mistake-badge", "answer-grid", "kana-composer", "kana-layout-toggle", "kana-answer", "kana-edit-status", "kana-grid", "kana-backspace", "kana-clear", "kana-submit",
   "feedback", "feedback-icon", "feedback-title", "feedback-selected", "feedback-reading",
   "feedback-meaning", "feedback-sentence-reading", "feedback-translation", "feedback-source", "retry-note", "next-button", "result-session-number", "result-message",
@@ -153,6 +153,8 @@ globalThis.document = {
 globalThis.window = globalThis;
 globalThis.window.scrollTo = () => {};
 const storage = new Map();
+const vocabActiveKey = globalThis.QuizSessionStore.keyFor("vocab");
+const readingActiveKey = globalThis.QuizSessionStore.keyFor("reading");
 const legacyKanjiReadingId = globalThis.VOCAB_DATA[0].id;
 const legacyKanaId = globalThis.VOCAB_DATA[1].id;
 storage.set("jlpt-vocab-quiz-progress-v1", JSON.stringify({
@@ -247,6 +249,7 @@ function correctButtonForCurrentSentence() {
     (button) => button.dataset.itemId === item.id,
   );
   assert.ok(correctButton, `${item.word} 정답 버튼이 선택지에 있어야 합니다.`);
+  assert.equal(correctButton.children[1].textContent, item.sentenceSurface || item.word, "빈칸에 들어가는 활용형을 표시합니다.");
   return correctButton;
 }
 
@@ -323,7 +326,7 @@ elements.get("start-button").click();
 assert.ok(elements.get("quiz-screen").classList.contains("is-active"), "시작하면 문제 화면이 열려야 합니다.");
 assert.equal(elements.get("answer-grid").querySelectorAll("button").length, 4, "선택지는 네 개여야 합니다.");
 assert.equal(
-  JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1")).kind,
+  JSON.parse(storage.get(vocabActiveKey)).kind,
   "vocab",
   "진행 중인 단어 회차는 첫 문제부터 별도 저장소에 자동 저장되어야 합니다.",
 );
@@ -510,7 +513,7 @@ assert.match(elements.get("quiz-word").innerHTML, /sentence-blank/, "첫 오답�
 assert.equal(elements.get("feedback-title").textContent, "한 번 더 생각해 보세요");
 assert.equal(
   elements.get("feedback-selected").textContent,
-  `선택한 답  ${firstWrongSentenceItem.word}（${globalThis.QuizEngine.normalizedReading(firstWrongSentenceItem.reading)}） · ${firstWrongSentenceItem.meaning}`,
+  `선택한 답  ${globalThis.QuizEngine.sentenceChoiceText(firstWrongSentenceItem)}（${globalThis.QuizEngine.sentenceSurfaceReading(firstWrongSentenceItem)}） · ${firstWrongSentenceItem.meaning}`,
 );
 assert.equal(elements.get("feedback-translation").hidden, true, "첫 오답에는 문장 해석을 숨겨야 합니다.");
 assert.equal(elements.get("feedback-sentence-reading").hidden, true, "첫 오답에는 문장 전체 읽기를 숨겨야 합니다.");
@@ -530,7 +533,7 @@ const secondWrongSentenceItem = globalThis.VOCAB_DATA.find(
 );
 assert.equal(
   elements.get("feedback-selected").textContent,
-  `선택한 답  ${secondWrongSentenceItem.word}（${globalThis.QuizEngine.normalizedReading(secondWrongSentenceItem.reading)}） · ${secondWrongSentenceItem.meaning}`,
+  `선택한 답  ${globalThis.QuizEngine.sentenceChoiceText(secondWrongSentenceItem)}（${globalThis.QuizEngine.sentenceSurfaceReading(secondWrongSentenceItem)}） · ${secondWrongSentenceItem.meaning}`,
 );
 assert.match(elements.get("feedback-reading").textContent, /^정답.+（.+）$/);
 assert.match(elements.get("feedback-meaning").textContent, /^뜻/);
@@ -836,13 +839,13 @@ const [editA, editB, editC] = originalEditTiles;
 kanaEditorButton("kanaIndex", 1).click();
 assert.equal(kanaEditorButton("kanaIndex", 1)["aria-pressed"], "true");
 assert.equal(elements.get("kana-backspace").textContent, "선택 글자 지우기");
-const beforeLayoutChange = storage.get("jlpt-vocab-quiz-active-session-v1");
+const beforeLayoutChange = storage.get(vocabActiveKey);
 assert.equal(pressKey("Enter", "Enter", layoutToggle).defaultPrevented, undefined);
 layoutToggle.click();
 assert.equal(layoutToggle.textContent, "버튼 위치: 아래");
 assert.equal(layoutToggle["aria-pressed"], "false");
 assert.equal(elements.get("kana-composer").classList.contains("is-actions-right"), false);
-assert.equal(storage.get("jlpt-vocab-quiz-active-session-v1"), beforeLayoutChange,
+assert.equal(storage.get(vocabActiveKey), beforeLayoutChange,
   "위치 전환으로 답안, 커서, 선택 글자, 타일 순서나 채점 상태를 바꾸면 안 됩니다.");
 layoutToggle.click();
 assert.equal(kanaEditorButton("kanaIndex", 1)["aria-pressed"], "true");
@@ -895,10 +898,10 @@ assert.equal(elements.get("feedback-title").textContent, "정답이에요");
 assert.match(elements.get("feedback-reading").textContent, /^정답 읽기/);
 assert.ok(elements.get("kana-answer").querySelectorAll("button").every((button) => button.disabled),
   "제출한 답은 편집할 수 없어야 합니다.");
-const answeredBeforeLayoutChange = storage.get("jlpt-vocab-quiz-active-session-v1");
+const answeredBeforeLayoutChange = storage.get(vocabActiveKey);
 assert.equal(pressKey("Enter", "Enter", layoutToggle).defaultPrevented, undefined);
 layoutToggle.click();
-assert.equal(storage.get("jlpt-vocab-quiz-active-session-v1"), answeredBeforeLayoutChange,
+assert.equal(storage.get(vocabActiveKey), answeredBeforeLayoutChange,
   "정답 확인 화면에서 위치 전환 시 다음 문제로 넘어가면 안 됩니다.");
 
 elements.get("next-button").click();
@@ -922,10 +925,10 @@ assert.equal(elements.get("exam-time-left").textContent, 10, "히라가나 조�
 assert.equal(elements.get("kana-grid").querySelectorAll("button").length, 9);
 assert.match(elements.get("quiz-session-label").textContent, /히라가나 9개/);
 tickTimers(2);
-const examBeforeLayoutChange = storage.get("jlpt-vocab-quiz-active-session-v1");
+const examBeforeLayoutChange = storage.get(vocabActiveKey);
 layoutToggle.click();
 assert.equal(elements.get("exam-time-left").textContent, 8);
-assert.equal(storage.get("jlpt-vocab-quiz-active-session-v1"), examBeforeLayoutChange,
+assert.equal(storage.get(vocabActiveKey), examBeforeLayoutChange,
   "시험 중 위치 전환으로 마감 시간이나 답안이 변경되면 안 됩니다.");
 const examEditKana = elements.get("kana-grid").querySelectorAll("button")[0].dataset.kana;
 typeKanaTile(examEditKana);
@@ -996,7 +999,7 @@ assert.equal(elements.get("reading-standard-sessions").textContent, "0회");
 assert.equal(elements.get("reading-question-count").max, "600", "독해 문제는 최대 600개까지 선택할 수 있어야 합니다.");
 elements.get("reading-question-count").value = "100";
 elements.get("reading-start-button").click();
-const diverseReadingIds = JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1"))
+const diverseReadingIds = JSON.parse(storage.get(readingActiveKey))
   .session.questions.map((item) => item.id);
 const readingById = new Map(globalThis.READING_QUIZ_DATA.map((item) => [item.id, item]));
 const diverseReadingItems = diverseReadingIds.map((id) => readingById.get(id));
@@ -1015,14 +1018,14 @@ elements.get("reading-discard-session-button").click();
 elements.get("reading-question-count").value = "600";
 elements.get("reading-start-button").click();
 assert.equal(elements.get("reading-progress-text").textContent, "1 / 600", "독해 600문제 회차를 시작할 수 있어야 합니다.");
-assert.equal(JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1")).kind, "reading");
+assert.equal(JSON.parse(storage.get(readingActiveKey)).kind, "reading");
 elements.get("home-button").click();
 assert.equal(elements.get("reading-resume-panel").hidden, false, "홈으로 나가도 진행 중인 독해 회차를 이어갈 수 있어야 합니다.");
 elements.get("reading-resume-button").click();
 assert.equal(elements.get("reading-progress-text").textContent, "1 / 600", "저장한 독해 회차를 같은 문제 위치에서 복구해야 합니다.");
 elements.get("home-button").click();
 elements.get("reading-discard-session-button").click();
-assert.equal(storage.has("jlpt-vocab-quiz-active-session-v1"), false, "사용자가 선택하면 진행 중 회차를 삭제할 수 있어야 합니다.");
+assert.equal(storage.has(readingActiveKey), false, "사용자가 선택하면 진행 중 회차를 삭제할 수 있어야 합니다.");
 
 elements.get("reading-question-count").value = "10";
 elements.get("reading-start-button").click();
@@ -1229,7 +1232,7 @@ for (const [modeId, seconds] of [["mode-kanji-reading", 7], ["mode-kanji-kana", 
   runTimerCallbacks();
   assert.match(elements.get("feedback-title").textContent, /시간이 초과/);
   assert.equal(elements.get("live-accuracy").textContent, "0%");
-  const snapshot = JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1")).session;
+  const snapshot = JSON.parse(storage.get(vocabActiveKey)).session;
   assert.equal(snapshot.correct, 0);
   assert.equal(snapshot.wrong, 1);
   assert.equal(snapshot.attempts, 1);
@@ -1292,12 +1295,12 @@ elements.get("feature-switch-button").click();
 elements.get("feature-reading-button").click();
 elements.get("reading-question-count").value = "10";
 elements.get("reading-start-button").click();
-const incompatible = JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1"));
+const incompatible = JSON.parse(storage.get(readingActiveKey));
 incompatible.session.questions[0].sessionChoices[0].text = "업데이트 전 선택지";
-storage.set("jlpt-vocab-quiz-active-session-v1", JSON.stringify(incompatible));
+storage.set(readingActiveKey, JSON.stringify(incompatible));
 const completedBeforeInvalidRestore = storage.get("jlpt-vocab-quiz-progress-v1");
 reloadApplication();
-assert.equal(storage.has("jlpt-vocab-quiz-active-session-v1"), false);
+assert.equal(storage.has(readingActiveKey), false);
 assert.match(elements.get("app-error").textContent, /완료한 학습 기록은 유지/);
 assert.equal(storage.get("jlpt-vocab-quiz-progress-v1"), completedBeforeInvalidRestore);
 
@@ -1373,7 +1376,7 @@ assert.equal(elements.get("exam-time-left").textContent, 10);
 assert.equal(fullKanaTiles().length, fullKanaCharacters.length);
 tickTimers(10);
 assert.match(elements.get("feedback-title").textContent, /시간이 초과/);
-assert.equal(JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1")).session.wrong, 1);
+assert.equal(JSON.parse(storage.get(vocabActiveKey)).session.wrong, 1);
 elements.get("home-button").click();
 elements.get("discard-session-button").click();
 elements.get("exam-mode").checked = false;
@@ -1385,12 +1388,45 @@ elements.get("start-button").click();
 assert.equal(fullKanaTiles().length, 9);
 assert.equal(elements.get("kana-composer").classList.contains("is-full-palette"), false);
 // Old snapshots without the new field must still restore the original nine tiles.
-const oldKanaSnapshot = JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1"));
+const oldKanaSnapshot = JSON.parse(storage.get(vocabActiveKey));
 delete oldKanaSnapshot.session.kanaPaletteMode;
-storage.set("jlpt-vocab-quiz-active-session-v1", JSON.stringify(oldKanaSnapshot));
+storage.set(vocabActiveKey, JSON.stringify(oldKanaSnapshot));
 reloadApplication();
 assert.equal(fullKanaTiles().length, 9);
 assert.match(elements.get("quiz-session-label").textContent, /히라가나 9개/);
+
+// The full palette admits the N2 word whose reading needs ten distinct tiles.
+elements.get("home-button").click();
+elements.get("discard-session-button").click();
+elements.get("difficulty-basic").checked = false;
+elements.get("difficulty-n3").checked = false;
+elements.get("difficulty-n2").checked = true;
+elements.get("difficulty-n2").dispatch("change");
+assert.equal(elements.get("general-question-count").max, "1160");
+elements.get("kana-palette-nine").checked = false;
+elements.get("kana-palette-all").checked = true;
+elements.get("kana-palette-all").dispatch("change");
+assert.equal(elements.get("general-question-count").max, "1161");
+elements.get("general-question-count").value = "1161";
+elements.get("start-button").click();
+const paletteStoreKey = globalThis.QuizSessionStore.keyFor("vocab");
+const n2PaletteSnapshot = JSON.parse(storage.get(paletteStoreKey));
+const longKanaWord = globalThis.N2_VOCAB_DATA.find((item) => item.word === "アルファベット順");
+assert.ok(n2PaletteSnapshot.session.baseIds.includes(longKanaWord.id));
+const kanaQueue = [n2PaletteSnapshot.session.currentId, ...n2PaletteSnapshot.session.queue];
+const emptyWord = globalThis.N2_VOCAB_DATA.find((item) => item.word === "空");
+n2PaletteSnapshot.session.currentId = longKanaWord.id;
+n2PaletteSnapshot.session.queue = [emptyWord.id, ...kanaQueue.filter((id) => id !== longKanaWord.id && id !== emptyWord.id)];
+storage.set(paletteStoreKey, JSON.stringify(n2PaletteSnapshot));
+reloadApplication();
+assert.equal(elements.get("quiz-word").textContent, longKanaWord.word, "전체 모드 이어하기에서도 열 글자 단어가 유지됩니다.");
+enterCurrentKanaReading();
+elements.get("kana-submit").click();
+assert.equal(elements.get("feedback-title").textContent, "정답이에요");
+elements.get("next-button").click();
+assert.equal(elements.get("quiz-word").textContent, emptyWord.word);
+assert.equal(elements.get("quiz-reading-context").textContent, emptyWord.readingContext);
+assert.equal(elements.get("quiz-reading-context").hidden, false);
 
 // Wrong readings fail immediately; correct readings advance to meaning.
 elements.get("home-button").click();
@@ -1399,7 +1435,7 @@ for (const id of ["mode-kanji-reading", "mode-kanji-kana", "mode-reading-kanji",
 elements.get("mode-kanji-meaning").checked = true;
 elements.get("exam-mode").checked = false;
 elements.get("mode-kanji-meaning").dispatch("change");
-const comboSnapshot = () => JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1")).session;
+const comboSnapshot = () => JSON.parse(storage.get(vocabActiveKey)).session;
 const answerComboStep = (correct) => {
   const right = correctButtonForCurrentWord();
   const buttons = elements.get("answer-grid").querySelectorAll("button");
@@ -1508,10 +1544,10 @@ assert.equal(comboSnapshot().wrong, 3);
 assert.match(elements.get("quiz-prompt").textContent, /1 \/ 2/);
 
 // A pre-update snapshot with a wrong reading must fail once on restore.
-const legacyCombinedSnapshot = JSON.parse(storage.get("jlpt-vocab-quiz-active-session-v1"));
+const legacyCombinedSnapshot = JSON.parse(storage.get(vocabActiveKey));
 const legacyWrongReading = globalThis.N2_VOCAB_DATA.find((item) => item.id !== legacyCombinedSnapshot.session.currentId);
 legacyCombinedSnapshot.session.readingAnswerId = legacyWrongReading.id;
-storage.set("jlpt-vocab-quiz-active-session-v1", JSON.stringify(legacyCombinedSnapshot));
+storage.set(vocabActiveKey, JSON.stringify(legacyCombinedSnapshot));
 reloadApplication();
 assert.equal(comboSnapshot().wrong, 4);
 assert.equal(comboSnapshot().answered, true);
@@ -1519,5 +1555,23 @@ assert.equal(elements.get("answer-grid")["aria-label"], "읽기 선택지");
 assert.match(elements.get("feedback-selected").textContent, /뜻 진행하지 않음/);
 reloadApplication();
 assert.equal(comboSnapshot().wrong, 4, "구버전 회차 복구 후 다시 새로고침해도 오답이 중복되지 않습니다.");
+
+// Starting and discarding reading must not overwrite an interrupted vocab run.
+elements.get("home-button").click();
+const savedVocabBeforeReading = storage.get(vocabActiveKey);
+assert.ok(savedVocabBeforeReading);
+elements.get("feature-switch-button").click();
+elements.get("feature-reading-button").click();
+elements.get("reading-question-count").value = "10";
+elements.get("reading-start-button").click();
+assert.ok(storage.has(readingActiveKey));
+assert.equal(storage.get(vocabActiveKey), savedVocabBeforeReading);
+elements.get("home-button").click();
+elements.get("reading-discard-session-button").click();
+assert.equal(storage.has(readingActiveKey), false);
+assert.equal(storage.get(vocabActiveKey), savedVocabBeforeReading);
+elements.get("feature-switch-button").click();
+elements.get("feature-vocab-button").click();
+assert.equal(elements.get("resume-panel").hidden, false);
 
 console.log("app interaction flow tests passed");

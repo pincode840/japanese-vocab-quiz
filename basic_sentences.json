@@ -12,9 +12,9 @@
   {
     "id": "d7-2",
     "word": "夏",
-    "sentence": "___には水遊びをします。",
-    "sentenceFurigana": "___には<ruby>水遊<rt>みずあそ</rt></ruby>びをします。",
-    "sentenceTranslation": "여름은 물놀이를 합니다.",
+    "sentence": "四季の中で一番暑い___には、水遊びをします。",
+    "sentenceFurigana": "<ruby>四季<rt>しき</rt></ruby>の<ruby>中<rt>なか</rt></ruby>で<ruby>一番<rt>いちばん</rt></ruby><ruby>暑い<rt>あつい</rt></ruby>___には、<ruby>水遊び<rt>みずあそび</rt></ruby>をします。",
+    "sentenceTranslation": "사계절 중 가장 더운 여름에는 물놀이를 합니다.",
     "blankSurface": "夏",
     "matchMethod": "base-form",
     "source": "능력단어7.docx"
@@ -766,6 +766,8 @@
     "sentenceFurigana": "５から５を<ruby>引<rt>ひ</rt></ruby>くと___になります。",
     "sentenceTranslation": "5에서 5를 빼면 0이 됩니다.",
     "blankSurface": "０",
+    "sentenceReading": "ごからごをひくとぜろになります。",
+    "sentenceSurfaceReading": "ぜろ",
     "matchMethod": "source-override",
     "source": "능력단어10.docx"
   },
@@ -1072,11 +1074,11 @@
   {
     "id": "d12-8",
     "word": "近い",
-    "sentence": "駅から___所に銀行があります。",
-    "sentenceFurigana": "<ruby>駅<rt>えき</rt></ruby>から___所に<ruby>銀行<rt>ぎんこう</rt></ruby>があります。",
-    "sentenceTranslation": "역에서 가까운 곳에 은행이 있습니다.",
-    "blankSurface": "地下",
-    "matchMethod": "source-override",
+    "sentence": "銀行は駅に___ので、駅から歩いて二分で着きます。",
+    "sentenceFurigana": "<ruby>銀行<rt>ぎんこう</rt></ruby>は<ruby>駅<rt>えき</rt></ruby>に___ので、<ruby>駅<rt>えき</rt></ruby>から<ruby>歩い<rt>あるい</rt></ruby>て<ruby>二<rt>に</rt></ruby><ruby>分<rt>ふん</rt></ruby>で<ruby>着き<rt>つき</rt></ruby>ます。",
+    "sentenceTranslation": "은행은 역에서 가까워 걸어서 2분이면 도착합니다.",
+    "blankSurface": "近い",
+    "matchMethod": "base-form",
     "source": "능력단어12.docx"
   },
   {
@@ -1244,7 +1246,7 @@
     "word": "嫌いだ",
     "sentence": "田中さんは牛乳が___です。",
     "sentenceFurigana": "<ruby>田中<rt>たなか</rt></ruby>さんは<ruby>牛乳<rt>ぎゅうにゅう</rt></ruby>が___です。",
-    "sentenceTranslation": "다나카씨는 우유를 싫어합니다.",
+    "sentenceTranslation": "다나카 씨는 우유를 싫어합니다.",
     "blankSurface": "嫌い",
     "matchMethod": "base-form",
     "source": "능력단어13.docx"
@@ -1256,6 +1258,7 @@
     "sentenceFurigana": "この<ruby>公園<rt>こうえん</rt></ruby>は___です。",
     "sentenceTranslation": "이 공원은 깨끗합니다.",
     "blankSurface": "きれい",
+    "sentenceReading": "このこうえんはきれいです。",
     "matchMethod": "source-override",
     "source": "능력단어13.docx"
   },
@@ -1416,6 +1419,8 @@
     "sentenceFurigana": "<ruby>ドア<rt>どあ</rt></ruby>が___ます。",
     "sentenceTranslation": "문이 열립니다.",
     "blankSurface": "開き",
+    "sentenceReading": "どあがあきます。",
+    "sentenceSurfaceReading": "あき",
     "matchMethod": "base-form",
     "source": "능력단어14.docx"
   },
@@ -1636,6 +1641,8 @@
     "sentenceFurigana": "<ruby>山田<rt>やまだ</rt></ruby>さんに<ruby>電話<rt>でんわ</rt></ruby>を___た。",
     "sentenceTranslation": "야마다 씨에게 전화를 걸었다.",
     "blankSurface": "掛け",
+    "sentenceReading": "やまださんにでんわをかけた。",
+    "sentenceSurfaceReading": "かけ",
     "matchMethod": "source-override",
     "source": "능력단어15.docx"
   },
@@ -1696,6 +1703,8 @@
     "sentenceFurigana": "<ruby>彼女<rt>かのじょ</rt></ruby>が___ています。",
     "sentenceTranslation": "그녀가 오고 있습니다.",
     "blankSurface": "来",
+    "sentenceReading": "かのじょがきています。",
+    "sentenceSurfaceReading": "き",
     "matchMethod": "base-form",
     "source": "능력단어15.docx"
   },
@@ -1772,11 +1781,11 @@
   {
     "id": "d15-18",
     "word": "住む",
-    "sentence": "彼は東京に___んでいます。",
-    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>東京<rt>とうきょう</rt></ruby>に___んでいます。",
+    "sentence": "彼は東京に___でいます。",
+    "sentenceFurigana": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>東京<rt>とうきょう</rt></ruby>に___でいます。",
     "sentenceTranslation": "그는 도쿄에 살고 있습니다.",
-    "blankSurface": "",
-    "matchMethod": "source-override",
+    "blankSurface": "住ん",
+    "matchMethod": "base-form",
     "source": "능력단어15.docx"
   },
   {
@@ -1896,6 +1905,8 @@
     "sentenceFurigana": "ご<ruby>飯<rt>はん</rt></ruby>も<ruby>食<rt>た</rt></ruby>べずに___た。",
     "sentenceTranslation": "밥도 먹지 않고 나갔다.",
     "blankSurface": "出かけ",
+    "sentenceReading": "ごはんもたべずにでかけた。",
+    "sentenceSurfaceReading": "でかけ",
     "matchMethod": "source-override",
     "source": "능력단어16.docx"
   },
@@ -2186,6 +2197,7 @@
     "sentenceFurigana": "<ruby>原因<rt>げんいん</rt></ruby>が___ない。",
     "sentenceTranslation": "원인을 알 수 없다.",
     "blankSurface": "わから",
+    "sentenceReading": "げんいんがわからない。",
     "matchMethod": "source-override",
     "source": "능력단어17.docx"
   },
@@ -2236,6 +2248,8 @@
     "sentenceFurigana": "もう___<ruby>話し<rt>はなし</rt></ruby>てください。",
     "sentenceTranslation": "한 번 더 이야기해 주세요.",
     "blankSurface": "一度",
+    "sentenceReading": "もういちどはなしてください。",
+    "sentenceSurfaceReading": "いちど",
     "matchMethod": "exact",
     "source": "능력단어18.docx"
   },
@@ -2725,8 +2739,8 @@
     "sentence": "綺麗な___を発見しました。",
     "sentenceFurigana": "<ruby>綺麗<rt>きれい</rt></ruby>な___を<ruby>発見<rt>はっけん</rt></ruby>しました。",
     "sentenceTranslation": "예쁜 돌을 발견했습니다.",
-    "blankSurface": "意思",
-    "matchMethod": "source-override",
+    "blankSurface": "石",
+    "matchMethod": "base-form",
     "source": "능력단어20.docx"
   },
   {
@@ -2743,10 +2757,10 @@
     "id": "d20-15",
     "word": "以前",
     "sentence": "３時___に到着できますか。",
-    "sentenceFurigana": "３時___に<ruby>到着<rt>とうちゃく</rt></ruby>できますか。",
+    "sentenceFurigana": "３<ruby>時<rt>じ</rt></ruby>___に<ruby>到着<rt>とうちゃく</rt></ruby>できますか。",
     "sentenceTranslation": "3시 이전에 도착할 수 있습니까?",
-    "blankSurface": "以内",
-    "matchMethod": "source-override",
+    "blankSurface": "以前",
+    "matchMethod": "base-form",
     "source": "능력단어20.docx"
   },
   {

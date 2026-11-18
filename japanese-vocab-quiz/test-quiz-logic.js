@@ -281,12 +281,39 @@ assert.ok(
   ["n3-1203", "せきがあいたので、まどがわにすわりました。"],
   ["n3-1267", "こまったときは、いつもかぞくがそばにいてくれた。"],
   ["n3-1287", "はこのなかはからだった。"],
+  ["n3-0301", "いたりあはとてもうつくしいくにです。"],
+  ["n3-0324", "ひとりになるのがこわいの。"],
+  ["n3-0721", "うちのこはこのいちねんでせが10せんちものびた。"],
 ].forEach(([id, expected]) => {
   assert.equal(engine.sentenceReading(n3Data.find((item) => item.id === id)), expected, `${id} 문장 읽기가 문맥과 일치해야 합니다.`);
 });
 assert.equal(n3Data.find((item) => item.id === "n3-1203").meaning, "비다, 자리가 나다");
 assert.equal(n3Data.find((item) => item.id === "n3-1287").meaning, "비어 있음, 빈 상태");
-assert.equal(n2Data.find((item) => item.word === "錆びる").sentenceTranslation, "철은 물에 젖은 채로 두면 녹습니다.");
+assert.equal(n2Data.find((item) => item.word === "錆びる").sentenceTranslation, "철은 물에 젖은 채로 두면 녹이 생깁니다.");
+assert.equal(engine.sentenceReading(n2Data.find((item) => item.word === "敗れる")), "ゆうしょうこうほのちーむがしょせんでやぶれた。");
+for (const [id, expected] of [
+  ["d11-8", "このももはあまくておいしいです。"],
+  ["d11-16", "だいえっとでからだがかるくなった。"],
+  ["d12-6", "えんそくはたのしかったです。"],
+  ["d13-5", "たなかさんはぎゅうにゅうがきらいです。"],
+]) {
+  assert.equal(engine.sentenceReading(data.find((item) => item.id === id)), expected);
+}
+for (const [word, reading] of [["空", "から"], ["方々", "ほうぼう"]]) {
+  const item = n2Data.find((candidate) => candidate.word === word);
+  assert.equal(item.reading, reading);
+  assert.match(item.readingContext, /＿＿＿/, "복수 읽기가 있는 단어에는 목표 읽기를 정할 문맥을 제공합니다.");
+}
+assert.equal(engine.sentenceSurfaceReading(data.find((item) => item.id === "d15-10")), "き", "예문에서 来의 읽기는 사전형 くる와 달라야 합니다.");
+
+const scheduleQuestions = readingData.filter((item) => item.type === "운영 시간 예외");
+const calendarReadings = { "1日": "ついたち", "2日": "ふつか", "3日": "みっか", "4日": "よっか", "5日": "いつか", "6日": "むいか" };
+assert.equal(scheduleQuestions.length, 24);
+for (const item of scheduleQuestions) {
+  const date = item.question.match(/今月([1-6]日)（/)?.[1];
+  assert.ok(date && item.passage.includes(`今月${date}（`), "날짜가 지문과 질문에서 일치해야 합니다.");
+  assert.equal(item.readings[date], calendarReadings[date]);
+}
 
 const n3KanjiData = n3Data.filter((item) => /[一-龯々〆ヵヶ]/.test(item.word));
 for (const quizData of [data, n3KanjiData, n2Data]) {
@@ -305,6 +332,25 @@ const synonymFixture = [
   ...["걷다", "먹다", "마시다", "뛰다"].map((meaning, i) => ({ id: `m${i}`, word: `w${i}`, meaning })),
 ];
 assert.ok(!engine.buildChoicesByMeaning(synonymFixture, synonymFixture[0], 4, () => 0.42).some((item) => item.id === "give2"));
+const deterministicRandom = (initial) => {
+  let seed = initial;
+  return () => ((seed = Math.imul(1664525, seed) + 1013904223 | 0) >>> 0) / 2 ** 32;
+};
+for (const [word, excluded, seed] of [["幼い", "幼稚", 216], ["賢い", "利口", 442], ["濃厚", "濃い", 415]]) {
+  const current = n2Data.find((item) => item.word === word);
+  const choices = engine.buildChoicesByMeaning(n2Data, current, 8, deterministicRandom(seed));
+  assert.equal(choices.length, 8);
+  assert.ok(choices.includes(current) && !choices.some((item) => item.word === excluded), "동일한 의미의 명사형을 뜻 오답에서 제외해야 합니다.");
+}
+for (const [id, excluded] of [["d7-2", "夏休み"], ["d12-8", "遠い"], ["d12-12", "近い"]]) {
+  const current = data.find((item) => item.id === id);
+  for (const seed of [0, 3, 216]) {
+    const choices = engine.buildSentenceChoices(data, current, 8, deterministicRandom(seed));
+    assert.equal(choices.length, 8);
+    assert.ok(choices.includes(current) && !choices.some((item) => item.word === excluded));
+    assert.equal(new Set(choices.map(engine.sentenceChoiceText)).size, 8);
+  }
+}
 for (const quizData of [data, n3KanjiData, n2Data]) {
   for (const item of quizData) {
     const choices = engine.buildChoices(quizData, item, () => 0.42);

@@ -2781,6 +2781,7 @@
       "id": "n2-workbook-0214",
       "word": "空",
       "reading": "から",
+      "readingContext": "容器の中が＿＿＿です。",
       "meaning": "비어 있음, 빈 상태",
       "positions": [
         {
@@ -12653,6 +12654,7 @@
       "id": "n2-workbook-0974",
       "word": "方々",
       "reading": "ほうぼう",
+      "readingContext": "忘れ物を探して、＿＿＿を歩き回った。",
       "meaning": "여기저기, 여러 곳",
       "positions": [
         {

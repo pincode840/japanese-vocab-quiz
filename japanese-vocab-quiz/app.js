@@ -32,6 +32,11 @@
     n2: normalizeData(window.N2_VOCAB_DATA, "n2"),
     katakana: normalizeData(window.KATAKANA_VOCAB_DATA, "katakana"),
   };
+  const usageExamples = engine.indexUsageExamples(
+    Object.values(datasets).flat(),
+    window.JLPT_CURATED_USAGE_EXAMPLES,
+    window.JLPT_USAGE_EXAMPLES,
+  );
   const difficultyLabels = { n5n4: "N5·N4", n3: "N3", n2: "N2", katakana: "카타카나" };
   const modeLabels = {
     "kanji-to-reading": "한자→읽기",
@@ -184,6 +189,7 @@
     feedbackReading: document.getElementById("feedback-reading"),
     feedbackMeaning: document.getElementById("feedback-meaning"),
     feedbackSentenceReading: document.getElementById("feedback-sentence-reading"),
+    feedbackUsageExample: document.getElementById("feedback-usage-example"),
     feedbackTranslation: document.getElementById("feedback-translation"),
     feedbackSource: document.getElementById("feedback-source"),
     retryNote: document.getElementById("retry-note"),
@@ -1621,6 +1627,8 @@
     const unavailable = !session || session.answered;
     elements.kanaAnswer.replaceChildren();
     elements.kanaAnswer.classList.toggle("is-empty", !answer);
+    // Fit all editable characters and insertion markers into one line.
+    elements.kanaAnswer.style.setProperty("--kana-answer-slots", answer.length * 1.4 + 0.4);
     [...answer].forEach((character, index) => {
       const unit = document.createElement("span");
       unit.className = "kana-unit";
@@ -1716,9 +1724,7 @@
         : "1 / 2 · 히라가나를 조합해 읽기를 제출하세요.",
     };
     elements.quizPrompt.textContent = prompts[session.mode];
-    const readingContext = (session.mode === "kanji-to-reading" || context.isKanjiToKana || isCombinedMode(session.mode))
-      ? context.item.readingContext || ""
-      : "";
+    const readingContext = context.isSentenceToKanji ? "" : usageExamples.get(context.item.id)?.prompt || "";
     elements.quizReadingContext.hidden = !readingContext;
     elements.quizReadingContext.textContent = readingContext;
     elements.combinedStepStatus.hidden = !isCombinedMode(session.mode);
@@ -1848,6 +1854,17 @@
     renderKanaAnswer();
   }
 
+  function setExampleSource({ sourceUrl, sourceId, sourceAuthor, sourceLicense } = {}) {
+    const url = Number.isSafeInteger(sourceId) && sourceId > 0
+      ? `https://tatoeba.org/ko/sentences/show/${sourceId}`
+      : sourceUrl;
+    elements.feedbackSource.hidden = !url;
+    elements.feedbackSource.href = url || "";
+    elements.feedbackSource.textContent = url
+      ? `예문 출처 · Tatoeba${sourceAuthor ? ` / ${sourceAuthor}` : ""} (${sourceLicense || "CC BY 2.0 FR"})`
+      : "";
+  }
+
   function resetQuestionFeedback(item) {
     elements.feedback.hidden = true;
     elements.feedback.className = "feedback";
@@ -1855,13 +1872,11 @@
     elements.feedbackSelected.textContent = "";
     elements.feedbackSentenceReading.hidden = true;
     elements.feedbackSentenceReading.textContent = "";
+    elements.feedbackUsageExample.hidden = true;
+    elements.feedbackUsageExample.textContent = "";
     elements.feedbackTranslation.hidden = true;
     elements.feedbackTranslation.textContent = "";
-    elements.feedbackSource.hidden = !item.sentenceAttribution;
-    elements.feedbackSource.href = item.sentenceAttribution || "";
-    elements.feedbackSource.textContent = item.sentenceAttribution
-      ? `예문 출처 · Tatoeba (${item.sentenceLicense || "CC BY 2.0 FR"})`
-      : "";
+    setExampleSource({ sourceUrl: item.sentenceAttribution, sourceLicense: item.sentenceLicense });
     elements.retryNote.hidden = true;
     elements.nextButton.hidden = true;
   }
@@ -2074,10 +2089,18 @@
     elements.feedbackSentenceReading.textContent = isSentenceToKanji
       ? `문장 읽기  ${engine.sentenceReading(session.current)}`
       : "";
-    elements.feedbackTranslation.hidden = !isSentenceToKanji || isCorrect;
-    elements.feedbackTranslation.textContent = isSentenceToKanji && !isCorrect
-      ? `문장 해석  ${session.current.sentenceTranslation}`
-      : "";
+    const example = isSentenceToKanji ? null : usageExamples.get(session.current.id);
+    const translation = isSentenceToKanji && !isCorrect
+      ? session.current.sentenceTranslation
+      : example?.translation;
+    elements.feedbackUsageExample.hidden = !example;
+    elements.feedbackUsageExample.textContent = example?.fullSentence || "";
+    elements.feedbackTranslation.hidden = !translation;
+    elements.feedbackTranslation.textContent = translation ? `문장 해석  ${translation}` : "";
+    if (!isSentenceToKanji) {
+      elements.quizReadingContext.hidden = true;
+      setExampleSource(example || undefined);
+    }
   }
 
   function recordCorrectAnswer(context) {

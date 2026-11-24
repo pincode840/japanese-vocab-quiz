@@ -1250,8 +1250,10 @@ button:focus-visible {
 }
 
 .kana-answer {
+  container-type: inline-size;
+  --kana-slot-width: min(44px, calc((100cqi - 1px) / var(--kana-answer-slots, 1)));
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
   min-height: 68px;
@@ -1261,10 +1263,8 @@ button:focus-visible {
   background: rgba(255, 253, 248, 0.88);
   border: 2px solid var(--ink);
   border-radius: 14px;
-  font-size: clamp(27px, 7vw, 42px);
   font-weight: 800;
-  letter-spacing: 0;
-  word-break: break-all;
+  white-space: nowrap;
 }
 
 .kana-answer.is-empty {
@@ -1278,6 +1278,7 @@ button:focus-visible {
 .kana-unit {
   display: inline-flex;
   align-items: center;
+  flex: 0 0 auto;
 }
 
 .kana-character,
@@ -1293,8 +1294,10 @@ button:focus-visible {
 }
 
 .kana-character {
-  min-width: 44px;
-  font-size: clamp(27px, 7vw, 38px);
+  flex: 0 0 auto;
+  width: var(--kana-slot-width);
+  font-size: min(7vw, 38px, calc(var(--kana-slot-width) * 0.86));
+  line-height: 1;
 }
 
 .kana-character:hover:not(:disabled),
@@ -1308,7 +1311,7 @@ button:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
+  width: calc(var(--kana-slot-width) * 0.4);
   flex-shrink: 0;
 }
 
@@ -1598,6 +1601,27 @@ button:focus-visible {
   border-top: 1px solid rgba(23, 50, 77, 0.16);
   font-weight: 700;
   word-break: keep-all;
+}
+
+.quiz-usage-context {
+  width: fit-content;
+  max-width: 100%;
+  margin: 12px auto;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #edf3f9;
+  color: var(--ink);
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  line-height: 1.65;
+  line-break: strict;
+}
+
+.feedback .feedback-usage-example {
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(23, 50, 77, 0.16);
+  font-weight: 700;
+  line-break: strict;
 }
 
 .feedback .feedback-translation {

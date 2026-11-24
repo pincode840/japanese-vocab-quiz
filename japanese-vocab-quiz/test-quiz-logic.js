@@ -6,6 +6,8 @@ require("./vocab-data.js");
 require("./n3-vocab-data.js");
 require("./n2-vocab-data.js");
 require("./katakana-vocab-data.js");
+require("./usage-context-curated.js");
+require("./usage-context-data.js");
 require("./reading-data.js");
 require("./reading-generated-data.js");
 require("./reading-advanced-guides.js");
@@ -18,6 +20,34 @@ const katakanaData = globalThis.KATAKANA_VOCAB_DATA;
 const readingData = globalThis.READING_QUIZ_DATA;
 const readingCommonReadings = globalThis.READING_COMMON_READINGS;
 const stylesheet = fs.readFileSync(`${__dirname}/styles.css`, "utf8");
+const vocabItems = [...data, ...n3Data, ...n2Data, ...katakanaData];
+const vocabById = new Map(vocabItems.map((item) => [item.id, item]));
+const corpusExamples = globalThis.JLPT_USAGE_EXAMPLES;
+const curatedExamples = globalThis.JLPT_CURATED_USAGE_EXAMPLES;
+const usageContexts = engine.indexUsageExamples(vocabItems, curatedExamples, corpusExamples);
+for (const [id, example] of Object.entries({ ...curatedExamples, ...corpusExamples })) {
+  const item = vocabById.get(id);
+  assert.ok(item, `사용 예문이 등록되지 않은 단어 ID를 가리킵니다: ${id}`);
+  assert.equal(usageContexts.get(id).fullSentence, example.sentence.replace("＿＿＿", example.blank));
+  const masked = usageContexts.get(id).prompt;
+  assert.equal(masked.split("＿＿＿").length, 2, `빈칸이 한 개여야 합니다: ${id}`);
+  assert.ok(!masked.includes(item.word) && !masked.includes(example.blank), `예문이 정답을 드러냅니다: ${id}`);
+}
+const sourceIds = new Set();
+for (const example of Object.values(corpusExamples)) {
+  assert.ok(Number.isSafeInteger(example.sourceId) && example.sourceId > 0);
+  assert.ok(!sourceIds.has(example.sourceId), "새 예문에서 같은 원문을 반복해서 사용하지 않습니다.");
+  sourceIds.add(example.sourceId);
+  assert.ok(example.sourceLicense === "CC0 1.0" || (example.sourceLicense === "CC BY 2.0 FR" && example.sourceAuthor));
+}
+assert.equal(usageContexts.get(n2Data.find((item) => item.word === "空").id).prompt, "容器の中が＿＿＿です。");
+assert.equal(usageContexts.get(n2Data.find((item) => item.word === "～一色").id).fullSentence, "街はクリスマス一色になった。");
+assert.ok([...data, ...katakanaData].every((item) => usageContexts.get(item.id)),
+  "기초 단어와 카타카나의 사용 예문은 모든 단어에 있어야 합니다.");
+assert.ok(n3Data.filter((item) => usageContexts.get(item.id)).length >= 1200);
+assert.ok(n2Data.filter((item) => usageContexts.get(item.id)).length >= 1000);
+assert.match(stylesheet, /\.kana-answer\s*\{[^}]*flex-wrap:\s*nowrap;/);
+assert.match(stylesheet, /\.kana-character\s*\{[^}]*font-size:\s*min\([^;]*--kana-slot-width/);
 assert.match(
   stylesheet,
   /\.quiz-card h2\.reading-question\s*\{[\s\S]*?font-size:\s*clamp\(18px,\s*3\.2vw,\s*24px\)/,

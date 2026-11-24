@@ -5,6 +5,8 @@ require("./vocab-data.js");
 require("./n3-vocab-data.js");
 require("./n2-vocab-data.js");
 require("./katakana-vocab-data.js");
+require("./usage-context-curated.js");
+require("./usage-context-data.js");
 require("./reading-data.js");
 require("./reading-generated-data.js");
 require("./reading-advanced-guides.js");
@@ -37,7 +39,9 @@ class MiniElement {
     this.id = id;
     this.children = [];
     this.dataset = {};
-    this.style = {};
+    this.style = {
+      setProperty(name, value) { this[name] = String(value); },
+    };
     this.hidden = false;
     this.disabled = false;
     this.checked = false;
@@ -97,7 +101,7 @@ const ids = [
   "live-accuracy", "live-score-detail", "result-score-detail", "exam-timer", "exam-time-left", "progress-bar", "quiz-prompt", "quiz-word", "quiz-reading-context",
   "day-label", "exam-mistake-badge", "answer-grid", "kana-composer", "kana-layout-toggle", "kana-answer", "kana-edit-status", "kana-grid", "kana-backspace", "kana-clear", "kana-submit",
   "feedback", "feedback-icon", "feedback-title", "feedback-selected", "feedback-reading",
-  "feedback-meaning", "feedback-sentence-reading", "feedback-translation", "feedback-source", "retry-note", "next-button", "result-session-number", "result-message",
+  "feedback-meaning", "feedback-sentence-reading", "feedback-translation", "feedback-usage-example", "feedback-source", "retry-note", "next-button", "result-session-number", "result-message",
   "result-accuracy", "result-correct", "result-wrong", "result-mastered", "return-button", "keyboard-hint",
   "reading-record-furigana", "reading-furigana-sessions", "reading-furigana-last-accuracy", "reading-furigana-total-accuracy",
   "reading-record-standard", "reading-standard-sessions", "reading-standard-last-accuracy", "reading-standard-total-accuracy",
@@ -1427,9 +1431,15 @@ n2PaletteSnapshot.session.queue = [emptyWord.id, ...kanaQueue.filter((id) => id 
 storage.set(paletteStoreKey, JSON.stringify(n2PaletteSnapshot));
 reloadApplication();
 assert.equal(elements.get("quiz-word").textContent, longKanaWord.word, "전체 모드 이어하기에서도 열 글자 단어가 유지됩니다.");
+const longWordExample = globalThis.JLPT_USAGE_EXAMPLES[longKanaWord.id];
+assert.equal(elements.get("quiz-reading-context").textContent, longWordExample.sentence);
 enterCurrentKanaReading();
 elements.get("kana-submit").click();
 assert.equal(elements.get("feedback-title").textContent, "정답이에요");
+assert.equal(elements.get("feedback-usage-example").textContent, longWordExample.sentence.replace("＿＿＿", longWordExample.blank));
+assert.equal(elements.get("feedback-source").hidden, false);
+assert.ok(elements.get("feedback-source").href.endsWith(`/sentences/show/${longWordExample.sourceId}`));
+assert.ok(elements.get("feedback-source").textContent.includes(longWordExample.sourceAuthor));
 elements.get("next-button").click();
 assert.equal(elements.get("quiz-word").textContent, emptyWord.word);
 assert.equal(elements.get("quiz-reading-context").textContent, emptyWord.readingContext);
@@ -1803,7 +1813,105 @@ async function verifyBackupFlow() {
   assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지", "복원 후에도 뜻 선택 단계에서 이어집니다.");
 }
 
-verifyBackupFlow().then(() => console.log("app interaction flow tests passed")).catch((error) => {
+function verifyVocabularyUsage() {
+  elements.get("home-button").click();
+  elements.get("discard-session-button").click();
+  for (const id of ["mode-kanji-reading", "mode-kanji-kana", "mode-kanji-meaning", "mode-kanji-kana-meaning", "mode-reading-kanji", "mode-sentence-kanji", "mode-katakana-meaning"]) {
+    elements.get(id).checked = id === "mode-kanji-kana-meaning";
+  }
+  for (const id of ["difficulty-basic", "difficulty-n3", "difficulty-n2"]) {
+    elements.get(id).checked = id === "difficulty-basic";
+  }
+  elements.get("exam-mode").checked = false;
+  elements.get("mode-kanji-kana-meaning").dispatch("change");
+  elements.get("general-question-count").value = "10";
+  elements.get("start-button").click();
+  const saved = () => JSON.parse(storage.get(vocabActiveKey)).session;
+  const base = JSON.parse(storage.get(vocabActiveKey));
+  const garden = globalThis.VOCAB_DATA.find((item) => item.id === "d7-9");
+  base.session.baseIds = [garden.id, ...base.session.baseIds.filter((id) => id !== garden.id)].slice(0, base.session.total);
+  base.session.currentId = garden.id;
+  base.session.queue = base.session.baseIds.slice(1);
+  const restoreGarden = (mode = "kanji-to-kana-meaning") => {
+    storage.set(vocabActiveKey, JSON.stringify({ ...base, session: { ...base.session, mode } }));
+    reloadApplication();
+  };
+  const hint = elements.get("quiz-reading-context");
+  const example = elements.get("feedback-usage-example");
+  const masked = garden.sentence.replace("___", "＿＿＿");
+  const complete = garden.sentence.replace("___", garden.sentenceSurface || garden.word);
+  const assertMaskedUsage = () => {
+    assert.equal(hint.hidden, false);
+    assert.ok(hint.textContent.includes(masked));
+    assert.ok(!hint.textContent.includes(complete));
+    assert.equal(example.hidden, true, "채점 전에는 빈칸이 채워진 예문이 나오지 않습니다.");
+  };
+  const assertGradedUsage = () => {
+    assert.equal(hint.hidden, true);
+    assert.equal(example.hidden, false);
+    assert.ok(example.textContent.includes(complete), "채점 후에는 정답을 채운 일본어 예문을 표시합니다.");
+    assert.ok(!example.textContent.includes("＿＿＿"));
+  };
+
+  restoreGarden();
+  assert.equal(elements.get("quiz-word").textContent, garden.word);
+  assertMaskedUsage();
+  const answerInput = elements.get("kana-answer");
+  const letters = () => answerInput.querySelectorAll("button").filter((button) => button.dataset.kanaIndex !== undefined);
+  for (let index = 0; index < 20; index += 1) fullKanaTiles()[0].click();
+  assert.equal(letters().length, 20);
+  const fullWidthSlots = Number(answerInput.style["--kana-answer-slots"]);
+  letters()[9].click();
+  elements.get("kana-backspace").click();
+  assert.equal(letters().length, 19);
+  assert.ok(Number(answerInput.style["--kana-answer-slots"]) < fullWidthSlots);
+  fullKanaTiles()[1].click();
+  assert.equal(letters()[9].textContent, fullKanaTiles()[1].dataset.kana);
+  assert.equal(Number(answerInput.style["--kana-answer-slots"]), fullWidthSlots);
+  elements.get("kana-clear").click();
+  assert.equal(letters().length, 0);
+  fullKanaTiles()[0].click(); // The reading にわ is two characters, so one tile is always wrong.
+  elements.get("kana-submit").click();
+  assert.equal(saved().attempts, 1);
+  assert.equal(saved().wrong, 1);
+  assert.equal(elements.get("answer-grid").hidden, true, "읽기 오답이면 뜻 선택을 건너뜁니다.");
+  assertGradedUsage();
+
+  restoreGarden();
+  enterCurrentKanaReading();
+  elements.get("kana-submit").click();
+  assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지");
+  assertMaskedUsage();
+  assert.equal(saved().attempts, 0);
+  reloadApplication();
+  assert.equal(saved().runId, base.session.runId);
+  assert.equal(saved().currentId, garden.id);
+  assert.equal(saved().attempts, 0);
+  assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지");
+  assertMaskedUsage();
+  correctButtonForCurrentWord().click();
+  assert.equal(saved().attempts, 1);
+  assert.equal(saved().correct, 1);
+  assertGradedUsage();
+  assert.ok(elements.get("feedback-translation").textContent.includes(garden.sentenceTranslation));
+
+  restoreGarden("sentence-to-kanji");
+  assert.equal(elements.get("quiz-word").textContent, masked);
+  assert.equal(hint.hidden, true, "문장 빈칸 모드는 예문을 문제와 별개로 한 번 더 표시하지 않습니다.");
+  correctButtonForCurrentSentence().click();
+  assert.equal(saved().correct, 1);
+  assert.equal(example.hidden, true);
+
+  elements.get("home-button").click();
+  elements.get("feature-switch-button").click();
+  elements.get("feature-reading-button").click();
+  elements.get("reading-resume-button").click();
+  assert.equal(elements.get("reading-quiz-screen").classList.contains("is-active"), true);
+  assert.equal(elements.get("quiz-screen").classList.contains("is-active"), false);
+  assert.ok(!elements.get("reading-passage").innerHTML.includes(complete));
+}
+
+verifyBackupFlow().then(verifyVocabularyUsage).then(() => console.log("app interaction flow tests passed")).catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });

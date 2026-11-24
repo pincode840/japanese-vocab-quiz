@@ -91,6 +91,51 @@
     );
   }
 
+  // Vocabulary usage is a hint, not a cloze question. Keep its data separate
+  // from the sentence-question pool, and only reuse examples of the same sense.
+  function indexUsageExamples(items, curated = {}, supplemental = {}) {
+    const blankMarker = /___|＿＿＿/g;
+    const examplesBySense = new Map();
+    const senseKey = (item) => JSON.stringify([item.word, kanaReadings(item.reading).sort(), item.meaning]);
+
+    function prepare(item, example) {
+      if (!example?.sentence || !example.blank) return null;
+      const parts = example.sentence.split(blankMarker);
+      if (parts.length !== 2 || parts.some((part) => part.includes(example.blank) || part.includes(item.word))) {
+        return null;
+      }
+      return {
+        ...example,
+        prompt: parts.join("＿＿＿"),
+        fullSentence: parts.join(example.blank),
+      };
+    }
+
+    function ownSentence(item) {
+      return {
+        sentence: item.sentence,
+        blank: item.sentenceSurface || item.word,
+        translation: item.sentenceTranslation,
+        sourceUrl: item.sentenceAttribution,
+        sourceLicense: item.sentenceLicense,
+      };
+    }
+
+    items.forEach((item) => {
+      const example = prepare(item, ownSentence(item));
+      if (example) examplesBySense.set(senseKey(item), example);
+    });
+
+    return new Map(items.map((item) => [item.id,
+      prepare(item, { sentence: item.readingContext, blank: item.word })
+        || prepare(item, ownSentence(item))
+        || prepare(item, curated[item.id])
+        || examplesBySense.get(senseKey(item))
+        || prepare(item, supplemental[item.id])
+        || null,
+    ]));
+  }
+
   function sentenceSurfaceReading(item) {
     if (item?.sentenceSurfaceReading) return toHiragana(item.sentenceSurfaceReading);
     const reading = kanaReadings(item?.reading)[0] || normalizedReading(item?.reading || "");
@@ -340,6 +385,7 @@
     normalizedReading,
     kanaReadings,
     toHiragana,
+    indexUsageExamples,
     sentenceSurfaceReading,
     sentenceChoiceText,
     sentenceReading,

@@ -20,6 +20,8 @@
 !/japanese-vocab-quiz/n3-vocab-data.js
 !/japanese-vocab-quiz/n2-vocab-data.js
 !/japanese-vocab-quiz/katakana-vocab-data.js
+!/japanese-vocab-quiz/usage-context-curated.js
+!/japanese-vocab-quiz/usage-context-data.js
 !/japanese-vocab-quiz/reading-data.js
 !/japanese-vocab-quiz/reading-generated-data.js
 !/japanese-vocab-quiz/reading-advanced-guides.js

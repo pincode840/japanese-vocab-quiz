@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#17324d">
   <title>한자 읽기 퀴즈</title>
-  <link rel="stylesheet" href="styles.css?v=5522aecc4486">
+  <link rel="stylesheet" href="styles.css?v=cbcf4a8ebbfb">
 </head>
 <body>
   <main class="app-shell">
@@ -305,7 +305,7 @@
 
         <button id="start-button" class="primary-button" type="button">학습 시작</button>
         <p class="helper">진행 상황은 자동 저장됩니다. 틀린 단어는 다시 연습해요.</p>
-        <p class="source-note">N3 추가 예문: <a href="https://tatoeba.org/ko/" target="_blank" rel="noreferrer">Tatoeba · CC BY 2.0 FR</a></p>
+        <p class="source-note">일부 예문: <a href="https://tatoeba.org/ko/" target="_blank" rel="noreferrer">Tatoeba</a> · <a href="https://creativecommons.org/licenses/by/2.0/fr/" target="_blank" rel="license noreferrer">CC BY 2.0 FR</a></p>
 
         <details id="history-panel" class="history-panel setup-disclosure" hidden>
           <summary>최근 학습 기록</summary>
@@ -335,7 +335,7 @@
       <div class="paper-card quiz-card">
         <p id="quiz-prompt" class="prompt">이 단어를 어떻게 읽을까요?</p>
         <h2 id="quiz-word" lang="ja">日本語</h2>
-        <p id="quiz-reading-context" class="combined-step-status" lang="ja" hidden></p>
+        <p id="quiz-reading-context" class="quiz-usage-context" lang="ja" hidden></p>
         <p id="day-label" class="day-label">7일차</p>
         <p id="combined-step-status" class="combined-step-status" aria-live="polite" hidden></p>
         <p id="exam-mistake-badge" class="exam-mistake-badge" hidden></p>
@@ -365,6 +365,7 @@
             <p id="feedback-reading"></p>
             <p id="feedback-meaning"></p>
             <p id="feedback-sentence-reading" class="feedback-sentence-reading" hidden></p>
+            <p id="feedback-usage-example" class="feedback-usage-example" lang="ja" hidden></p>
             <p id="feedback-translation" class="feedback-translation" hidden></p>
             <a id="feedback-source" class="feedback-source" target="_blank" rel="noreferrer" hidden></a>
             <p id="retry-note" class="retry-note" hidden>이 단어는 잠시 뒤 다시 나옵니다.</p>
@@ -559,19 +560,21 @@
     </details>
 
     <p id="app-error" class="app-error" role="alert" hidden></p>
-    <p class="source-note"><small id="build-version">앱 버전 3f4e2d80a870</small></p>
+    <p class="source-note"><small id="build-version">앱 버전 2b7d25ceae61</small></p>
   </main>
 
   <script src="vocab-data.js?v=a1d5101c7678"></script>
   <script src="n3-vocab-data.js?v=1c78e718d46f"></script>
   <script src="n2-vocab-data.js?v=9e75572461fc"></script>
   <script src="katakana-vocab-data.js?v=95a183fd610e"></script>
+  <script src="usage-context-curated.js?v=5683f6c66a7d"></script>
+  <script src="usage-context-data.js?v=a5a79318b95f"></script>
   <script src="reading-data.js?v=a12c147553ca"></script>
   <script src="reading-generated-data.js?v=c1d9aa1f0e47"></script>
   <script src="reading-advanced-guides.js?v=e936d974d12a"></script>
-  <script src="quiz-engine.js?v=949a77904d9f"></script>
+  <script src="quiz-engine.js?v=5a8b8ce2e6f4"></script>
   <script src="reading-renderer.js?v=94a082852b48"></script>
   <script src="session-store.js?v=fdaae0fd00f9"></script>
-  <script src="app.js?v=8bda5047e155"></script>
+  <script src="app.js?v=c402ad1191f7"></script>
 </body>
 </html>

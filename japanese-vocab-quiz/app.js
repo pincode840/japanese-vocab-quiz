@@ -15,6 +15,7 @@
   const commonReadingGuides = window.READING_COMMON_READINGS || {};
   const readingRenderer = window.ReadingRenderer.create(commonReadingGuides);
   const activeSessionStore = window.QuizSessionStore.create(localStorage);
+  const backupRevisionKey = window.QuizSessionStore.BACKUP_REVISION_KEY;
 
   function normalizeData(items, prefix) {
     return Array.isArray(items)
@@ -238,6 +239,14 @@
     readingResultTotal: document.getElementById("reading-result-total"),
     readingReturnButton: document.getElementById("reading-return-button"),
     appError: document.getElementById("app-error"),
+    backupPanel: document.getElementById("backup-panel"),
+    backupDownload: document.getElementById("backup-download"),
+    backupFile: document.getElementById("backup-file"),
+    backupPreview: document.getElementById("backup-preview"),
+    backupPreviewText: document.getElementById("backup-preview-text"),
+    backupRestore: document.getElementById("backup-restore"),
+    backupCancel: document.getElementById("backup-cancel"),
+    backupStatus: document.getElementById("backup-status"),
   };
 
   const modeRecordElements = {
@@ -294,6 +303,14 @@
   let currentFeature = "vocab";
   let examTimerId = null;
   let selectedMistakeDifficulty = "n5n4";
+  const backupStore = window.QuizSessionStore.createBackupStore(localStorage, STORAGE_KEY, {
+    validateProgress: validateBackupProgress,
+    validateSession: validateBackupSession,
+  });
+  let backupRevision = readBackupRevision();
+  let pendingBackup = null;
+  let backupSelection = 0;
+  let backupBusy = false;
 
   function hasCompleteSentence(item) {
     return item.sentence?.split("___").length === 2
@@ -569,10 +586,12 @@
   }
 
   function saveActiveSession(kind) {
+    if (readBackupRevision() !== backupRevision) return;
     activeSessionStore.save(kind, kind === "reading" ? readingSession : session);
   }
 
   function clearActiveSession(kind, runId = null) {
+    if (readBackupRevision() !== backupRevision) return;
     activeSessionStore.clear(kind, runId);
     renderResumePanels();
   }
@@ -605,6 +624,73 @@
       : "JLPT N5 · N4 · N3 · N2";
     elements.brandTitle.textContent = readingFeature ? "일본어 독해 퀴즈" : "한자 읽기 퀴즈";
     document.title = readingFeature ? "일본어 독해 퀴즈" : "한자 읽기 퀴즈";
+  }
+
+  // Validate imported files before replacing anything. The normal storage
+  // loader is deliberately tolerant of old local records and isn't a validator.
+  const backupObject = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+  const backupCount = (value) => Number.isSafeInteger(value) && value >= 0;
+  const backupText = (value) => typeof value === "string" && value.length <= 200;
+  const backupOptional = (record, key, check) => !Object.hasOwn(record, key) || check(record[key]);
+  const backupAccuracy = (value) => value === null || (Number.isFinite(value) && value >= 0 && value <= 100);
+  function validateBackupProgress(record) {
+    const validStats = (value) => backupObject(value)
+      && ["completedSessions", "totalCorrect", "totalAttempts"].every((key) => backupOptional(value, key, backupCount))
+      && (value.totalCorrect ?? 0) <= (value.totalAttempts ?? 0)
+      && backupOptional(value, "lastAccuracy", backupAccuracy);
+    const validHistory = (list) => Array.isArray(list) && list.length <= 500 && list.every((entry) =>
+      backupObject(entry) && backupCount(entry.session) && entry.session > 0
+      && ["correct", "wrong", "total", "choiceCount"].every((key) => backupOptional(entry, key, backupCount))
+      && ["date", "runId", "difficulty", "mode", "kanaPaletteMode"].every((key) => backupOptional(entry, key, backupText))
+      && backupOptional(entry, "accuracy", backupAccuracy));
+    const counterMaps = ["mistakeCounts", "wrongAnswerCounts", "practiceCleanStreaks", "practiceCooldowns", "examMistakeCounts", "examCooldowns"];
+    return validStats(record)
+      && ["completedSessions", "totalCorrect", "totalAttempts"].every((key) => Object.hasOwn(record, key))
+      && ["practiceSessionCount", "wrongAnswerCountsVersion"].every((key) => backupOptional(record, key, backupCount))
+      && ["history", "readingHistory"].every((key) => backupOptional(record, key, validHistory))
+      && backupOptional(record, "seenIds", (list) => Array.isArray(list) && list.length <= 10000 && list.every(backupText))
+      && counterMaps.every((key) => backupOptional(record, key, (map) => backupObject(map) && Object.values(map).every(backupCount)))
+      && ["sessionStats", "readingStats"].every((key) => backupOptional(record, key, (map) => backupObject(map) && Object.values(map).every(validStats)));
+  }
+
+  function validateBackupSession(kind, envelope) {
+    const value = envelope.session;
+    if (!backupObject(value) || !backupCount(value.number) || !value.number
+      || ![value.attempts, value.correct, value.wrong].every(backupCount)
+      || value.attempts !== value.correct + value.wrong || typeof value.answered !== "boolean"
+      || value.completed || !backupOptional(value, "runId", backupText)) return false;
+
+    if (kind === "reading") {
+      return ["furigana", "standard"].includes(value.difficulty)
+        && Array.isArray(value.questions) && value.questions.length <= readingData.length
+        && value.attempts === value.index + Number(value.answered)
+        && new Set(value.questions.map((question) => question?.id)).size === value.questions.length
+        && Boolean(window.QuizSessionStore.hydrateReading(value, readingData));
+    }
+
+    if (kind !== "vocab" || !Object.hasOwn(difficultyLabels, value.difficulty)
+      || !Object.hasOwn(modeLabels, value.mode) || typeof value.examMode !== "boolean"
+      || !backupCount(value.total) || !value.total || !backupCount(value.choiceCount)
+      || value.choiceCount < 2 || value.choiceCount > 120) return false;
+    const available = new Set(datasetForMode(value.difficulty, value.mode, value.kanaPaletteMode).map((item) => item.id));
+    const base = Array.isArray(value.baseIds) && new Set(value.baseIds);
+    const usesOnly = (list, ids) => Array.isArray(list) && list.length <= value.total && list.every((id) => ids.has(id));
+    const validBoardId = (id) => id === null || available.has(id);
+    return Boolean(base) && base.size === value.total && value.baseIds.length === value.total
+      && usesOnly(value.baseIds, available) && base.has(value.currentId) && usesOnly(value.queue, base)
+      && ["masteredIds", "mistakenIds", "correctIds"].every((key) => backupOptional(value, key, (list) => usesOnly(list, base)))
+      && ["hintSelectedId", "readingAnswerId"].every((key) => backupOptional(value, key, validBoardId))
+      && ["practiceRound", "completedQuestions", "currentMisses"].every((key) => backupOptional(value, key, backupCount))
+      && backupOptional(value, "kanaAnswer", (answer) => typeof answer === "string" && /^[ぁ-ゖー]{0,20}$/u.test(answer))
+      && (!value.examMode || value.answered || (backupCount(value.examDeadline) && value.examDeadline > 0));
+  }
+
+  function readBackupRevision() {
+    try {
+      return localStorage.getItem(backupRevisionKey);
+    } catch (_error) {
+      return null;
+    }
   }
 
   function restoreVocabSession(saved) {
@@ -658,6 +744,7 @@
   }
 
   function restoreActiveSession(expectedKind = null) {
+    if (!backupRevisionIsCurrent()) return false;
     progress = progressStore.load();
     const saved = activeSessionStore.load(expectedKind);
     if (!saved) return false;
@@ -679,6 +766,7 @@
   }
 
   function discardSavedSession(kind) {
+    if (!backupRevisionIsCurrent()) return;
     if (kind === "vocab") session = null;
     else readingSession = null;
     clearActiveSession(kind);
@@ -809,6 +897,7 @@
     Object.entries(screens).forEach(([key, screen]) => {
       screen.classList.toggle("is-active", key === name);
     });
+    elements.backupPanel.hidden = name !== "start" && name !== "readingStart";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -953,6 +1042,7 @@
   }
 
   function startReadingSession() {
+    if (!backupRevisionIsCurrent()) return;
     progress = progressStore.load();
     clearActiveSession("reading");
     const difficulty = selectedReadingDifficulty();
@@ -1098,7 +1188,7 @@
   }
 
   function answerReadingQuestion(choiceIndex) {
-    if (!readingSession || readingSession.answered) return;
+    if (!backupRevisionIsCurrent() || !readingSession || readingSession.answered) return;
     const item = readingSession.questions[readingSession.index];
     const choice = item.sessionChoices[choiceIndex];
     if (!choice) return;
@@ -1127,7 +1217,7 @@
   }
 
   function showNextReadingQuestion() {
-    if (!readingSession?.answered) return;
+    if (!backupRevisionIsCurrent() || !readingSession?.answered) return;
     if (readingSession.index + 1 >= readingSession.questions.length) {
       completeReadingSession();
       return;
@@ -1378,6 +1468,7 @@
   }
 
   function startSession() {
+    if (!backupRevisionIsCurrent()) return;
     progress = progressStore.load();
     const mode = selectedMode();
     const difficulty = selectedDifficulty();
@@ -1564,7 +1655,7 @@
   }
 
   function updateKanaEditor(action, value = null, focusEditor = false) {
-    if (!isKanaInputStep() || session.answered) return;
+    if (!backupRevisionIsCurrent() || !isKanaInputStep() || session.answered) return;
     const next = engine.editKana(currentKanaEditState(), action, value);
     session.kanaAnswer = next.answer;
     session.kanaCursor = next.cursor;
@@ -1802,6 +1893,7 @@
   }
 
   function showNextQuestion(resumeState = null) {
+    if (!backupRevisionIsCurrent() || !session) return;
     stopExamTimer();
     if (session.queue.length === 0) {
       completeSession();
@@ -2040,7 +2132,7 @@
   }
 
   function answerQuestion(selectedId, timedOut = false, constructedAnswer = null) {
-    if (!session || session.answered || session.completed) return;
+    if (!backupRevisionIsCurrent() || !session || session.answered || session.completed) return;
     if (session.examMode) {
       // Browser timer callbacks can be delayed. Check the real deadline at submission
       // too, so a late click/key press cannot be scored as a correct answer.
@@ -2190,6 +2282,7 @@
   }
 
   function returnToStart() {
+    if (!backupRevisionIsCurrent()) return;
     stopExamTimer();
     elements.examTimer.hidden = true;
     elements.examMistakeBadge.hidden = true;
@@ -2206,6 +2299,132 @@
       syncModeControls();
       showScreen("start");
       elements.startButton.focus();
+    }
+  }
+
+  function withBackupLock(operation) {
+    // Use the same lock as the regular progress writer. Older browsers can
+    // still use files, but should close other study tabs before replacing data.
+    const locks = window.navigator?.locks;
+    return locks?.request ? locks.request(STORAGE_KEY, operation) : Promise.resolve().then(operation);
+  }
+
+  function setBackupBusy(busy) {
+    backupBusy = busy;
+    elements.backupDownload.disabled = busy;
+    elements.backupFile.disabled = busy;
+    elements.backupRestore.disabled = busy;
+    elements.backupCancel.disabled = busy;
+  }
+
+  function clearBackupPreview(resetFile = true) {
+    backupSelection += 1;
+    pendingBackup = null;
+    elements.backupPreview.hidden = true;
+    elements.backupPreviewText.textContent = "";
+    if (resetFile) elements.backupFile.value = "";
+  }
+
+  function refreshAfterBackup(message) {
+    backupRevision = readBackupRevision();
+    stopExamTimer();
+    session = null;
+    readingSession = null;
+    progress = progressStore.load();
+    clearBackupPreview();
+    elements.appError.hidden = true;
+    elements.examTimer.hidden = true;
+    elements.kanaPaletteNine.checked = progress.kanaPaletteMode !== "all";
+    elements.kanaPaletteAll.checked = progress.kanaPaletteMode === "all";
+    renderKanaLayout();
+    syncModeControls();
+    renderReadingStartScreen();
+    if (!elements.mistakeMenuLayer.hidden) renderMistakeMenu();
+    const home = currentFeature === "reading" ? "readingStart" : "start";
+    if (!screens[home].classList.contains("is-active")) showScreen(home);
+    elements.backupStatus.textContent = message;
+  }
+
+  function backupRevisionIsCurrent() {
+    if (readBackupRevision() === backupRevision) return true;
+    refreshAfterBackup("다른 탭에서 기록을 가져왔습니다. 최신 기록을 표시했습니다.");
+    return false;
+  }
+
+  async function downloadProgressBackup() {
+    if (backupBusy || elements.backupPanel.hidden) return;
+    setBackupBusy(true);
+    try {
+      const contents = await withBackupLock(() => backupStore.exportText());
+      const url = URL.createObjectURL(new Blob([contents], { type: "application/json" }));
+      try {
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `jlpt-quiz-backup-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.json`;
+        document.body.append(link);
+        try {
+          link.click();
+        } finally {
+          link.remove();
+        }
+      } finally {
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+      elements.backupStatus.textContent = "백업 파일 다운로드를 요청했습니다. 브라우저의 다운로드 폴더를 확인하세요.";
+    } catch (error) {
+      elements.backupStatus.textContent = error.message || "백업 파일을 내보내지 못했습니다.";
+    } finally {
+      setBackupBusy(false);
+    }
+  }
+
+  async function previewProgressBackup() {
+    if (backupBusy || elements.backupPanel.hidden) return;
+    const file = elements.backupFile.files?.[0];
+    clearBackupPreview(false);
+    elements.backupStatus.textContent = "";
+    if (!file) return;
+    const request = backupSelection;
+    try {
+      if (file.size > window.QuizSessionStore.BACKUP_MAX_BYTES) throw new Error("백업 파일은 5MB 이하여야 합니다.");
+      const text = await file.text();
+      if (request !== backupSelection) return;
+      const backup = backupStore.parseText(text);
+      const active = [backup.sessions.vocab && "단어·문장", backup.sessions.reading && "독해"].filter(Boolean);
+      const readingRounds = Object.values(backup.progress?.readingStats || {})
+        .reduce((total, stat) => total + (stat.completedSessions || 0), 0);
+      const date = new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(backup.exportedAt));
+      elements.backupPreviewText.textContent =
+        `저장 시각: ${date} · 완료 회차: 단어·문장 ${backup.progress?.completedSessions || 0}회 / 독해 ${readingRounds}회 · 진행 중: ${active.join(", ") || "없음"}`;
+      pendingBackup = backup;
+      elements.backupPreview.hidden = false;
+    } catch (error) {
+      if (request !== backupSelection) return;
+      clearBackupPreview();
+      elements.backupStatus.textContent = error.message || "백업 파일을 읽을 수 없습니다.";
+    }
+  }
+
+  async function restoreProgressBackup() {
+    if (!pendingBackup || backupBusy || elements.backupPanel.hidden) return;
+    const backup = pendingBackup;
+    setBackupBusy(true);
+    let restored = false;
+    try {
+      await withBackupLock(() => {
+        if (elements.backupPanel.hidden || pendingBackup !== backup) {
+          throw new Error("시작 화면에서 백업 파일을 다시 확인해 주세요.");
+        }
+        backupStore.restore(backup);
+        refreshAfterBackup("학습 기록을 가져왔습니다. 진행 중인 회차가 있다면 이어하기를 누르세요.");
+        elements.backupPanel.open = true;
+        restored = true;
+      });
+    } catch (error) {
+      elements.backupStatus.textContent = error.message || "백업 기록을 가져오지 못했습니다.";
+    } finally {
+      setBackupBusy(false);
+      if (restored) elements.backupDownload.focus();
     }
   }
 
@@ -2411,6 +2630,7 @@
       elements.appError.textContent = "학습 데이터를 불러오지 못했습니다. 단어·독해 데이터 파일을 확인해 주세요.";
       elements.startButton.disabled = true;
       elements.readingStartButton.disabled = true;
+      elements.backupPanel.hidden = true;
       return;
     }
     renderStartScreen();
@@ -2469,9 +2689,19 @@
     elements.difficultyBasic.addEventListener("change", syncModeControls);
     elements.difficultyN3.addEventListener("change", syncModeControls);
     elements.difficultyN2.addEventListener("change", syncModeControls);
+    elements.backupDownload.addEventListener("click", downloadProgressBackup);
+    elements.backupFile.addEventListener("change", previewProgressBackup);
+    elements.backupRestore.addEventListener("click", restoreProgressBackup);
+    elements.backupCancel.addEventListener("click", () => {
+      clearBackupPreview();
+      elements.backupStatus.textContent = "가져오기를 취소했습니다. 기록은 바뀌지 않았습니다.";
+      elements.backupFile.focus();
+    });
     document.addEventListener("keydown", handleKeyboard);
     window.addEventListener?.("storage", ({ key }) => {
-      if (key === STORAGE_KEY) {
+      if (key === backupRevisionKey) {
+        backupRevisionIsCurrent();
+      } else if (key === STORAGE_KEY) {
         progress = progressStore.load();
         if (screens.start.classList.contains("is-active")) syncModeControls();
         if (screens.readingStart.classList.contains("is-active")) renderReadingStartScreen();

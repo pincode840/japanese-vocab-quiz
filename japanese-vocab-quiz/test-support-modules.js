@@ -186,7 +186,148 @@ async function verifyProgressTransactions() {
   assert.equal(clearedSnapshot, false, "기록 쓰기가 실패하면 재개할 수 있는 회차를 지우지 않습니다.");
 }
 
-verifyProgressTransactions().then(() => console.log("support module tests passed")).catch((error) => {
+function verifyBackupStore() {
+  const progressKey = "backup-progress-test";
+  const vocabKey = SessionStore.keyFor("vocab");
+  const readingKey = SessionStore.keyFor("reading");
+  const legacyKey = SessionStore.STORAGE_KEY;
+  const memoryStorage = (entries = []) => {
+    const values = new Map(entries);
+    return {
+      values,
+      getItem: (key) => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, value),
+      removeItem: (key) => values.delete(key),
+    };
+  };
+  const options = {
+    validateProgress: (progress) => Array.isArray(progress.history),
+    validateSession: (kind, saved) => kind === "vocab"
+      ? saved.session.difficulty === "n2"
+      : SessionStore.hydrateReading(saved.session, readingData) !== null,
+  };
+  const progress = {
+    history: [{ difficulty: "n2", mode: "kanji-to-kana-meaning", correct: 10, wrong: 2 }],
+    mistakeCounts: { "n2:kanji-to-kana-meaning:word-2": 1 },
+    kanaPaletteMode: "all",
+  };
+  const source = memoryStorage([[progressKey, JSON.stringify(progress)], ["another-app", "do not export"]]);
+  const active = SessionStore.create(source, () => 12345);
+  assert.equal(active.save("vocab", {
+    ...vocabSession,
+    difficulty: "n2",
+    mode: "kanji-to-kana-meaning",
+    readingAnswerId: "word-1",
+    masteredIds: new Set(),
+    correctIds: new Set(),
+    kanaPaletteMode: "all",
+    kanaAnswer: "がっこう",
+    kanaCursor: 4,
+    kanaSelection: null,
+    total: 2,
+  }), true);
+  assert.equal(active.save("reading", { ...readingSession, difficulty: "standard", hintShown: true, hintChoiceIndex: 1 }), true);
+
+  const backupText = SessionStore.createBackupStore(source, progressKey, options).exportText();
+  const destination = memoryStorage([
+    [progressKey, JSON.stringify({ history: [] })],
+    [legacyKey, source.getItem(vocabKey)],
+    ["another-app", "keep my data"],
+  ]);
+  const importer = SessionStore.createBackupStore(destination, progressKey, options);
+  const backup = importer.parseText(backupText);
+  assert.deepEqual(backup.progress, progress);
+  assert.deepEqual(backup.sessions.vocab, active.load("vocab"));
+  assert.deepEqual(backup.sessions.reading, active.load("reading"));
+  assert.ok(!backupText.includes("do not export"), "앱의 학습 기록만 내보냅니다.");
+  importer.restore(backup);
+  const restored = SessionStore.create(destination);
+  assert.deepEqual(JSON.parse(destination.getItem(progressKey)), progress);
+  assert.deepEqual(restored.load("vocab"), backup.sessions.vocab);
+  assert.deepEqual(restored.load("reading"), backup.sessions.reading);
+  assert.equal(destination.getItem(legacyKey), null);
+  assert.equal(destination.getItem("another-app"), "keep my data");
+
+  const originalDestination = new Map(destination.values);
+  const oversizedText = JSON.stringify({ ...backup, progress: {
+    ...progress,
+    history: [{ ...progress.history[0], note: "한".repeat(Math.ceil(SessionStore.BACKUP_MAX_BYTES / 3)) }],
+  } });
+  assert.ok(oversizedText.length < SessionStore.BACKUP_MAX_BYTES && Buffer.byteLength(oversizedText, "utf8") > SessionStore.BACKUP_MAX_BYTES);
+  const invalidFiles = [
+    ["잘린 JSON", backupText.slice(0, -1)],
+    ["알 수 없는 파일 형식", JSON.stringify({ ...backup, app: "another-app" })],
+    ["미래 백업 버전", JSON.stringify({ ...backup, version: backup.version + 1 })],
+    ["잘못된 기록 구조", JSON.stringify({ ...backup, progress: { history: "not an array" } })],
+    ["회차 종류 불일치", JSON.stringify({ ...backup, sessions: { ...backup.sessions, vocab: backup.sessions.reading } })],
+    ["유효하지 않은 회차", JSON.stringify({ ...backup, sessions: { ...backup.sessions,
+      reading: { ...backup.sessions.reading, session: { ...backup.sessions.reading.session, hintChoiceIndex: 0 } },
+    } })],
+    ["UTF-8 용량 초과", oversizedText],
+  ];
+  for (const [caseName, text] of invalidFiles) {
+    assert.throws(() => importer.parseText(text), Error, `${caseName} 백업은 복원할 수 없습니다.`);
+    assert.deepEqual(destination.values, originalDestination, `${caseName} 백업 검증은 기존 기록을 바꾸지 않습니다.`);
+  }
+  assert.throws(() => importer.restore({ ...backup, version: backup.version + 1 }), Error);
+  assert.deepEqual(destination.values, originalDestination, "직접 복원할 때도 검증 실패는 저장 상태를 바꾸지 않습니다.");
+
+  const rollback = memoryStorage([
+    [progressKey, JSON.stringify({ history: ["existing progress"] })],
+    [vocabKey, JSON.stringify({ ...backup.sessions.vocab, savedAt: 21 })],
+    [legacyKey, JSON.stringify({ ...backup.sessions.reading, savedAt: 23 })],
+    ["another-app", "keep my data"],
+  ]);
+  const rollbackBaseline = new Map(rollback.values);
+  let writeAttempt = 0;
+  const quotaGuard = (method) => (key, value) => {
+    if (++writeAttempt === 2) throw new Error("quota exceeded");
+    return rollback[method](key, value);
+  };
+  const blocked = SessionStore.createBackupStore({
+    ...rollback,
+    setItem: quotaGuard("setItem"),
+    removeItem: quotaGuard("removeItem"),
+  }, progressKey, options);
+  assert.throws(() => blocked.restore(backup), Error);
+  assert.ok(writeAttempt >= 2, "적어도 한 저장 작업이 끝난 뒤 용량 오류를 발생시킵니다.");
+  assert.deepEqual(rollback.values, rollbackBaseline, "복원 중 오류가 발생하면 변경된 키와 없는 키를 모두 원래대로 되돌립니다.");
+
+  const legacySource = memoryStorage([
+    [legacyKey, source.getItem(vocabKey)],
+    [readingKey, source.getItem(readingKey)],
+  ]);
+  const legacyBaseline = new Map(legacySource.values);
+  const legacyBackup = importer.parseText(SessionStore.createBackupStore(legacySource, progressKey, options).exportText());
+  assert.equal(legacyBackup.progress, null);
+  assert.deepEqual(legacyBackup.sessions, backup.sessions, "이전 공용 슬롯도 알맞은 백업 회차에 담습니다.");
+  assert.deepEqual(legacySource.values, legacyBaseline, "백업 생성은 이전 저장 슬롯을 옮기거나 지우지 않습니다.");
+  importer.restore(legacyBackup);
+  assert.equal(destination.getItem(progressKey), null, "원본에 없는 기록은 복원 후에도 비어 있습니다.");
+
+  // Hold an old tab's queued write until after the backup replaces progress.
+  const pendingLocks = [];
+  const restoredProgress = SessionStore.createProgressStore(destination, progressKey,
+    (raw) => JSON.parse(raw) || { history: [] }, {
+      request: (_name, callback) => new Promise((resolve) => pendingLocks.push(() => resolve(callback()))),
+    });
+  let oldCommitRan = false;
+  restoredProgress.update((saved) => { saved.history.push("stale turn"); }, () => { oldCommitRan = true; });
+  assert.equal(pendingLocks.length, 1);
+  const previousRevision = destination.getItem(SessionStore.BACKUP_REVISION_KEY);
+  importer.restore(backup);
+  assert.notEqual(destination.getItem(SessionStore.BACKUP_REVISION_KEY), previousRevision);
+  pendingLocks.shift()();
+  assert.deepEqual(restoredProgress.loadPersisted(), progress, "복원 전에 대기하던 다른 탭의 학습 저장이 백업을 덮지 않습니다.");
+  assert.equal(oldCommitRan, false, "취소된 이전 기록에 대한 저장 완료 콜백은 실행하지 않습니다.");
+  let newCommitRan = false;
+  restoredProgress.update((saved) => { saved.history.push("new turn"); }, () => { newCommitRan = true; });
+  pendingLocks.shift()();
+  assert.equal(newCommitRan, true);
+  assert.deepEqual(restoredProgress.loadPersisted().history, [...progress.history, "new turn"]);
+}
+
+verifyProgressTransactions().then(verifyBackupStore).then(() => console.log("support module tests passed")).catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });

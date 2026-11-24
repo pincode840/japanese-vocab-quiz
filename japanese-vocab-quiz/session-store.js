@@ -9,6 +9,11 @@
   const KINDS = ["vocab", "reading"];
   const VERSION = 1;
   const keyFor = (kind) => `jlpt-vocab-quiz-active-session-v2:${kind}`;
+  const BACKUP_APP_ID = "japanese-vocab-quiz";
+  const BACKUP_VERSION = 1;
+  const BACKUP_MAX_BYTES = 5 * 1024 * 1024;
+  const BACKUP_REVISION_KEY = "jlpt-vocab-quiz-backup-revision-v1";
+  const PROTOTYPE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 
   function vocabSnapshot(session) {
     if (!session || session.completed) return null;
@@ -156,10 +161,157 @@
     return { clear, load, save };
   }
 
+  const isObject = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+  const isTimestamp = (value) => Number.isSafeInteger(value) && value >= 0;
+  const isId = (value) => typeof value === "string" && value.length > 0;
+
+  function hasSafeJsonTree(value, depth = 0) {
+    if (depth > 64) return false;
+    if (Array.isArray(value)) return value.every((item) => hasSafeJsonTree(item, depth + 1));
+    if (isObject(value)) {
+      return Object.keys(value).every((key) => !PROTOTYPE_KEYS.has(key)
+        && hasSafeJsonTree(value[key], depth + 1));
+    }
+    return typeof value !== "number" || Number.isFinite(value);
+  }
+
+  function validBackupSession(envelope, kind) {
+    if (!isObject(envelope) || envelope.version !== VERSION || envelope.kind !== kind
+      || !isTimestamp(envelope.savedAt) || !isObject(envelope.session)) return false;
+    const session = envelope.session;
+    if (kind === "vocab") {
+      return ["baseIds", "queue", "masteredIds", "mistakenIds", "correctIds"].every(
+        (key) => Array.isArray(session[key]) && session[key].every(isId),
+      ) && (session.currentId === null || isId(session.currentId));
+    }
+    return Array.isArray(session.questions) && Number.isInteger(session.index)
+      && session.index >= 0 && session.index < session.questions.length
+      && session.questions.every((item) => isObject(item) && isId(item.id)
+        && Array.isArray(item.sessionChoices) && item.sessionChoices.length === 4
+        && item.sessionChoices.every((choice) => isObject(choice) && typeof choice.text === "string"
+          && typeof choice.correct === "boolean"));
+  }
+
+  function createBackupStore(storage, progressKey, { validateProgress, validateSession } = {}) {
+    const badFormat = () => new Error("이 앱의 백업 파일이 아니거나 기록 형식이 올바르지 않습니다.");
+    const tooLarge = () => new Error("백업 파일 크기는 5MB 이하여야 합니다.");
+
+    function serialize(value) {
+      try {
+        return JSON.stringify(value);
+      } catch (_error) {
+        throw badFormat();
+      }
+    }
+
+    function parseText(text) {
+      if (typeof text !== "string") throw badFormat();
+      if (text.length > BACKUP_MAX_BYTES || new TextEncoder().encode(text).byteLength > BACKUP_MAX_BYTES) {
+        throw tooLarge();
+      }
+      let parsed;
+      try {
+        parsed = JSON.parse(text.replace(/^\uFEFF/, ""));
+      } catch (_error) {
+        throw badFormat();
+      }
+      if (!isObject(parsed) || parsed.app !== BACKUP_APP_ID || parsed.version !== BACKUP_VERSION
+        || !isTimestamp(parsed.exportedAt) || !Number.isFinite(new Date(parsed.exportedAt).getTime()) || !isObject(parsed.sessions)
+        || (parsed.progress !== null && !isObject(parsed.progress)) || !hasSafeJsonTree(parsed)
+        || !KINDS.every((kind) => parsed.sessions[kind] === null || validBackupSession(parsed.sessions[kind], kind))) {
+        throw badFormat();
+      }
+      try {
+        if (parsed.progress !== null && validateProgress && !validateProgress(parsed.progress)) throw badFormat();
+        if (validateSession && !KINDS.every(
+          (kind) => parsed.sessions[kind] === null || validateSession(kind, parsed.sessions[kind]),
+        )) throw badFormat();
+      } catch (_error) {
+        throw badFormat();
+      }
+      return parsed;
+    }
+
+    function exportText() {
+      let backup;
+      try {
+        const read = (key) => JSON.parse(storage.getItem(key));
+        const progress = read(progressKey);
+        const sessions = Object.fromEntries(KINDS.map((kind) => [kind, read(keyFor(kind))]));
+        // Read legacy snapshots without migrating or changing any browser data.
+        if (KINDS.some((kind) => sessions[kind] === null)) {
+          const legacy = read(STORAGE_KEY);
+          if (legacy && KINDS.includes(legacy.kind) && sessions[legacy.kind] === null) sessions[legacy.kind] = legacy;
+        }
+        backup = { app: BACKUP_APP_ID, version: BACKUP_VERSION, exportedAt: Date.now(), progress, sessions };
+      } catch (_error) {
+        throw new Error("브라우저에서 학습 기록을 읽을 수 없습니다.");
+      }
+      const text = serialize(backup);
+      parseText(text);
+      return text;
+    }
+
+    function restore(backup) {
+      const verified = parseText(serialize(backup));
+      const encoded = (value) => value === null ? null : serialize(value);
+      const replacement = new Map([
+        [progressKey, encoded(verified.progress)],
+        ...KINDS.map((kind) => [keyFor(kind), encoded(verified.sessions[kind])]),
+        [STORAGE_KEY, null],
+        [BACKUP_REVISION_KEY, globalThis.crypto?.randomUUID?.()
+          || `${Date.now()}:${Math.random().toString(36).slice(2)}`],
+      ]);
+      const previous = new Map();
+      try {
+        for (const key of replacement.keys()) previous.set(key, storage.getItem(key));
+      } catch (_error) {
+        throw new Error("현재 기록을 먼저 읽을 수 없어 가져오지 않았습니다.");
+      }
+      const write = (key, value) => value === null ? storage.removeItem(key) : storage.setItem(key, value);
+      const changeSize = (key) => (replacement.get(key)?.length || 0) - (previous.get(key)?.length || 0);
+      // Release unused quota before growing other keys. A final revision change
+      // tells other tabs to stop using sessions that predate the replacement.
+      const keys = [...replacement.keys()].filter((key) => key !== BACKUP_REVISION_KEY
+        && replacement.get(key) !== previous.get(key)).sort((a, b) => changeSize(a) - changeSize(b));
+      keys.push(BACKUP_REVISION_KEY);
+      const written = [];
+      try {
+        for (const key of keys) {
+          write(key, replacement.get(key));
+          written.push(key);
+        }
+      } catch (_error) {
+        let rollbackSucceeded = true;
+        for (const key of written.reverse()) {
+          try {
+            write(key, previous.get(key));
+          } catch (_restoreError) {
+            rollbackSucceeded = false;
+          }
+        }
+        throw new Error(rollbackSucceeded
+          ? "저장 공간이나 브라우저 설정 때문에 가져오지 못했습니다. 기존 기록은 유지했습니다."
+          : "가져오기에 실패했고 기존 기록의 일부를 되돌리지 못했습니다. 백업 파일을 보관해 주세요.");
+      }
+    }
+
+    return { exportText, parseText, restore };
+  }
+
+  function backupRevision(storage) {
+    try {
+      return storage.getItem(BACKUP_REVISION_KEY);
+    } catch (_error) {
+      return null;
+    }
+  }
+
   // Mutations are replayable: apply them to the most recent stored state, not a
   // tab's startup snapshot. Web Locks serialize read-modify-write across tabs.
   function createProgressStore(storage, key, normalize, locks = null) {
     let raw;
+    let durableRevision = null;
     let durable = normalize(null);
     let committed = durable;
     const pending = [];
@@ -169,10 +321,12 @@
     function latest() {
       try {
         const value = storage.getItem(key);
-        if (value !== raw) {
+        const revision = backupRevision(storage);
+        if (value !== raw || revision !== durableRevision) {
           durable = normalize(value);
           committed = durable;
           raw = value;
+          durableRevision = revision;
         }
       } catch (_error) {
         // Keep a usable in-memory copy if localStorage is disabled.
@@ -189,14 +343,17 @@
       const saved = latest();
       if (!pending.length) return saved;
       const optimistic = clone(saved);
-      pending.forEach(({ mutate }) => mutate(optimistic));
+      pending.forEach(({ mutate, revision }) => {
+        if (revision === durableRevision) mutate(optimistic);
+      });
       return optimistic;
     }
 
     function flush() {
-      const batch = pending.splice(0);
+      const saved = latest();
+      const batch = pending.splice(0).filter(({ revision }) => revision === durableRevision);
       if (!batch.length) return;
-      const next = clone(latest());
+      const next = clone(saved);
       const results = batch.map(({ mutate }) => mutate(next));
       committed = next;
       try {
@@ -213,7 +370,7 @@
     }
 
     function update(mutate, onCommitted) {
-      pending.push({ mutate, onCommitted });
+      pending.push({ mutate, onCommitted, revision: backupRevision(storage) });
       if (!locks?.request) {
         flush();
       } else if (!scheduled) {
@@ -237,9 +394,12 @@
   }
 
   return {
+    BACKUP_MAX_BYTES,
+    BACKUP_REVISION_KEY,
     STORAGE_KEY,
     VERSION,
     create,
+    createBackupStore,
     createProgressStore,
     keyFor,
     hydrateReading,

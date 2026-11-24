@@ -107,6 +107,7 @@ const ids = [
   "reading-passage", "reading-question", "reading-answer-grid", "reading-feedback", "reading-feedback-icon", "reading-feedback-title",
   "reading-feedback-selected", "reading-feedback-answer", "reading-feedback-explanation", "reading-next-button",
   "reading-result-session-number", "reading-result-message", "reading-result-accuracy", "reading-result-correct", "reading-result-wrong", "reading-result-total", "reading-return-button",
+  "backup-panel", "backup-download", "backup-file", "backup-preview", "backup-preview-text", "backup-restore", "backup-cancel", "backup-status",
   "app-error",
 ];
 const elements = new Map(ids.map((id) => [id, new MiniElement("div", id)]));
@@ -116,7 +117,12 @@ for (const id of [
   "mistake-tab-basic", "mistake-tab-n3", "mistake-tab-n2", "mistake-tab-katakana",
   "resume-button", "discard-session-button", "start-button", "next-button", "return-button", "kana-layout-toggle", "kana-backspace", "kana-clear", "kana-submit",
   "reading-resume-button", "reading-discard-session-button", "reading-start-button", "reading-next-button", "reading-return-button",
+  "backup-download", "backup-restore", "backup-cancel",
 ]) elements.get(id).tagName = "BUTTON";
+elements.get("backup-panel").tagName = "DETAILS";
+elements.get("backup-file").tagName = "INPUT";
+elements.get("backup-file").files = [];
+elements.get("backup-preview").hidden = true;
 elements.get("start-screen").classList.add("is-active");
 elements.get("mistake-menu-layer").hidden = true;
 elements.get("feature-switch-layer").hidden = true;
@@ -1701,4 +1707,103 @@ assert.equal(elements.get("resume-panel").hidden, false);
   assert.match(elements.get("feedback-title").textContent, /시간.*초과/);
 }
 
-console.log("app interaction flow tests passed");
+async function verifyBackupFlow() {
+  const progressKey = "jlpt-vocab-quiz-progress-v1";
+  const waitForUi = () => new Promise((resolve) => setImmediate(resolve));
+  // Back up real application snapshots, including a two-stage word question
+  // awaiting its meaning choice and a separate in-progress reading round.
+  elements.get("home-button").click();
+  elements.get("discard-session-button").click();
+  elements.get("exam-mode").checked = false;
+  elements.get("exam-mode").dispatch("change");
+  elements.get("general-question-count").value = "10";
+  elements.get("start-button").click();
+  const backedUpWord = elements.get("quiz-word").textContent;
+  enterCurrentKanaReading();
+  elements.get("kana-submit").click();
+  assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지");
+  elements.get("home-button").click();
+  elements.get("feature-switch-button").click();
+  elements.get("feature-reading-button").click();
+  elements.get("reading-question-count").value = "10";
+  elements.get("reading-start-button").click();
+  elements.get("home-button").click();
+  elements.get("feature-switch-button").click();
+  elements.get("feature-vocab-button").click();
+  // Exercise the download button too: capture the bytes sent to the browser's
+  // local download link rather than generating a separate test backup.
+  let downloadedBlob;
+  let downloadLink;
+  let downloadClicked = false;
+  const oldBody = document.body;
+  const oldCreate = document.createElement;
+  const oldObjectUrl = URL.createObjectURL;
+  const beforeDownload = new Map(storage);
+  try {
+    document.body = { append: (link) => { downloadLink = link; } };
+    document.createElement = (tagName) => tagName !== "a" ? oldCreate(tagName) : {
+      click() { downloadClicked = true; },
+      remove() {},
+    };
+    URL.createObjectURL = (blob) => { downloadedBlob = blob; return "blob:test-backup"; };
+    elements.get("backup-download").click();
+    await waitForUi();
+    assert.equal(downloadClicked, true, "백업 내려받기가 로컬 파일 링크를 실행합니다.");
+    assert.match(downloadLink.download, /^jlpt-quiz-backup-.+\.json$/);
+    assert.equal(downloadedBlob.type, "application/json");
+    assert.deepEqual(storage, beforeDownload, "내려받기만으로 이 기기의 기록이 바뀌지 않습니다.");
+  } finally {
+    document.body = oldBody;
+    document.createElement = oldCreate;
+    URL.createObjectURL = oldObjectUrl;
+  }
+  const backupText = await downloadedBlob.text();
+  const expected = JSON.parse(backupText);
+  assert.ok(expected.progress.history.length);
+  assert.ok(expected.sessions.vocab && expected.sessions.reading);
+
+  // Simulate switching to another browser with different local records.
+  storage.set(progressKey, JSON.stringify({ history: [], readingHistory: [] }));
+  storage.delete(vocabActiveKey);
+  storage.delete(readingActiveKey);
+  reloadApplication();
+  const beforeImport = new Map(storage);
+  elements.get("backup-panel").open = true;
+  const fileInput = elements.get("backup-file");
+  const preview = elements.get("backup-preview");
+  const chooseFile = async (text) => {
+    fileInput.files = [{ name: "quiz-backup-test.json", type: "application/json", size: Buffer.byteLength(text), text: async () => text }];
+    fileInput.dispatch("change");
+    await waitForUi();
+  };
+
+  await chooseFile("{not JSON");
+  assert.equal(preview.hidden, true);
+  assert.ok(elements.get("backup-status").textContent, "잘못된 파일을 선택하면 안내를 표시합니다.");
+  assert.deepEqual(storage, beforeImport);
+  await chooseFile(backupText);
+  assert.equal(preview.hidden, false);
+  assert.ok(elements.get("backup-preview-text").textContent);
+  assert.deepEqual(storage, beforeImport, "유효한 파일도 미리보기만으로 가져오지 않습니다.");
+  elements.get("backup-cancel").click();
+  assert.equal(preview.hidden, true);
+  assert.deepEqual(storage, beforeImport, "취소 후 기존 기록을 그대로 유지합니다.");
+
+  await chooseFile(backupText);
+  elements.get("backup-restore").click();
+  await waitForUi();
+  assert.equal(preview.hidden, true);
+  assert.deepEqual(JSON.parse(storage.get(progressKey)), expected.progress);
+  assert.deepEqual(JSON.parse(storage.get(vocabActiveKey)), expected.sessions.vocab);
+  assert.deepEqual(JSON.parse(storage.get(readingActiveKey)), expected.sessions.reading);
+  assert.equal(elements.get("resume-panel").hidden, false);
+  assert.equal(elements.get("reading-resume-panel").hidden, false);
+  elements.get("resume-button").click();
+  assert.equal(elements.get("quiz-word").textContent, backedUpWord);
+  assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지", "복원 후에도 뜻 선택 단계에서 이어집니다.");
+}
+
+verifyBackupFlow().then(() => console.log("app interaction flow tests passed")).catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

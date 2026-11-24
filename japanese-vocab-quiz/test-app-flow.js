@@ -73,6 +73,7 @@ class MiniElement {
 const ids = [
   "combined-step-status",
   "mode-kanji-meaning", "record-kanji-meaning", "kanji-meaning-sessions", "kanji-meaning-last-accuracy", "kanji-meaning-total-accuracy", "selected-mode-stats", "settings-summary",
+  "mode-kanji-kana-meaning", "record-kana-meaning", "kana-meaning-sessions", "kana-meaning-last-accuracy", "kana-meaning-total-accuracy",
   "kana-palette-picker", "kana-palette-nine", "kana-palette-all",
   "start-screen", "quiz-screen", "result-screen", "reading-start-screen", "reading-quiz-screen", "reading-result-screen", "home-button",
   "brand-eyebrow", "brand-title", "feature-switch-button", "feature-switch-layer", "feature-switch-backdrop", "feature-switch-close", "feature-vocab-button", "feature-reading-button",
@@ -1573,5 +1574,131 @@ assert.equal(storage.get(vocabActiveKey), savedVocabBeforeReading);
 elements.get("feature-switch-button").click();
 elements.get("feature-vocab-button").click();
 assert.equal(elements.get("resume-panel").hidden, false);
+
+// Kana composition + meaning is a distinct mode, not a change to either
+// existing selection-based combination or standalone kana composition.
+{
+  const mode = "kanji-to-kana-meaning";
+  const modeId = "mode-kanji-kana-meaning";
+  const progressKey = "jlpt-vocab-quiz-progress-v1";
+  const snapshot = () => JSON.parse(storage.get(vocabActiveKey)).session;
+  const makeRound = ({ palette = "nine", choiceCount = 4, exam = false } = {}) => {
+    elements.get("home-button").click();
+    elements.get("discard-session-button").click();
+    for (const id of ["mode-kanji-reading", "mode-kanji-kana", "mode-kanji-meaning", "mode-reading-kanji", "mode-sentence-kanji", "mode-katakana-meaning", modeId]) {
+      elements.get(id).checked = id === modeId;
+    }
+    for (const id of ["difficulty-basic", "difficulty-n3", "difficulty-n2"]) {
+      elements.get(id).checked = id === "difficulty-n2";
+    }
+    for (const n of [4, 6, 8]) elements.get(`choice-count-${n}`).checked = n === choiceCount;
+    elements.get("kana-palette-nine").checked = palette === "nine";
+    elements.get("kana-palette-all").checked = palette === "all";
+    elements.get(`kana-palette-${palette}`).dispatch("change");
+    elements.get("exam-mode").checked = exam;
+    elements.get(modeId).dispatch("change");
+    assert.equal(elements.get("kana-palette-picker").hidden, false);
+    assert.equal(elements.get("choice-count-picker").hidden, false);
+    assert.equal(elements.get("general-question-count").max, palette === "all" ? "1161" : "1160");
+    if (!exam) elements.get("general-question-count").value = "10";
+    elements.get("start-button").click();
+    assert.equal(snapshot().mode, mode);
+    assert.equal(snapshot().kanaPaletteMode, palette);
+    assert.equal(elements.get("kana-composer").hidden, false);
+    assert.equal(elements.get("answer-grid").hidden, true);
+    assert.equal(fullKanaTiles().length, palette === "all" ? fullKanaCharacters.length : 9);
+  };
+  const answerMeaning = (correct) => {
+    const right = correctButtonForCurrentWord();
+    const buttons = elements.get("answer-grid").querySelectorAll("button");
+    const target = correct ? right : buttons.find((button) => button !== right);
+    pressKey(String(buttons.indexOf(target) + 1));
+  };
+  const submitReading = () => {
+    enterCurrentKanaReading();
+    elements.get("kana-submit").click();
+    assert.equal(elements.get("kana-composer").hidden, true);
+    assert.equal(elements.get("answer-grid").hidden, false);
+  };
+
+  makeRound();
+  const wrongItem = currentKanaItem();
+  const wrongTile = fullKanaTiles().find((tile) => !globalThis.QuizEngine.kanaReadings(wrongItem.reading).includes(tile.dataset.kana));
+  assert.ok(wrongTile);
+  wrongTile.click();
+  elements.get("kana-submit").click();
+  assert.equal(snapshot().attempts, 1, "잘못 조합한 읽기는 즉시 한 번만 채점합니다.");
+  assert.equal(snapshot().wrong, 1);
+  assert.equal(snapshot().correct, 0);
+  assert.equal(snapshot().answered, true);
+  assert.equal(elements.get("answer-grid").hidden, true, "읽기가 틀리면 뜻 선택지가 열리지 않습니다.");
+  assert.equal(elements.get("feedback").hidden, false);
+  assert.ok(elements.get("feedback-reading").textContent.includes(kanaReadingForTest(wrongItem.reading)));
+  assert.ok(elements.get("feedback-meaning").textContent.includes(wrongItem.meaning));
+  assert.ok(snapshot().queue.includes(wrongItem.id), "연습 중 읽기 오답은 다시 출제합니다.");
+  elements.get("kana-submit").click();
+  assert.equal(snapshot().attempts, 1);
+
+  for (const [palette, choiceCount] of [["nine", 4], ["all", 6], ["all", 8]]) {
+    makeRound({ palette, choiceCount });
+    const questionId = snapshot().currentId;
+    submitReading();
+    assert.equal(snapshot().attempts, 0, "읽기만 정답이면 채점하지 않습니다.");
+    assert.equal(snapshot().correct, 0);
+    assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지");
+    const heldEnter = { key: "Enter", code: "Enter", repeat: true, preventDefault() { this.prevented = true; } };
+    for (const handler of documentListeners.keydown || []) handler(heldEnter);
+    assert.equal(heldEnter.prevented, true, "읽기 제출 키를 길게 눌러도 뜻 보기를 자동 제출하지 않습니다.");
+    assert.equal(elements.get("answer-grid").querySelectorAll("button").length, choiceCount);
+    assert.equal(correctButtonForCurrentWord().children[1].textContent, currentKanaItem().meaning);
+    reloadApplication();
+    assert.equal(snapshot().currentId, questionId);
+    assert.equal(snapshot().attempts, 0);
+    assert.equal(elements.get("kana-composer").hidden, true);
+    assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지", "새로고침하면 뜻 선택 단계부터 이어집니다.");
+    assert.equal(elements.get("answer-grid").querySelectorAll("button").length, choiceCount);
+    const correct = choiceCount !== 6;
+    answerMeaning(correct);
+    assert.equal(snapshot().attempts, 1);
+    assert.equal(snapshot().correct, correct ? 1 : 0);
+    assert.equal(snapshot().wrong, correct ? 0 : 1);
+    if (!correct) assert.ok(snapshot().queue.includes(questionId));
+    elements.get("next-button").click();
+    assert.equal(elements.get("kana-composer").hidden, false, "다음 문제는 다시 히라가나부터 입력합니다.");
+  }
+
+  const oldStats = JSON.parse(storage.get(progressKey)).sessionStats;
+  makeRound({ palette: "all", choiceCount: 8 });
+  for (let i = 0; i < 10; i += 1) {
+    submitReading();
+    answerMeaning(true);
+    elements.get("next-button").click();
+  }
+  assert.equal(elements.get("result-correct").textContent, 10);
+  assert.equal(elements.get("result-accuracy").textContent, "100%");
+  const currentStats = JSON.parse(storage.get(progressKey)).sessionStats;
+  assert.equal(currentStats[`n2:${mode}`].completedSessions, oldStats[`n2:${mode}`].completedSessions + 1);
+  assert.deepEqual(currentStats["n2:kanji-to-kana"], oldStats["n2:kanji-to-kana"]);
+  assert.deepEqual(currentStats["n2:kanji-to-reading-meaning"], oldStats["n2:kanji-to-reading-meaning"]);
+  elements.get("return-button").click();
+  assert.equal(elements.get("kana-meaning-sessions").textContent, "1회");
+  assert.equal(elements.get("kana-meaning-last-accuracy").textContent, "100%");
+
+  makeRound({ exam: true });
+  assert.equal(elements.get("exam-time-left").textContent, 10);
+  const sharedDeadline = snapshot().examDeadline;
+  tickTimers(3);
+  submitReading();
+  assert.equal(snapshot().examDeadline, sharedDeadline);
+  assert.equal(elements.get("exam-time-left").textContent, 7);
+  reloadApplication();
+  assert.equal(snapshot().examDeadline, sharedDeadline);
+  assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지");
+  tickTimers(7);
+  assert.equal(snapshot().attempts, 1);
+  assert.equal(snapshot().wrong, 1);
+  assert.equal(snapshot().completedQuestions, 1);
+  assert.match(elements.get("feedback-title").textContent, /시간.*초과/);
+}
 
 console.log("app interaction flow tests passed");

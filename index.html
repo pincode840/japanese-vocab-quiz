@@ -111,6 +111,14 @@
                 <div><dt>누적 정답률</dt><dd id="kanji-kana-total-accuracy">—</dd></div>
               </dl>
             </article>
+            <article id="record-kana-meaning" class="mode-record">
+              <strong>히라가나 조합 + 뜻</strong>
+              <dl>
+                <div><dt>완료 회차</dt><dd id="kana-meaning-sessions">0회</dd></div>
+                <div><dt>최근 정답률</dt><dd id="kana-meaning-last-accuracy">—</dd></div>
+                <div><dt>누적 정답률</dt><dd id="kana-meaning-total-accuracy">—</dd></div>
+              </dl>
+            </article>
             <article id="record-reading-kanji" class="mode-record">
               <strong>읽기 → 한자</strong>
               <dl>
@@ -193,6 +201,13 @@
             <span class="mode-copy">
               <strong>히라가나 조합</strong>
               <small>글자 타일로 읽기 완성</small>
+            </span>
+          </label>
+          <label class="mode-option" for="mode-kanji-kana-meaning">
+            <input id="mode-kanji-kana-meaning" name="quiz-mode" type="radio" value="kanji-to-kana-meaning">
+            <span class="mode-copy">
+              <strong>히라가나 조합 + 뜻</strong>
+              <small>읽기를 조합한 뒤 뜻 고르기</small>
             </span>
           </label>
           <label class="mode-option is-wide" for="mode-sentence-kanji">
@@ -518,7 +533,7 @@
     </section>
 
     <p id="app-error" class="app-error" role="alert" hidden></p>
-    <p class="source-note"><small id="build-version">앱 버전 a4002965653f</small></p>
+    <p class="source-note"><small id="build-version">앱 버전 0f01010844a8</small></p>
   </main>
 
   <script src="japanese-vocab-quiz/vocab-data.js?v=a1d5101c7678"></script>
@@ -531,6 +546,6 @@
   <script src="japanese-vocab-quiz/quiz-engine.js?v=949a77904d9f"></script>
   <script src="japanese-vocab-quiz/reading-renderer.js?v=94a082852b48"></script>
   <script src="japanese-vocab-quiz/session-store.js?v=2a0d56e63220"></script>
-  <script src="japanese-vocab-quiz/app.js?v=aad4ec95e678"></script>
+  <script src="japanese-vocab-quiz/app.js?v=75f403a476d6"></script>
 </body>
 </html>

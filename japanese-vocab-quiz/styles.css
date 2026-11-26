@@ -994,10 +994,13 @@ button:focus-visible {
   font-size: 11px;
 }
 
-.source-note a,
-.feedback-source {
-  color: inherit;
-  text-underline-offset: 3px;
+.example-attribution summary {
+  cursor: pointer;
+}
+
+.example-attribution p {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
 }
 
 .history-panel {
@@ -1627,17 +1630,6 @@ button:focus-visible {
 .feedback .feedback-translation {
   margin-top: 4px;
   font-weight: 700;
-}
-
-.feedback .feedback-source {
-  display: inline-block;
-  margin-top: 8px;
-  color: var(--ink-soft);
-  font-size: 11px;
-}
-
-.feedback .feedback-source[hidden] {
-  display: none;
 }
 
 .feedback .retry-note {

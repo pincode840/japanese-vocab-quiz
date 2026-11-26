@@ -13,6 +13,7 @@
   const engine = window.QuizEngine;
   const readingData = Array.isArray(window.READING_QUIZ_DATA) ? window.READING_QUIZ_DATA : [];
   const commonReadingGuides = window.READING_COMMON_READINGS || {};
+  const legacyExampleAuthors = window.JLPT_LEGACY_EXAMPLE_AUTHORS || {};
   const readingRenderer = window.ReadingRenderer.create(commonReadingGuides);
   const activeSessionStore = window.QuizSessionStore.create(localStorage);
   const backupRevisionKey = window.QuizSessionStore.BACKUP_REVISION_KEY;
@@ -192,7 +193,8 @@
     feedbackSentenceReading: document.getElementById("feedback-sentence-reading"),
     feedbackUsageExample: document.getElementById("feedback-usage-example"),
     feedbackTranslation: document.getElementById("feedback-translation"),
-    feedbackSource: document.getElementById("feedback-source"),
+    exampleAttribution: document.getElementById("example-attribution"),
+    exampleCredit: document.getElementById("example-credit"),
     retryNote: document.getElementById("retry-note"),
     nextButton: document.getElementById("next-button"),
     resultSessionNumber: document.getElementById("result-session-number"),
@@ -1856,18 +1858,29 @@
     renderKanaAnswer();
   }
 
-  function setExampleSource({ sourceUrl, sourceId, sourceAuthor, sourceLicense } = {}) {
-    const url = Number.isSafeInteger(sourceId) && sourceId > 0
-      ? `https://tatoeba.org/ko/sentences/show/${sourceId}`
-      : sourceUrl;
-    elements.feedbackSource.hidden = !url;
-    elements.feedbackSource.href = url || "";
-    elements.feedbackSource.textContent = url
-      ? `예문 출처 · Tatoeba${sourceAuthor ? ` / ${sourceAuthor}` : ""} (${sourceLicense || "CC BY 2.0 FR"})`
-      : "";
+  function renderExampleAttribution(example) {
+    const lines = [];
+    if (example?.sourceUrl || example?.sourceId) {
+      const sourceUrl = example.sourceUrl || `https://tatoeba.org/ko/sentences/show/${example.sourceId}`;
+      const license = example.sourceLicense || "CC BY 2.0 FR";
+      const licenseUrl = license === "CC0 1.0"
+        ? "https://creativecommons.org/publicdomain/zero/1.0/"
+        : "https://creativecommons.org/licenses/by/2.0/fr/";
+      function appendCredit(label, url, author) {
+        const creditedAuthor = author || legacyExampleAuthors[url.split("/").at(-1)];
+        lines.push(`${label}: Tatoeba · ${creditedAuthor || "작성자 미표기"} · ${license}`, url);
+      }
+      appendCredit("일본어 원문", sourceUrl, example.sourceAuthor);
+      if (example.translationSourceUrl) appendCredit("한국어 번역 원문", example.translationSourceUrl);
+      if (example.referenceSourceUrl) appendCredit("영어 참고 문장", example.referenceSourceUrl);
+      lines.push(`라이선스: ${licenseUrl}`, "학습용 빈칸과 번역을 제공할 수 있습니다.");
+    }
+    elements.exampleAttribution.hidden = lines.length === 0;
+    elements.exampleAttribution.open = false;
+    elements.exampleCredit.textContent = lines.join("\n");
   }
 
-  function resetQuestionFeedback(item) {
+  function resetQuestionFeedback() {
     elements.feedback.hidden = true;
     elements.feedback.className = "feedback";
     elements.feedbackSelected.hidden = true;
@@ -1878,7 +1891,7 @@
     elements.feedbackUsageExample.textContent = "";
     elements.feedbackTranslation.hidden = true;
     elements.feedbackTranslation.textContent = "";
-    setExampleSource({ sourceUrl: item.sentenceAttribution, sourceLicense: item.sentenceLicense });
+    renderExampleAttribution(null);
     elements.retryNote.hidden = true;
     elements.nextButton.hidden = true;
   }
@@ -1936,7 +1949,7 @@
     renderAnswerOptions(context);
     renderQuizKeyboardHint();
     renderKanaOptions(context.item, resumeState?.kanaTiles);
-    resetQuestionFeedback(context.item);
+    resetQuestionFeedback();
 
     if (context.isSentenceToKanji && session.currentMisses > 0 && session.hintSelectedId) {
       const selectedItem = findItem(session.hintSelectedId);
@@ -2099,10 +2112,8 @@
     elements.feedbackUsageExample.textContent = example?.fullSentence || "";
     elements.feedbackTranslation.hidden = !translation;
     elements.feedbackTranslation.textContent = translation ? `문장 해석  ${translation}` : "";
-    if (!isSentenceToKanji) {
-      elements.quizReadingContext.hidden = true;
-      setExampleSource(example || undefined);
-    }
+    if (!isSentenceToKanji) elements.quizReadingContext.hidden = true;
+    renderExampleAttribution(isSentenceToKanji ? engine.sentenceExampleAttribution(session.current) : example);
   }
 
   function recordCorrectAnswer(context) {

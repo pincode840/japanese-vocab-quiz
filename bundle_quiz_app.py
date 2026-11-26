@@ -15,6 +15,7 @@ asset_names = [
     "usage-context-curated.js",
     "usage-context-data.js",
     "usage-context-ko.js",
+    "example-credits.js",
     "reading-data.js",
     "reading-generated-data.js",
     "reading-advanced-guides.js",

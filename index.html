@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#17324d">
   <title>한자 읽기 퀴즈</title>
-  <link rel="stylesheet" href="japanese-vocab-quiz/styles.css?v=cbcf4a8ebbfb">
+  <link rel="stylesheet" href="japanese-vocab-quiz/styles.css?v=9bb49e5b3658">
 </head>
 <body>
   <main class="app-shell">
@@ -305,7 +305,6 @@
 
         <button id="start-button" class="primary-button" type="button">학습 시작</button>
         <p class="helper">진행 상황은 자동 저장됩니다. 틀린 단어는 다시 연습해요.</p>
-        <p class="source-note">일부 예문: <a href="https://tatoeba.org/ko/" target="_blank" rel="noreferrer">Tatoeba</a> · <a href="https://creativecommons.org/licenses/by/2.0/fr/" target="_blank" rel="license noreferrer">CC BY 2.0 FR</a></p>
 
         <details id="history-panel" class="history-panel setup-disclosure" hidden>
           <summary>최근 학습 기록</summary>
@@ -367,7 +366,6 @@
             <p id="feedback-sentence-reading" class="feedback-sentence-reading" hidden></p>
             <p id="feedback-usage-example" class="feedback-usage-example" lang="ja" hidden></p>
             <p id="feedback-translation" class="feedback-translation" hidden></p>
-            <a id="feedback-source" class="feedback-source" target="_blank" rel="noreferrer" hidden></a>
             <p id="retry-note" class="retry-note" hidden>이 단어는 잠시 뒤 다시 나옵니다.</p>
           </div>
         </div>
@@ -375,6 +373,10 @@
         <button id="next-button" class="primary-button" type="button" hidden>다음 단어</button>
       </div>
       <p id="keyboard-hint" class="keyboard-hint">숫자키 1–4 또는 숫자패드로 선택 · Enter로 다음</p>
+      <details id="example-attribution" class="source-note example-attribution" hidden>
+        <summary>예문 이용 정보</summary>
+        <p id="example-credit"></p>
+      </details>
     </section>
 
     <section id="result-screen" class="screen" aria-labelledby="result-title">
@@ -560,7 +562,7 @@
     </details>
 
     <p id="app-error" class="app-error" role="alert" hidden></p>
-    <p class="source-note"><small id="build-version">앱 버전 4a2881bf5558</small></p>
+    <p class="source-note"><small id="build-version">앱 버전 84aaaf716903</small></p>
   </main>
 
   <script src="japanese-vocab-quiz/vocab-data.js?v=a1d5101c7678"></script>
@@ -570,12 +572,13 @@
   <script src="japanese-vocab-quiz/usage-context-curated.js?v=047c00d36e26"></script>
   <script src="japanese-vocab-quiz/usage-context-data.js?v=b462210b72ca"></script>
   <script src="japanese-vocab-quiz/usage-context-ko.js?v=a9456c25eeb8"></script>
+  <script src="japanese-vocab-quiz/example-credits.js?v=6bd665f964ed"></script>
   <script src="japanese-vocab-quiz/reading-data.js?v=a12c147553ca"></script>
   <script src="japanese-vocab-quiz/reading-generated-data.js?v=c1d9aa1f0e47"></script>
   <script src="japanese-vocab-quiz/reading-advanced-guides.js?v=e936d974d12a"></script>
-  <script src="japanese-vocab-quiz/quiz-engine.js?v=95d3cb8fc3e6"></script>
+  <script src="japanese-vocab-quiz/quiz-engine.js?v=8e6f1eb53895"></script>
   <script src="japanese-vocab-quiz/reading-renderer.js?v=94a082852b48"></script>
   <script src="japanese-vocab-quiz/session-store.js?v=fdaae0fd00f9"></script>
-  <script src="japanese-vocab-quiz/app.js?v=eb282509d64c"></script>
+  <script src="japanese-vocab-quiz/app.js?v=d0b7da8900ee"></script>
 </body>
 </html>

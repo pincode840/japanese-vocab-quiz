@@ -179,7 +179,7 @@ JLPT N5·N4·N3·N2 어휘와 기초 카타카나, JPT·JLPT·J.TEST·BJT형 독
 
 모든 등록 단어 항목에 일본어 사용 예문과 한국어 해석이 있습니다. 기존 예문을 재사용하거나, 직접 작성한 예문(`usage-context-curated.js`) 또는 [Tatoeba 공개 데이터](https://tatoeba.org/en/downloads)에서 검토한 예문(`usage-context-data.js`)을 연결합니다. 한국어 학습용 번역은 원문 ID별로 `usage-context-ko.js`에 보관합니다. 새 코퍼스 문장으로 교체할 때 다른 문장의 해석이 연결되지 않도록 전체 예문·해석을 자동 검사합니다.
 
-Tatoeba 예문은 [CC BY 2.0 FR](https://creativecommons.org/licenses/by/2.0/fr/) 또는 개별 표시된 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)을 따릅니다. 새로 연결한 예문은 작성자와 라이선스를 채점 후 원문 링크에 표시합니다. 출제 중 원문의 단어 자리는 빈칸으로 바뀝니다.
+Tatoeba 예문은 [CC BY 2.0 FR](https://creativecommons.org/licenses/by/2.0/fr/) 또는 개별 표시된 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)을 따릅니다. 채점 후 문제 카드 밖의 `예문 이용 정보`를 펼치면 작성자, 원문 주소, 라이선스를 링크 없이 텍스트로 볼 수 있습니다. 출제 중 원문의 단어 자리는 빈칸으로 바뀝니다.
 
 ## 사용 환경
 

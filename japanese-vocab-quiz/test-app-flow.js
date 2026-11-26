@@ -8,6 +8,7 @@ require("./katakana-vocab-data.js");
 require("./usage-context-curated.js");
 require("./usage-context-data.js");
 require("./usage-context-ko.js");
+require("./example-credits.js");
 require("./reading-data.js");
 require("./reading-generated-data.js");
 require("./reading-advanced-guides.js");
@@ -102,7 +103,7 @@ const ids = [
   "live-accuracy", "live-score-detail", "result-score-detail", "exam-timer", "exam-time-left", "progress-bar", "quiz-prompt", "quiz-word", "quiz-reading-context",
   "day-label", "exam-mistake-badge", "answer-grid", "kana-composer", "kana-layout-toggle", "kana-answer", "kana-edit-status", "kana-grid", "kana-backspace", "kana-clear", "kana-submit",
   "feedback", "feedback-icon", "feedback-title", "feedback-selected", "feedback-reading",
-  "feedback-meaning", "feedback-sentence-reading", "feedback-translation", "feedback-usage-example", "feedback-source", "retry-note", "next-button", "result-session-number", "result-message",
+  "feedback-meaning", "feedback-sentence-reading", "feedback-translation", "feedback-usage-example", "example-attribution", "example-credit", "retry-note", "next-button", "result-session-number", "result-message",
   "result-accuracy", "result-correct", "result-wrong", "result-mastered", "return-button", "keyboard-hint",
   "reading-record-furigana", "reading-furigana-sessions", "reading-furigana-last-accuracy", "reading-furigana-total-accuracy",
   "reading-record-standard", "reading-standard-sessions", "reading-standard-last-accuracy", "reading-standard-total-accuracy",
@@ -1441,10 +1442,17 @@ assert.equal(elements.get("feedback-usage-example").textContent, longWordExample
 assert.equal(elements.get("feedback-translation").hidden, false);
 assert.equal(elements.get("feedback-translation").textContent,
   `문장 해석  ${globalThis.JLPT_USAGE_TRANSLATIONS[longWordExample.sourceId]}`);
-assert.equal(elements.get("feedback-source").hidden, false);
-assert.ok(elements.get("feedback-source").href.endsWith(`/sentences/show/${longWordExample.sourceId}`));
-assert.ok(elements.get("feedback-source").textContent.includes(longWordExample.sourceAuthor));
+assert.equal(elements.get("example-attribution").hidden, false);
+assert.equal(elements.get("example-attribution").open, false, "예문 크레딧은 기본적으로 접혀 있어야 합니다.");
+const creditText = elements.get("example-credit").textContent;
+assert.ok(creditText.includes(`/sentences/show/${longWordExample.sourceId}`));
+assert.ok(creditText.includes(longWordExample.sourceAuthor));
+assert.ok(creditText.includes("CC BY 2.0 FR") && creditText.includes("creativecommons.org/licenses/by/2.0/fr/"));
+elements.get("example-attribution").open = true;
 elements.get("next-button").click();
+assert.equal(elements.get("example-attribution").open, false);
+assert.equal(elements.get("example-attribution").hidden, true, "다음 문제에 이전 예문의 출처가 남으면 안 됩니다.");
+assert.equal(elements.get("example-credit").textContent, "");
 assert.equal(elements.get("quiz-word").textContent, emptyWord.word);
 assert.equal(elements.get("quiz-reading-context").textContent, emptyWord.readingContext);
 assert.equal(elements.get("quiz-reading-context").hidden, false);

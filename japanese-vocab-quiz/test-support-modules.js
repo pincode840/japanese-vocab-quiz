@@ -17,7 +17,12 @@ const sourceHtml = nestedHtml
   .replace(/((?:src|href)="[^"/?]+\.(?:js|css))\?v=[a-f0-9]{12}"/g, '$1"')
   .replace(/(<small id="build-version">)앱 버전 [a-f0-9]{12}(<\/small>)/g, "$1개발 버전$2");
 const sourceAssets = [...sourceHtml.matchAll(/(?:src|href)="([^"?]+\.(?:js|css))"/g)].map((match) => match[1]);
-assert.equal(sourceAssets.length, 15);
+assert.equal(sourceAssets.length, 16);
+for (const html of [nestedHtml, deployHtml]) {
+  assert.doesNotMatch(html, /<a\b[^>]*(?:feedback-source|tatoeba\.org|creativecommons\.org)/i,
+    "학습 화면에는 예문 출처나 예문 라이선스 링크를 표시하지 않습니다.");
+  assert.match(html, /<details id="example-attribution"[^>]*hidden>/);
+}
 const versions = sourceAssets.map((asset) => {
   const version = shortHash(readNormalized(path.join(__dirname, asset)));
   assert.ok(deployHtml.includes(`"japanese-vocab-quiz/${asset}?v=${version}"`), `${asset} 배포 URL에 현재 내용의 버전이 있어야 합니다.`);

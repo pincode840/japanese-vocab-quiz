@@ -91,6 +91,15 @@
     );
   }
 
+  function sentenceExampleAttribution(item) {
+    return {
+      sourceUrl: item.sentenceAttribution,
+      sourceLicense: item.sentenceLicense,
+      translationSourceUrl: item.sentenceTranslationAttribution,
+      referenceSourceUrl: item.sentenceEnglishReference,
+    };
+  }
+
   // Vocabulary usage is a hint, not a cloze question. Keep its data separate
   // from the sentence-question pool, and only reuse examples of the same sense.
   function indexUsageExamples(items, curated = {}, supplemental = {}, translations = {}) {
@@ -119,8 +128,7 @@
         sentence: item.sentence,
         blank: item.sentenceSurface || item.word,
         translation: item.sentenceTranslation,
-        sourceUrl: item.sentenceAttribution,
-        sourceLicense: item.sentenceLicense,
+        ...sentenceExampleAttribution(item),
       };
     }
 
@@ -388,6 +396,7 @@
     normalizedReading,
     kanaReadings,
     toHiragana,
+    sentenceExampleAttribution,
     indexUsageExamples,
     sentenceSurfaceReading,
     sentenceChoiceText,

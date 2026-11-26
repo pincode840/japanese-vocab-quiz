@@ -1728,14 +1728,15 @@
     const readingContext = context.isSentenceToKanji ? "" : usageExamples.get(context.item.id)?.prompt || "";
     elements.quizReadingContext.hidden = !readingContext;
     elements.quizReadingContext.textContent = readingContext;
-    elements.combinedStepStatus.hidden = !isCombinedMode(session.mode);
-    if (isCombinedMode(session.mode)) {
+    const showAcceptedReading = isCombinedMode(session.mode) && context.isMeaningMode;
+    elements.combinedStepStatus.hidden = !showAcceptedReading;
+    if (showAcceptedReading) {
       const acceptedReading = session.mode === KANA_MEANING_MODE
         ? session.kanaAnswer
         : normalizedReading(context.item.reading);
-      elements.combinedStepStatus.textContent = context.isMeaningMode
-        ? `맞힌 읽기: ${acceptedReading} · 뜻까지 맞히면 정답입니다.`
-        : "읽기를 맞히면 뜻 단계로 넘어갑니다. 읽기가 틀리면 바로 오답 처리됩니다.";
+      elements.combinedStepStatus.textContent = `맞힌 읽기: ${acceptedReading} · 뜻까지 맞히면 정답입니다.`;
+    } else {
+      elements.combinedStepStatus.textContent = "";
     }
     elements.quizWord.textContent = context.isSentenceToKanji
       ? context.item.sentence.replace("___", "＿＿＿")

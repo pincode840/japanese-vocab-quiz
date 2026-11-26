@@ -1472,6 +1472,8 @@ for (const [difficultyId, count] of [["difficulty-basic", 4], ["difficulty-n3", 
     elements.get("start-button").click();
     assert.equal(elements.get("answer-grid").querySelectorAll("button").length, count);
     assert.match(elements.get("quiz-prompt").textContent, /1 \/ 2/);
+    assert.equal(elements.get("combined-step-status").hidden, true);
+    assert.equal(elements.get("combined-step-status").textContent, "");
     const word = elements.get("quiz-word").textContent;
     answerComboStep(readingCorrect);
     if (readingCorrect) {
@@ -1483,6 +1485,8 @@ for (const [difficultyId, count] of [["difficulty-basic", 4], ["difficulty-n3", 
       assert.equal(comboSnapshot().attempts, 0, "숫자키를 계속 누르고 있어도 뜻이 자동 제출되면 안 됩니다.");
       assert.match(elements.get("quiz-prompt").textContent, /2 \/ 2/);
       assert.equal(elements.get("answer-grid")["aria-label"], "한국어 뜻 선택지");
+      assert.equal(elements.get("combined-step-status").hidden, false);
+      assert.match(elements.get("combined-step-status").textContent, /^맞힌 읽기:/);
       const chosenReading = comboSnapshot().readingAnswerId;
       reloadApplication();
       assert.equal(elements.get("quiz-word").textContent, word);
@@ -1626,6 +1630,8 @@ assert.equal(elements.get("resume-panel").hidden, false);
     assert.equal(snapshot().kanaPaletteMode, palette);
     assert.equal(elements.get("kana-composer").hidden, false);
     assert.equal(elements.get("answer-grid").hidden, true);
+    assert.equal(elements.get("combined-step-status").hidden, true);
+    assert.equal(elements.get("combined-step-status").textContent, "");
     assert.equal(fullKanaTiles().length, palette === "all" ? fullKanaCharacters.length : 9);
   };
   const answerMeaning = (correct) => {
@@ -1639,6 +1645,8 @@ assert.equal(elements.get("resume-panel").hidden, false);
     elements.get("kana-submit").click();
     assert.equal(elements.get("kana-composer").hidden, true);
     assert.equal(elements.get("answer-grid").hidden, false);
+    assert.equal(elements.get("combined-step-status").hidden, false);
+    assert.match(elements.get("combined-step-status").textContent, /^맞힌 읽기:/);
   };
 
   makeRound();

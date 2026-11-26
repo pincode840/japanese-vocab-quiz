@@ -1008,13 +1008,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "arnab"
   },
-  "n3-0232": {
-    "sentence": "名古屋大学には女生徒が法を犯す＿＿＿がある。",
-    "blank": "伝統",
-    "sourceId": 4292145,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "admiral"
-  },
   "n3-0234": {
     "sentence": "彼は小さな＿＿＿で花を売っています。",
     "blank": "売店",
@@ -1075,13 +1068,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sentence": "彼は試験に＿＿＿ように一生懸命勉強した。",
     "blank": "受かる",
     "sourceId": 105421,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "bunbuku"
-  },
-  "n3-0253": {
-    "sentence": "あなたが手伝ってくれれば私は本当に＿＿＿。",
-    "blank": "助かる",
-    "sourceId": 234013,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
@@ -1218,13 +1204,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "Ninja"
   },
-  "n3-0294": {
-    "sentence": "本当に骨の＿＿＿仕事だった。",
-    "blank": "折れる",
-    "sourceId": 81527,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "bunbuku"
-  },
   "n3-0295": {
     "sentence": "スタジオはとても狭くて、＿＿＿場所はない。",
     "blank": "隠れる",
@@ -1238,20 +1217,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 80150,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "KK_kaku_"
-  },
-  "n3-0298": {
-    "sentence": "名が＿＿＿ようなことをするのはよしてくれ。",
-    "blank": "汚れる",
-    "sourceId": 10932456,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
-  },
-  "n3-0299": {
-    "sentence": "頭が＿＿＿ように痛かったので、私はいつもより早く寝た。",
-    "blank": "割れる",
-    "sourceId": 123874,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "tommy__san"
   },
   "n3-0300": {
     "sentence": "彼が一人で宿題をやったかどうか＿＿＿ものだ。",
@@ -1322,13 +1287,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 8546203,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "kopplex"
-  },
-  "n3-0328": {
-    "sentence": "「小さい」と「＿＿＿」は同義語です。",
-    "blank": "細い",
-    "sourceId": 11140977,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
   },
   "n3-0333": {
     "sentence": "違和感あったけど足になじんで今じゃ＿＿＿。",
@@ -1414,13 +1372,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "KK_kaku_"
   },
-  "n3-0357": {
-    "sentence": "彼女は目を閉じてソファーに＿＿＿になっていた。",
-    "blank": "横",
-    "sourceId": 86502,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "KK_kaku_"
-  },
   "n3-0358": {
     "sentence": "日本円をアメリカドルに＿＿＿してください。",
     "blank": "両替",
@@ -1448,13 +1399,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 125506,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
-  },
-  "n3-0362": {
-    "sentence": "彼女は口は悪いですけど＿＿＿は優しい人ですよ。",
-    "blank": "根",
-    "sourceId": 1978033,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "shiruchi"
   },
   "n3-0368": {
     "sentence": "私たちはきれいな＿＿＿に見とれていた。",
@@ -1516,13 +1460,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sentence": "今日はホタテ＿＿＿がお買い得ですよ。",
     "blank": "貝",
     "sourceId": 8855523,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "bunbuku"
-  },
-  "n3-0386": {
-    "sentence": "損失を補填するため、私は身を＿＿＿にして働いた。",
-    "blank": "粉",
-    "sourceId": 10701349,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
@@ -1588,13 +1525,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 95691,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
-  },
-  "n3-0414": {
-    "sentence": "この漢字、送り＿＿＿が間違ってるよ。",
-    "blank": "仮名",
-    "sourceId": 10804251,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
   },
   "n3-0416": {
     "sentence": "彼は＿＿＿な絵をかなりたくさん持っている。",
@@ -1700,13 +1630,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 1395408,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "marcelostockle"
-  },
-  "n3-0436": {
-    "sentence": "列車が脱線して、約30名の＿＿＿が死傷した。",
-    "blank": "乗客",
-    "sourceId": 77569,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "wat"
   },
   "n3-0437": {
     "sentence": "＿＿＿の際、運転手に合図を送らなければならない。",
@@ -1841,13 +1764,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "thyc244"
   },
-  "n3-0468": {
-    "sentence": "禁じられた蝿の＿＿＿を触っちゃいけません。",
-    "blank": "容器",
-    "sourceId": 1133016,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "marcelostockle"
-  },
   "n3-0470": {
     "sentence": "＿＿＿のおかげでその若者たちに変化が生まれている。",
     "blank": "規律",
@@ -1929,13 +1845,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sentence": "私達は彼を解雇すべきだという＿＿＿に達した。",
     "blank": "結論",
     "sourceId": 151322,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "mookeee"
-  },
-  "n3-0497": {
-    "sentence": "どれくらいこの寒い天気は＿＿＿ますか。",
-    "blank": "続き",
-    "sourceId": 199669,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "mookeee"
   },
@@ -2030,13 +1939,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "KK_kaku_"
   },
-  "n3-0523": {
-    "sentence": "ヨルダン川は死海に＿＿＿唯一の川である。",
-    "blank": "注ぐ",
-    "sourceId": 2982994,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "tommy_san"
-  },
   "n3-0525": {
     "sentence": "今日の朝も子供の＿＿＿で目が覚めた。",
     "blank": "泣き声",
@@ -2050,20 +1952,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 208389,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
-  },
-  "n3-0528": {
-    "sentence": "僕がウサギに＿＿＿してるときは、容赦なく人にハグするよ。",
-    "blank": "変身",
-    "sourceId": 10040307,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Sim5634"
-  },
-  "n3-0529": {
-    "sentence": "ライフルの＿＿＿音が早朝の静けさを破った。",
-    "blank": "発射",
-    "sourceId": 192658,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "mookeee"
   },
   "n3-0530": {
     "sentence": "月の光が湖に＿＿＿していた。",
@@ -2120,13 +2008,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 188294,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "arnab"
-  },
-  "n3-0542": {
-    "sentence": "呪術は未開社会においては重要な＿＿＿をもつ。",
-    "blank": "役割",
-    "sourceId": 148360,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "mookeee"
   },
   "n3-0543": {
     "sentence": "彼は＿＿＿人がどんな人間なのか想像してみた。",
@@ -2191,13 +2072,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "mookeee"
   },
-  "n3-0559": {
-    "sentence": "現行法は人種の＿＿＿性を考慮に入れていない。",
-    "blank": "多様",
-    "sourceId": 2976531,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "tommy__san"
-  },
   "n3-0560": {
     "sentence": "＿＿＿の二酸化炭素を吸収すると海はより酸性になる。",
     "blank": "多量",
@@ -2225,13 +2099,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 75159,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "fcbond"
-  },
-  "n3-0569": {
-    "sentence": "あらゆる伝染病が＿＿＿とは限らない。",
-    "blank": "移る",
-    "sourceId": 1218432,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "marcelostockle"
   },
   "n3-0570": {
     "sentence": "お休みの日に＿＿＿すると、手当がつくから好き。",
@@ -2282,13 +2149,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
-  "n3-0584": {
-    "sentence": "静かな水が動いて＿＿＿影を乱したように、流れ出したと思ったら、女の眼がぱちりと閉じた。",
-    "blank": "写る",
-    "sourceId": 4631192,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Solurix"
-  },
   "n3-0586": {
     "sentence": "そのレストランは＿＿＿の風格がありますね。",
     "blank": "独特",
@@ -2316,13 +2176,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 9518576,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "small_snow"
-  },
-  "n3-0593": {
-    "sentence": "本当の女性には＿＿＿がある。",
-    "blank": "曲線",
-    "sourceId": 6037284,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "atmarksharp"
   },
   "n3-0597": {
     "sentence": "どうぞ、＿＿＿していってください。",
@@ -2471,20 +2324,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
-  "n3-0631": {
-    "sentence": "氷柱の＿＿＿により、一人の男性が死亡しました。",
-    "blank": "落下",
-    "sourceId": 10011598,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
-  },
-  "n3-0633": {
-    "sentence": "＿＿＿メール来ても期限が今日までかよ。",
-    "blank": "当選",
-    "sourceId": 10989349,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
-  },
   "n3-0635": {
     "sentence": "歩道で滑って、危うく頭を＿＿＿ところだった。",
     "blank": "打つ",
@@ -2554,13 +2393,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 1675582,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "mookeee"
-  },
-  "n3-0658": {
-    "sentence": "ハムスターの金玉が＿＿＿肥大しています。",
-    "blank": "片方",
-    "sourceId": 401907,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Grayster"
   },
   "n3-0661": {
     "sentence": "バスはどれくらいの＿＿＿で走っていますか。",
@@ -2723,13 +2555,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "mookeee"
   },
-  "n3-0703": {
-    "sentence": "自閉症の子供は＿＿＿ことを知らない。",
-    "blank": "飽きる",
-    "sourceId": 82615,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Scott"
-  },
   "n3-0705": {
     "sentence": "マイケルは収支を＿＿＿のに苦労した。",
     "blank": "合わせる",
@@ -2757,13 +2582,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 214124,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
-  },
-  "n3-0711": {
-    "sentence": "「々」はすぐ前の漢字が＿＿＿ことを表す。",
-    "blank": "繰り返す",
-    "sourceId": 7295984,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Masatami"
   },
   "n3-0712": {
     "sentence": "洗濯をすることは構わないのだが、服を＿＿＿ことが嫌いだ。",
@@ -2940,13 +2758,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "mookeee"
   },
-  "n3-0753": {
-    "sentence": "トムさんは＿＿＿な息子です。",
-    "blank": "代表的",
-    "sourceId": 1487550,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "marshmallowcat"
-  },
   "n3-0754": {
     "sentence": "＿＿＿な靴を履いた男の子なら見たよ。",
     "blank": "派手",
@@ -2960,13 +2771,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 13235870,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "atitarev"
-  },
-  "n3-0757": {
-    "sentence": "シンガポールはアジアの中で一番＿＿＿な国だ。",
-    "blank": "豊か",
-    "sourceId": 8744361,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
   },
   "n3-0759": {
     "sentence": "この辞書は＿＿＿高校生を対象としたものです。",
@@ -2988,13 +2792,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 9331187,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "small_snow"
-  },
-  "n3-0765": {
-    "sentence": "彼に＿＿＿を与えるだけでなくフェラも与えた。",
-    "blank": "助言",
-    "sourceId": 403969,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Grayster"
   },
   "n3-0766": {
     "sentence": "私に関する限り、その＿＿＿に異論はありません。",
@@ -3149,13 +2946,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 13545674,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "LeviHighway"
-  },
-  "n3-0820": {
-    "sentence": "泣いている子を＿＿＿な。火に油だから。",
-    "blank": "怒鳴る",
-    "sourceId": 182397,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
   },
   "n3-0821": {
     "sentence": "新聞配達の少年はどんな天気でも新聞を＿＿＿。",
@@ -3472,13 +3262,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "KK_kaku_"
   },
-  "n3-0908": {
-    "sentence": "５００人の警官が＿＿＿な警備態勢おかれた。",
-    "blank": "厳重",
-    "sourceId": 235186,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "e4zh1nmcz"
-  },
   "n3-0909": {
     "sentence": "私たちは夕食後に＿＿＿なフルーツを食べた。",
     "blank": "新鮮",
@@ -3576,13 +3359,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 219786,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
-  },
-  "n3-0938": {
-    "sentence": "銀行に行って、＿＿＿と記帳してきます。",
-    "blank": "入金",
-    "sourceId": 2987785,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Fukuko"
   },
   "n3-0942": {
     "sentence": "この電車は車両の＿＿＿のため当駅で打ち切りとさせていただきます。",
@@ -3927,13 +3703,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
-  "n3-1050": {
-    "sentence": "政府が＿＿＿に問う一般投票を実施しました。",
-    "blank": "住民",
-    "sourceId": 74037,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "fcbond"
-  },
   "n3-1052": {
     "sentence": "私のフランスケーキ好きは＿＿＿の時からです。",
     "blank": "小学校",
@@ -3947,13 +3716,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 205748,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "KK_kaku_"
-  },
-  "n3-1056": {
-    "sentence": "＿＿＿の時、有理子が愛欲に身を委ねた。",
-    "blank": "大学生",
-    "sourceId": 74788,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "fcbond"
   },
   "n3-1057": {
     "sentence": "空港は、市内＿＿＿部からかなり離れています。",
@@ -4003,13 +3765,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 10989337,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "small_snow"
-  },
-  "n3-1070": {
-    "sentence": "１月２８日のミーティングの議事＿＿＿です。",
-    "blank": "事項",
-    "sourceId": 235806,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "e4zh1nmcz"
   },
   "n3-1072": {
     "sentence": "彼らは来春にそのプロジェクトを＿＿＿する。",
@@ -4081,13 +3836,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
-  "n3-1091": {
-    "sentence": "今日は私は＿＿＿する講義はすべて午前中に偏っている。",
-    "blank": "受講",
-    "sourceId": 2440604,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "marcelostockle"
-  },
   "n3-1093": {
     "sentence": "この問題は難しすぎて＿＿＿には解けないよ。",
     "blank": "小学生",
@@ -4101,13 +3849,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 10796322,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "small_snow"
-  },
-  "n3-1095": {
-    "sentence": "＿＿＿なんて、まだまだ善悪の見分けも、現実と仮想の見分けもつかない。",
-    "blank": "小中学生",
-    "sourceId": 75230,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "fcbond"
   },
   "n3-1096": {
     "sentence": "駅までの＿＿＿を教えていただけませんか。",
@@ -4522,13 +4263,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
-  "n3-1251": {
-    "sentence": "車がいかれるかと思ったころ＿＿＿に着きました。",
-    "blank": "終点",
-    "sourceId": 76042,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "mookeee"
-  },
   "n3-1252": {
     "sentence": "彼女の着物と＿＿＿の取り合わせはおつだね。",
     "blank": "帯",
@@ -4844,13 +4578,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
-  "n2-workbook-0024": {
-    "sentence": "彼らは石油を掘り＿＿＿思惑だった。",
-    "blank": "当てる",
-    "sourceId": 3320973,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Tadafumi"
-  },
   "n2-workbook-0025": {
     "sentence": "年代を絞らず幅広く＿＿＿していきます。",
     "blank": "アピール",
@@ -4963,13 +4690,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "Sonata"
   },
-  "n2-workbook-0045": {
-    "sentence": "この手の冗談にはもう＿＿＿、うんざりだ。",
-    "blank": "いい加減",
-    "sourceId": 3598556,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "arnab"
-  },
   "n2-workbook-0046": {
     "sentence": "そんな＿＿＿は、認めるわけにはいきません。",
     "blank": "言い訳",
@@ -5018,13 +4738,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 8522191,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "small_snow"
-  },
-  "n2-workbook-0058": {
-    "sentence": "トムはいつだって俺の服装を＿＿＿。",
-    "blank": "いじる",
-    "sourceId": 3321013,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Tadafumi"
   },
   "n2-workbook-0060": {
     "sentence": "われわれの仲間ではあなたは＿＿＿の存在だった。",
@@ -5173,13 +4886,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "Gardenia"
   },
-  "n2-workbook-0089": {
-    "sentence": "彼の飲酒癖は＿＿＿始まったことではない。",
-    "blank": "今に",
-    "sourceId": 118122,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "tommy__san"
-  },
   "n2-workbook-0090": {
     "sentence": "最近何に対しても＿＿＿が湧きません。",
     "blank": "意欲",
@@ -5254,20 +4960,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sentence": "彼が＿＿＿を決めたことにわたしたちは皆驚いた。",
     "blank": "引退",
     "sourceId": 1151852,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "mookeee"
-  },
-  "n2-workbook-0102": {
-    "sentence": "このフレーズは、＿＿＿符で囲った方がいいよ。",
-    "blank": "引用",
-    "sourceId": 11213930,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
-  },
-  "n2-workbook-0103": {
-    "sentence": "＿＿＿屋さんに木を何本か植えてもらった。",
-    "blank": "植木",
-    "sourceId": 145981,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "mookeee"
   },
@@ -5410,13 +5102,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 10992020,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
-  },
-  "n2-workbook-0139": {
-    "sentence": "富はあまたの苦痛を＿＿＿。",
-    "blank": "覆う",
-    "sourceId": 870605,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Scott"
   },
   "n2-workbook-0141": {
     "sentence": "メニューを＿＿＿に簡素化した。",
@@ -5663,13 +5348,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
-  "n2-workbook-0196": {
-    "sentence": "髪の毛が伸びてきて、毛先が眉のあたりに＿＿＿と掠れていてちょっとだけ痒い。",
-    "blank": "かさかさ",
-    "sourceId": 13422660,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "zsrtrgh"
-  },
   "n2-workbook-0197": {
     "sentence": "運転するときは、用心に用心を＿＿＿んだよ。",
     "blank": "重ねる",
@@ -5711,13 +5389,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 197745,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "wakatyann630"
-  },
-  "n2-workbook-0204": {
-    "sentence": "まぁ、そんなに＿＿＿つけるのはやめとけよ。",
-    "blank": "格好",
-    "sourceId": 195842,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
   },
   "n2-workbook-0205": {
     "sentence": "この世界の教育には＿＿＿してしまう。",
@@ -5802,13 +5473,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 97969,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
-  },
-  "n2-workbook-0230": {
-    "sentence": "ユーモアで彩られない現実は無味＿＿＿です。",
-    "blank": "乾燥",
-    "sourceId": 10079752,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Sim5634"
   },
   "n2-workbook-0231": {
     "sentence": "夜空を＿＿＿するために望遠鏡を購入した。",
@@ -6034,13 +5698,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "Gardenia"
   },
-  "n2-workbook-0272": {
-    "sentence": "私は二人を同時に愛せるほど＿＿＿ではないみたい。",
-    "blank": "器用",
-    "sourceId": 3062417,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "tommy_san"
-  },
   "n2-workbook-0274": {
     "sentence": "彼女は息子に家で＿＿＿よくするように言った。",
     "blank": "行儀",
@@ -6230,13 +5887,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "small_snow"
   },
-  "n2-workbook-0321": {
-    "sentence": "個体発生は＿＿＿発生を繰り返す。",
-    "blank": "系統",
-    "sourceId": 75311,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "fcbond"
-  },
   "n2-workbook-0322": {
     "sentence": "＿＿＿界は目立ってなんぼの世界だからね。",
     "blank": "芸能",
@@ -6363,13 +6013,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "tommy__san"
   },
-  "n2-workbook-0356": {
-    "sentence": "きのう＿＿＿でお釜を掘られちゃったよ。",
-    "blank": "交差点",
-    "sourceId": 76787,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
-  },
   "n2-workbook-0357": {
     "sentence": "正確に言うと私は大学＿＿＿です。",
     "blank": "講師",
@@ -6489,20 +6132,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "Fukuko"
   },
-  "n2-workbook-0379": {
-    "sentence": "叔父さんは＿＿＿私の提案に同意してくれた。",
-    "blank": "快く",
-    "sourceId": 163333,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "KK_kaku_"
-  },
-  "n2-workbook-0381": {
-    "sentence": "＿＿＿には体罰は必要悪だと思っています。",
-    "blank": "個人的",
-    "sourceId": 3014644,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "tommy_san"
-  },
   "n2-workbook-0382": {
     "sentence": "さっきから何を二人で＿＿＿やってるの？",
     "blank": "こそこそ",
@@ -6608,13 +6237,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "e4zh1nmcz"
   },
-  "n2-workbook-0400": {
-    "sentence": "カルフォルニアではオレンジを＿＿＿している。",
-    "blank": "栽培",
-    "sourceId": 226162,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "bunbuku"
-  },
   "n2-workbook-0401": {
     "sentence": "彼女は夫をころした容疑で＿＿＿にかけられた。",
     "blank": "裁判",
@@ -6705,20 +6327,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 11023271,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "small_snow"
-  },
-  "n2-workbook-0416": {
-    "sentence": "大丈夫よ！私は飲んでも運転に＿＿＿ない。",
-    "blank": "差し支え",
-    "sourceId": 418385,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Scott"
-  },
-  "n2-workbook-0418": {
-    "sentence": "nが奇数の時、bⁿ=aを満たすbが唯一つに＿＿＿。",
-    "blank": "定める",
-    "sourceId": 5056562,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "MisterTrouser"
   },
   "n2-workbook-0420": {
     "sentence": "この問題は＿＿＿に対処する必要があります。",
@@ -7000,20 +6608,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "qahwa"
   },
-  "n2-workbook-0474": {
-    "sentence": "私は５ポンド＿＿＿必要がある。",
-    "blank": "絞る",
-    "sourceId": 1619825,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "mookeee"
-  },
-  "n2-workbook-0475": {
-    "sentence": "大学生のときに＿＿＿に始める年金納付。",
-    "blank": "地味",
-    "sourceId": 10117950,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Sim5634"
-  },
   "n2-workbook-0477": {
     "sentence": "＿＿＿に彼へのファンレターが殺到している。",
     "blank": "事務所",
@@ -7032,13 +6626,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sentence": "＿＿＿の店と価格競争をしなければなりません。",
     "blank": "地元",
     "sourceId": 126921,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "mookeee"
-  },
-  "n2-workbook-0482": {
-    "sentence": "エンドユーザーの＿＿＿にたった商品開発が必須。",
-    "blank": "視野",
-    "sourceId": 227856,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "mookeee"
   },
@@ -7175,13 +6762,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "e4zh1nmcz"
   },
-  "n2-workbook-0510": {
-    "sentence": "女性はたいてい男性より10年＿＿＿が長い。",
-    "blank": "寿命",
-    "sourceId": 1203518,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "bunbuku"
-  },
   "n2-workbook-0512": {
     "sentence": "パスタ会社が主催したのど自慢コンクールに参加して、＿＿＿戦まで到達しました。",
     "blank": "準決勝",
@@ -7251,20 +6831,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 10726302,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "small_snow"
-  },
-  "n2-workbook-0530": {
-    "sentence": "\"ブログオーナーが＿＿＿した\"はすでに例文です。",
-    "blank": "承認",
-    "sourceId": 8255786,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "ryuwryyy"
-  },
-  "n2-workbook-0531": {
-    "sentence": "表示価格には＿＿＿税は含まれておりません。",
-    "blank": "消費",
-    "sourceId": 4260204,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "tommy_san"
   },
   "n2-workbook-0533": {
     "sentence": "＿＿＿は警察署の隣にあります。",
@@ -7658,13 +7224,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
-  "n2-workbook-0616": {
-    "sentence": "あ、そうだ。まゆに変なことしたら、＿＿＿を折る。",
-    "blank": "背骨",
-    "sourceId": 75408,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "fcbond"
-  },
   "n2-workbook-0618": {
     "sentence": "私か仕事かって＿＿＿のはやめてくれよ。",
     "blank": "迫る",
@@ -7819,13 +7378,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "mookeee"
   },
-  "n2-workbook-0655": {
-    "sentence": "神は風を＿＿＿、だが人が帆をあげなければならない。",
-    "blank": "備える",
-    "sourceId": 391855,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Scott"
-  },
   "n2-workbook-0656": {
     "sentence": "いかに＿＿＿であろうとも我が家に勝る所はない。",
     "blank": "粗末",
@@ -7979,13 +7531,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 194063,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "tommy__san"
-  },
-  "n2-workbook-0686": {
-    "sentence": "そこの角にある駄菓子屋さん、店を＿＿＿そうよ。",
-    "blank": "畳む",
-    "sourceId": 10726082,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
   },
   "n2-workbook-0687": {
     "sentence": "目的に＿＿＿ために、彼は必死に働いている。",
@@ -8175,13 +7720,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 2748272,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "tommy_san"
-  },
-  "n2-workbook-0731": {
-    "sentence": "戦争の＿＿＿、日本がフランスと同盟を結びました。",
-    "blank": "直前",
-    "sourceId": 197006,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Scott"
   },
   "n2-workbook-0732": {
     "sentence": "リチャード・ロバーツは、多くの本の＿＿＿です。",
@@ -8554,13 +8092,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "tommy_san"
   },
-  "n2-workbook-0823": {
-    "sentence": "それは、手に汗＿＿＿試合だった。",
-    "blank": "握る",
-    "sourceId": 12700774,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
-  },
   "n2-workbook-0824": {
     "sentence": "フランス語が＿＿＿。",
     "blank": "憎い",
@@ -8638,13 +8169,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "arnab"
   },
-  "n2-workbook-0842": {
-    "sentence": "インサイダー取引に当たる疑いが＿＿＿になってきた。",
-    "blank": "濃厚",
-    "sourceId": 76853,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "mookeee"
-  },
   "n2-workbook-0843": {
     "sentence": "彼らは果樹に＿＿＿を散布している。",
     "blank": "農薬",
@@ -8686,13 +8210,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 177030,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "mookeee"
-  },
-  "n2-workbook-0852": {
-    "sentence": "パソコンの＿＿＿ドライブって、何？",
-    "blank": "ハード",
-    "sourceId": 10286298,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
   },
   "n2-workbook-0853": {
     "sentence": "彼のシャツは＿＿＿でネクタイは黄色だった。",
@@ -8820,13 +8337,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "KK_kaku_"
   },
-  "n2-workbook-0883": {
-    "sentence": "頭の中が、学校のことでいっぱいで＿＿＿しそう。",
-    "blank": "パンク",
-    "sourceId": 11216003,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
-  },
   "n2-workbook-0891": {
     "sentence": "北海道の大地震は大きな＿＿＿をもたらした。",
     "blank": "被害",
@@ -8910,13 +8420,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 1043803,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "mookeee"
-  },
-  "n2-workbook-0909": {
-    "sentence": "綺麗だってことは＿＿＿の深さ分のことだけだ。",
-    "blank": "皮膚",
-    "sourceId": 393868,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "blay_paul"
   },
   "n2-workbook-0911": {
     "sentence": "5歳の時に自分で靴＿＿＿を結べるようになった。",
@@ -9226,13 +8729,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "fcbond"
   },
-  "n2-workbook-0987": {
-    "sentence": "彼女のおかまを＿＿＿後でたいていよく洗わなきゃならないんだ。",
-    "blank": "掘る",
-    "sourceId": 409758,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Lachy"
-  },
   "n2-workbook-0988": {
     "sentence": "＿＿＿数人の生徒だけがその問題を理解した。",
     "blank": "ほんの",
@@ -9415,13 +8911,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
-  "n2-workbook-1026": {
-    "sentence": "来月１０日に二人は結婚２０周年を＿＿＿ます。",
-    "blank": "迎え",
-    "sourceId": 78694,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "mookeee"
-  },
   "n2-workbook-1027": {
     "sentence": "今回がドイツで初めて＿＿＿ラマダンです。",
     "blank": "迎える",
@@ -9562,13 +9051,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "Ninja"
   },
-  "n2-workbook-1066": {
-    "sentence": "銃声のせいで鼓膜が＿＿＿た。",
-    "blank": "破れ",
-    "sourceId": 9952224,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Sim5634"
-  },
   "n2-workbook-1070": {
     "sentence": "＿＿＿なメールアドレスを入力してください。",
     "blank": "有効",
@@ -9604,13 +9086,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
-  "n2-workbook-1076": {
-    "sentence": "＿＿＿不明だった少年は服で身元が確認された。",
-    "blank": "行方",
-    "sourceId": 173329,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Blanka_Meduzo"
-  },
   "n2-workbook-1077": {
     "sentence": "旅は私たちの心を大いに＿＿＿にするだろう。",
     "blank": "豊か",
@@ -9645,13 +9120,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 226384,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "arnab"
-  },
-  "n2-workbook-1086": {
-    "sentence": "このゲームの＿＿＿っぽさがいいんだよ。",
-    "blank": "幼稚",
-    "sourceId": 10712775,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
   },
   "n2-workbook-1087": {
     "sentence": "本来の＿＿＿以外で使用しないでください。",
@@ -9743,13 +9211,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 223454,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "mookeee"
-  },
-  "n2-workbook-1105": {
-    "sentence": "その猿公はね、＿＿＿の猿芝居の役者なんです。",
-    "blank": "両国",
-    "sourceId": 993305,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "Scott"
   },
   "n2-workbook-1106": {
     "sentence": "スミスさんのサイン入りの＿＿＿が必要なんです。",
@@ -10178,26 +9639,12 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "tommy_san"
   },
-  "katakana-056": {
-    "sentence": "多くのイスラム諸国で＿＿＿は禁止です。",
-    "blank": "アルコール",
-    "sourceId": 9791941,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
-  },
   "katakana-057": {
     "sentence": "＿＿＿の焼き具合は、いかがいたしましょうか。",
     "blank": "ステーキ",
     "sourceId": 214624,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
-  },
-  "katakana-058": {
-    "sentence": "株価指数は昨日200＿＿＿下げた。",
-    "blank": "ポイント",
-    "sourceId": 184081,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "KK_kaku_"
   },
   "katakana-059": {
     "sentence": "この＿＿＿映画では死者が生き返ることが可能だ。",
@@ -10238,13 +9685,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sentence": "私は電話で＿＿＿を注文した。",
     "blank": "ピザ",
     "sourceId": 154915,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "bunbuku"
-  },
-  "katakana-065": {
-    "sentence": "誰もが月は＿＿＿でできていると知っている。",
-    "blank": "チーズ",
-    "sourceId": 1148655,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
   },
@@ -10422,13 +9862,6 @@ globalThis.JLPT_USAGE_EXAMPLES = {
     "sourceId": 8945972,
     "sourceLicense": "CC BY 2.0 FR",
     "sourceAuthor": "bunbuku"
-  },
-  "katakana-092": {
-    "sentence": "＿＿＿袋はたたんでバッグに入れておきます。",
-    "blank": "レジ",
-    "sourceId": 11021429,
-    "sourceLicense": "CC BY 2.0 FR",
-    "sourceAuthor": "small_snow"
   },
   "katakana-093": {
     "sentence": "＿＿＿が一つ見あたらない。",

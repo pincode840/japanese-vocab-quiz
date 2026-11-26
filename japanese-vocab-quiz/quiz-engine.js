@@ -93,7 +93,7 @@
 
   // Vocabulary usage is a hint, not a cloze question. Keep its data separate
   // from the sentence-question pool, and only reuse examples of the same sense.
-  function indexUsageExamples(items, curated = {}, supplemental = {}) {
+  function indexUsageExamples(items, curated = {}, supplemental = {}, translations = {}) {
     const blankMarker = /___|＿＿＿/g;
     const examplesBySense = new Map();
     const senseKey = (item) => JSON.stringify([item.word, kanaReadings(item.reading).sort(), item.meaning]);
@@ -106,6 +106,9 @@
       }
       return {
         ...example,
+        // The translation belongs to the original sentence, not the word ID.
+        // If a corpus refresh chooses a new sentence, it cannot inherit old text.
+        translation: example.translation || translations[example.sourceId],
         prompt: parts.join("＿＿＿"),
         fullSentence: parts.join(example.blank),
       };
@@ -127,7 +130,7 @@
     });
 
     return new Map(items.map((item) => [item.id,
-      prepare(item, { sentence: item.readingContext, blank: item.word })
+      prepare(item, { sentence: item.readingContext, blank: item.word, translation: item.readingContextTranslation })
         || prepare(item, ownSentence(item))
         || prepare(item, curated[item.id])
         || examplesBySense.get(senseKey(item))

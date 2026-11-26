@@ -7,6 +7,7 @@ require("./n2-vocab-data.js");
 require("./katakana-vocab-data.js");
 require("./usage-context-curated.js");
 require("./usage-context-data.js");
+require("./usage-context-ko.js");
 require("./reading-data.js");
 require("./reading-generated-data.js");
 require("./reading-advanced-guides.js");
@@ -668,7 +669,7 @@ assert.equal(elements.get("feedback-title").textContent, "정답이에요");
 assert.equal(elements.get("feedback-sentence-reading").hidden, false, "문장 정답에도 전체 히라가나 읽기를 보여줘야 합니다.");
 assert.match(elements.get("feedback-sentence-reading").textContent, /^문장 읽기\s{2}.+/);
 assert.doesNotMatch(elements.get("feedback-sentence-reading").textContent, /[一-龯々]|<\/?(?:ruby|rt)>/i);
-assert.equal(elements.get("feedback-translation").hidden, true, "문장 정답에는 기존처럼 해석을 숨겨야 합니다.");
+assert.equal(elements.get("feedback-translation").hidden, false, "문장 정답에도 해석을 보여야 합니다.");
 
 elements.get("home-button").click();
 elements.get("mode-sentence-kanji").checked = false;
@@ -1437,6 +1438,9 @@ enterCurrentKanaReading();
 elements.get("kana-submit").click();
 assert.equal(elements.get("feedback-title").textContent, "정답이에요");
 assert.equal(elements.get("feedback-usage-example").textContent, longWordExample.sentence.replace("＿＿＿", longWordExample.blank));
+assert.equal(elements.get("feedback-translation").hidden, false);
+assert.equal(elements.get("feedback-translation").textContent,
+  `문장 해석  ${globalThis.JLPT_USAGE_TRANSLATIONS[longWordExample.sourceId]}`);
 assert.equal(elements.get("feedback-source").hidden, false);
 assert.ok(elements.get("feedback-source").href.endsWith(`/sentences/show/${longWordExample.sourceId}`));
 assert.ok(elements.get("feedback-source").textContent.includes(longWordExample.sourceAuthor));
@@ -1901,6 +1905,7 @@ function verifyVocabularyUsage() {
   correctButtonForCurrentSentence().click();
   assert.equal(saved().correct, 1);
   assert.equal(example.hidden, true);
+  assert.ok(elements.get("feedback-translation").textContent.includes(garden.sentenceTranslation));
 
   elements.get("home-button").click();
   elements.get("feature-switch-button").click();

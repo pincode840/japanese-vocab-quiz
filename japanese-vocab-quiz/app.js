@@ -36,6 +36,7 @@
     Object.values(datasets).flat(),
     window.JLPT_CURATED_USAGE_EXAMPLES,
     window.JLPT_USAGE_EXAMPLES,
+    window.JLPT_USAGE_TRANSLATIONS,
   );
   const difficultyLabels = { n5n4: "N5·N4", n3: "N3", n2: "N2", katakana: "카타카나" };
   const modeLabels = {
@@ -2090,7 +2091,7 @@
       ? `문장 읽기  ${engine.sentenceReading(session.current)}`
       : "";
     const example = isSentenceToKanji ? null : usageExamples.get(session.current.id);
-    const translation = isSentenceToKanji && !isCorrect
+    const translation = isSentenceToKanji
       ? session.current.sentenceTranslation
       : example?.translation;
     elements.feedbackUsageExample.hidden = !example;

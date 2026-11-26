@@ -97,7 +97,9 @@ for item in workbook_items:
     # This problem-only workbook contains no example sentences. Do not invent
     # sentence fields: the app's sentence mode selects complete examples only.
     exported.append({
-        **{key: item[key] for key in ("id", "word", "reading", "meaning", "readingContext") if key in item},
+        **{key: item[key] for key in (
+            "id", "word", "reading", "meaning", "readingContext", "readingContextTranslation",
+        ) if key in item},
         "level": "N2",
         "day": position["day"],
         "source": f"한끝 N2 단어연습장 · DAY {position['day']:02d} · p.{position['page']}",

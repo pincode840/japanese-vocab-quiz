@@ -14,6 +14,7 @@ asset_names = [
     "katakana-vocab-data.js",
     "usage-context-curated.js",
     "usage-context-data.js",
+    "usage-context-ko.js",
     "reading-data.js",
     "reading-generated-data.js",
     "reading-advanced-guides.js",

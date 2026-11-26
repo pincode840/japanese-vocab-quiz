@@ -2782,6 +2782,7 @@
       "word": "空",
       "reading": "から",
       "readingContext": "容器の中が＿＿＿です。",
+      "readingContextTranslation": "용기 안이 비어 있습니다.",
       "meaning": "비어 있음, 빈 상태",
       "positions": [
         {
@@ -12655,6 +12656,7 @@
       "word": "方々",
       "reading": "ほうぼう",
       "readingContext": "忘れ物を探して、＿＿＿を歩き回った。",
+      "readingContextTranslation": "두고 온 물건을 찾으러 여기저기 돌아다녔다.",
       "meaning": "여기저기, 여러 곳",
       "positions": [
         {
